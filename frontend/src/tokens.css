@@ -1,0 +1,10 @@
+:root {
+  --background: #f4f7f2;
+  --surface: #fff;
+  --text: #2e3c2c;
+  --muted: #75816b;
+  --green: #365f3d;
+  --border: #e2e8dc;
+  color-scheme: light;
+  font-variant-numeric: tabular-nums;
+}

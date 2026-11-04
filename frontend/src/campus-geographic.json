@@ -1,0 +1,4301 @@
+{
+  "origin_lon_lat": [77.5006482, 12.923200049999998],
+  "metres_per_scene_unit": 6,
+  "projection": "Local equirectangular tangent approximation: x=(lon-lon0)*111320*cos(lat0)/6, z=-(lat-lat0)*111320/6. North=-z. Not a cadastral projection.",
+  "source": "https://www.openstreetmap.org/way/55685638",
+  "attribution": "© OpenStreetMap contributors · ODbL",
+  "retrieved_date": "2026-11-04",
+  "height_policy": "Explicit OSM height if present; otherwise building:levels × assumed 3.2 m; otherwise assumed 9.6 m. Facades, window placement and roof details are illustrative.",
+  "boundary": [
+    [-30.532, 36.5399],
+    [-29.6712, 36.5621],
+    [-24.5392, 36.2412],
+    [-21.1413, 34.8886],
+    [-11.586, 27.8346],
+    [-7.9115, 24.4449],
+    [-4.5534, 22.0479],
+    [-1.3092, 21.0423],
+    [1.6745, 22.0887],
+    [28.532, 35.5769],
+    [32.8449, 45.8295],
+    [34.4905, 46.7238],
+    [36.8684, 45.6087],
+    [40.9878, 42.5066],
+    [44.6768, 36.3933],
+    [46.326, 31.9294],
+    [49.8668, 22.3262],
+    [53.4563, 8.5039],
+    [54.5721, 1.2273],
+    [55.1055, -5.3202],
+    [55.8813, -10.2795],
+    [52.3641, -12.4985],
+    [51.4744, -14.0681],
+    [39.1071, -1.9342],
+    [20.1304, -19.2222],
+    [-3.8952, -39.7347],
+    [-12.0815, -46.7238],
+    [-24.0021, -35.5528],
+    [-32.6857, -27.4135],
+    [-31.9515, -26.6862],
+    [-51.3026, -7.7636],
+    [-55.8813, -3.116],
+    [-45.0313, 16.0941],
+    [-38.7491, 23.9514],
+    [-36.2192, 27.445],
+    [-31.6875, 33.8292],
+    [-30.532, 36.5399]
+  ],
+  "buildings": [
+    {
+      "id": "osm-132994721",
+      "osm_id": "132994721",
+      "name": "Campus building 4721",
+      "points": [
+        [-17.0255, 4.1754],
+        [-12.2985, 8.4928],
+        [-6.105, 1.7097],
+        [-8.4685, -0.4481],
+        [-9.9748, -1.7431],
+        [-10.9133, -1.5761],
+        [-11.8175, -1.4165],
+        [-13.955, 0.8117],
+        [-17.0255, 4.1754]
+      ],
+      "centroid": [-11.9537, 1.5757],
+      "tags": {
+        "building": "college",
+        "building:levels": "3"
+      },
+      "source_url": "https://www.openstreetmap.org/way/132994721",
+      "height_m": 9.600000000000001,
+      "height_units": 1.6000000000000003,
+      "height_basis": "OSM levels × assumed 3.2 m per level"
+    },
+    {
+      "id": "osm-132995519",
+      "osm_id": "132995519",
+      "name": "Campus building 5519",
+      "points": [
+        [-34.4326, 14.7824],
+        [-33.7545, 14.7341],
+        [-33.8503, 13.5708],
+        [-33.1107, 12.4521],
+        [-32.3638, 11.3203],
+        [-27.1685, 15.2388],
+        [-29.1938, 17.6451],
+        [-29.0492, 18.5172],
+        [-34.2879, 19.1257],
+        [-34.4326, 14.7824]
+      ],
+      "centroid": [-32.1644, 15.2169],
+      "tags": {
+        "building": "college"
+      },
+      "source_url": "https://www.openstreetmap.org/way/132995519",
+      "height_m": 9.6,
+      "height_units": 1.5999999999999999,
+      "height_basis": "assumed 9.6 m"
+    },
+    {
+      "id": "osm-132995520",
+      "osm_id": "132995520",
+      "name": "Bioteach quadrangle",
+      "points": [
+        [-38.2066, 9.4891],
+        [-38.7111, 10.2275],
+        [-38.9408, 11.3778],
+        [-38.7563, 12.2535],
+        [-38.071, 13.222],
+        [-37.3078, 13.6896],
+        [-36.4308, 13.8677],
+        [-35.9064, 13.8269],
+        [-35.0673, 13.517],
+        [-34.1559, 12.6172],
+        [-33.8376, 11.7804],
+        [-33.8883, 10.5856],
+        [-34.2789, 9.7804],
+        [-34.9226, 9.1589],
+        [-35.5357, 8.8527],
+        [-36.4181, 8.7154],
+        [-37.297, 8.8898],
+        [-38.2066, 9.4891]
+      ],
+      "centroid": [-36.441, 11.1856],
+      "tags": {
+        "building": "roof",
+        "layer": "1",
+        "name": "Bioteach quadrangle"
+      },
+      "source_url": "https://www.openstreetmap.org/way/132995520",
+      "height_m": 9.6,
+      "height_units": 1.5999999999999999,
+      "height_basis": "assumed 9.6 m"
+    },
+    {
+      "id": "ai-mca",
+      "osm_id": "132995521",
+      "name": "AIML BLOCK",
+      "points": [
+        [-40.2771, 11.8992],
+        [-43.9155, 16.4577],
+        [-40.1795, 19.7565],
+        [-38.6768, 18.2036],
+        [-37.3187, 18.1071],
+        [-37.4145, 14.5171],
+        [-38.118, 14.5171],
+        [-38.9191, 14.5171],
+        [-38.0945, 13.5968],
+        [-40.2771, 11.8992]
+      ],
+      "centroid": [-39.3191, 15.3471],
+      "tags": {
+        "building": "college",
+        "name": "AIML BLOCK"
+      },
+      "source_url": "https://www.openstreetmap.org/way/132995521",
+      "height_m": 9.6,
+      "height_units": 1.5999999999999999,
+      "height_basis": "assumed 9.6 m"
+    },
+    {
+      "id": "osm-133001682",
+      "osm_id": "133001682",
+      "name": "Mechanical PG",
+      "points": [
+        [-44.232, -2.988],
+        [-42.9661, -1.8284],
+        [-41.8992, -2.0232],
+        [-38.7889, -5.4185],
+        [-40.5393, -7.0197],
+        [-44.232, -2.988]
+      ],
+      "centroid": [-42.1096, -3.711],
+      "tags": {
+        "building": "university",
+        "building:levels": "4",
+        "name": "Mechanical PG"
+      },
+      "source_url": "https://www.openstreetmap.org/way/133001682",
+      "height_m": 12.8,
+      "height_units": 2.1333333333333333,
+      "height_basis": "OSM levels × assumed 3.2 m per level"
+    },
+    {
+      "id": "cse",
+      "osm_id": "133051269",
+      "name": "Computer Science Department",
+      "points": [
+        [-7.4775, -24.2149],
+        [-6.2858, -23.0831],
+        [-3.1899, -20.1443],
+        [0.2007, -23.7139],
+        [-4.0868, -27.7864],
+        [-6.0272, -25.7418],
+        [-7.4775, -24.2149]
+      ],
+      "centroid": [-4.9063, -24.1285],
+      "tags": {
+        "building": "university",
+        "building:levels": "3",
+        "name": "Computer Science Department",
+        "nohousenumber": "yes"
+      },
+      "source_url": "https://www.openstreetmap.org/way/133051269",
+      "height_m": 9.600000000000001,
+      "height_units": 1.6000000000000003,
+      "height_basis": "OSM levels × assumed 3.2 m per level"
+    },
+    {
+      "id": "civil",
+      "osm_id": "133052110",
+      "name": "Civil Department",
+      "points": [
+        [-24.2426, -24.0127],
+        [-21.2444, -21.1183],
+        [-18.2009, -18.1795],
+        [-13.4378, -23.111],
+        [-19.4794, -28.9441],
+        [-22.1847, -26.1426],
+        [-24.2426, -24.0127]
+      ],
+      "centroid": [-20.4332, -23.6458],
+      "tags": {
+        "building": "college",
+        "building:levels": "4",
+        "name": "Civil Department",
+        "nohousenumber": "yes"
+      },
+      "source_url": "https://www.openstreetmap.org/way/133052110",
+      "height_m": 12.8,
+      "height_units": 2.1333333333333333,
+      "height_basis": "OSM levels × assumed 3.2 m per level"
+    },
+    {
+      "id": "osm-133052269",
+      "osm_id": "133052269",
+      "name": "MM foods",
+      "points": [
+        [-18.8031, -0.8989],
+        [-18.6892, 0.3349],
+        [-14.3871, -0.0584],
+        [-14.6801, -3.2645],
+        [-17.3329, -5.5131],
+        [-18.219, -4.7061],
+        [-18.6367, -4.5817],
+        [-18.9948, -4.3313],
+        [-19.219, -4.0456],
+        [-19.3601, -3.7097],
+        [-19.4071, -3.3479],
+        [-20.2805, -2.4463],
+        [-18.8031, -0.8989]
+      ],
+      "centroid": [-18.2164, -2.8821],
+      "tags": {
+        "amenity": "fast_food",
+        "building": "university",
+        "building:levels": "5",
+        "fast_food": "cafeteria",
+        "name": "MM foods",
+        "nohousenumber": "yes"
+      },
+      "source_url": "https://www.openstreetmap.org/way/133052269",
+      "height_m": 16.0,
+      "height_units": 2.6666666666666665,
+      "height_basis": "OSM levels × assumed 3.2 m per level"
+    },
+    {
+      "id": "ece",
+      "osm_id": "133052270",
+      "name": "Electronics and Communication",
+      "points": [
+        [-14.2479, -9.3407],
+        [-11.2443, -6.3833],
+        [-4.1953, -13.5449],
+        [-7.1972, -16.5004],
+        [-13.3636, -10.2387],
+        [-14.2479, -9.3407]
+      ],
+      "centroid": [-10.7494, -10.8914],
+      "tags": {
+        "addr:housenumber": "2",
+        "building": "college",
+        "building:levels": "3",
+        "name": "Electronics and Communication"
+      },
+      "source_url": "https://www.openstreetmap.org/way/133052270",
+      "height_m": 9.600000000000001,
+      "height_units": 1.6000000000000003,
+      "height_basis": "OSM levels × assumed 3.2 m per level"
+    },
+    {
+      "id": "library",
+      "osm_id": "133052402",
+      "name": "Central Library",
+      "points": [
+        [-0.6799, -3.3832],
+        [-1.9331, 2.8489],
+        [2.208, 3.6801],
+        [3.4612, -2.552],
+        [1.6944, -2.9064],
+        [-0.6799, -3.3832]
+      ],
+      "centroid": [0.6784, -0.9493],
+      "tags": {
+        "amenity": "library",
+        "building": "university",
+        "building:levels": "4",
+        "name:kn": "ಗ್ರಂಥಾಲಯ"
+      },
+      "source_url": "https://www.openstreetmap.org/way/133052402",
+      "height_m": 12.8,
+      "height_units": 2.1333333333333333,
+      "height_basis": "OSM levels × assumed 3.2 m per level"
+    },
+    {
+      "id": "osm-133052565",
+      "osm_id": "133052565",
+      "name": "Chamundi Hostel",
+      "points": [
+        [18.653, 21.1313],
+        [23.6278, 25.1425],
+        [27.6857, 20.1053],
+        [22.7109, 16.0978],
+        [18.653, 21.1313]
+      ],
+      "centroid": [22.2661, 20.7217],
+      "tags": {
+        "building": "university",
+        "building:levels": "3",
+        "name": "Chamundi Hostel",
+        "name:kn": "ಚಾಮುಂಡಿ"
+      },
+      "source_url": "https://www.openstreetmap.org/way/133052565",
+      "height_m": 9.600000000000001,
+      "height_units": 1.6000000000000003,
+      "height_basis": "OSM levels × assumed 3.2 m per level"
+    },
+    {
+      "id": "ase-ise",
+      "osm_id": "133052927",
+      "name": "Aerospace and Information Science",
+      "points": [
+        [2.1158, 6.7673],
+        [4.4232, 10.4353],
+        [6.6836, 8.9826],
+        [9.1448, 8.8806],
+        [10.6258, 1.5446],
+        [8.0742, -1.8971],
+        [5.9729, -1.1883],
+        [5.293, -1.2459],
+        [4.8102, -1.2867],
+        [4.6149, -0.025],
+        [3.6456, 0.5575],
+        [2.5787, 6.0864],
+        [2.1158, 6.7673]
+      ],
+      "centroid": [5.3922, 3.4137],
+      "tags": {
+        "building": "school",
+        "building:levels": "3",
+        "name": "Aerospace and Information Science"
+      },
+      "source_url": "https://www.openstreetmap.org/way/133052927",
+      "height_m": 9.600000000000001,
+      "height_units": 1.6000000000000003,
+      "height_basis": "OSM levels × assumed 3.2 m per level"
+    },
+    {
+      "id": "osm-133053005",
+      "osm_id": "133053005",
+      "name": "Cognitive Centre",
+      "points": [
+        [11.4016, -13.0495],
+        [14.2732, -10.2609],
+        [16.691, -12.9586],
+        [17.6168, -13.8491],
+        [15.2461, -16.4726],
+        [14.4088, -16.0459],
+        [11.4016, -13.0495]
+      ],
+      "centroid": [14.4342, -13.6694],
+      "tags": {
+        "building": "university",
+        "name": "Cognitive Centre"
+      },
+      "source_url": "https://www.openstreetmap.org/way/133053005",
+      "height_m": 9.6,
+      "height_units": 1.5999999999999999,
+      "height_basis": "assumed 9.6 m"
+    },
+    {
+      "id": "admin",
+      "osm_id": "133053007",
+      "name": "Administration Building & Placement Department",
+      "points": [
+        [-40.0855, -7.3332],
+        [-39.0004, -6.2386],
+        [-37.1903, -8.0327],
+        [-34.7328, -10.4687],
+        [-34.3349, -10.183],
+        [-33.1686, -11.2832],
+        [-32.2156, -11.8751],
+        [-32.9082, -12.5727],
+        [-29.3512, -16.0997],
+        [-30.2879, -17.044],
+        [-34.042, -13.3779],
+        [-40.0855, -7.3332]
+      ],
+      "centroid": [-34.7836, -10.9868],
+      "tags": {
+        "building": "university",
+        "building:levels": "3",
+        "name": "Administration Building & Placement Department"
+      },
+      "source_url": "https://www.openstreetmap.org/way/133053007",
+      "height_m": 9.600000000000001,
+      "height_units": 1.6000000000000003,
+      "height_basis": "OSM levels × assumed 3.2 m per level"
+    },
+    {
+      "id": "innovation-hub",
+      "osm_id": "133053072",
+      "name": "DTL huddle",
+      "points": [
+        [-54.648, -1.4147],
+        [-53.3243, -2.6782],
+        [-54.0205, -3.4092],
+        [-51.5811, -5.7376],
+        [-50.4834, -4.5873],
+        [-48.3369, -2.3405],
+        [-50.9463, 0.1512],
+        [-50.0892, 1.0492],
+        [-51.2429, 2.1513],
+        [-54.648, -1.4147]
+      ],
+      "centroid": [-51.9321, -1.8231],
+      "tags": {
+        "building": "yes",
+        "building:levels": "2",
+        "name": "DTL huddle",
+        "toilets": "2"
+      },
+      "source_url": "https://www.openstreetmap.org/way/133053072",
+      "height_m": 6.4,
+      "height_units": 1.0666666666666667,
+      "height_basis": "OSM levels × assumed 3.2 m per level"
+    },
+    {
+      "id": "iem",
+      "osm_id": "133053117",
+      "name": "Industrial Engineering and Management Department",
+      "points": [
+        [-37.9932, 4.1457],
+        [-34.1885, 8.1013],
+        [-31.5067, 5.5224],
+        [-30.4814, 4.5354],
+        [-34.2861, 0.5798],
+        [-35.2355, 1.4945],
+        [-37.297, 3.476],
+        [-37.9932, 4.1457]
+      ],
+      "centroid": [-34.8727, 4.0001],
+      "tags": {
+        "building": "college",
+        "building:levels": "3",
+        "name": "Industrial Engineering and Management Department"
+      },
+      "source_url": "https://www.openstreetmap.org/way/133053117",
+      "height_m": 9.600000000000001,
+      "height_units": 1.6000000000000003,
+      "height_basis": "OSM levels × assumed 3.2 m per level"
+    },
+    {
+      "id": "osm-133117221",
+      "osm_id": "133117221",
+      "name": "Sir M V Hostel",
+      "points": [
+        [32.7327, 5.502],
+        [32.1487, 4.8712],
+        [32.0528, 1.1902],
+        [30.4922, 1.231],
+        [30.7526, 11.2702],
+        [32.2409, 11.2313],
+        [32.1541, 7.862],
+        [32.8105, 7.8453],
+        [32.8973, 11.1979],
+        [34.4706, 11.157],
+        [34.391, 8.0419],
+        [37.5303, 7.9603],
+        [37.4887, 6.4018],
+        [33.8467, 6.4946],
+        [33.1686, 5.8916],
+        [32.7327, 5.502]
+      ],
+      "centroid": [33.2444, 7.1031],
+      "tags": {
+        "building": "yes",
+        "name": "Sir M V Hostel"
+      },
+      "source_url": "https://www.openstreetmap.org/way/133117221",
+      "height_m": 9.6,
+      "height_units": 1.5999999999999999,
+      "height_basis": "assumed 9.6 m"
+    },
+    {
+      "id": "osm-133117326",
+      "osm_id": "133117326",
+      "name": "Inter Disciplinary Research Centre (IDRC)",
+      "points": [
+        [8.5082, -8.5002],
+        [8.9766, -8.9566],
+        [8.3346, -9.6153],
+        [9.7578, -11.0031],
+        [11.1086, -12.3203],
+        [11.6981, -11.7155],
+        [12.2298, -12.2331],
+        [13.4215, -11.0123],
+        [12.8989, -10.504],
+        [13.454, -9.9362],
+        [10.6294, -7.1829],
+        [9.9676, -7.862],
+        [9.5372, -7.4445],
+        [8.5082, -8.5002]
+      ],
+      "centroid": [10.645, -9.7705],
+      "tags": {
+        "building": "university",
+        "name": "Inter Disciplinary Research Centre (IDRC)"
+      },
+      "source_url": "https://www.openstreetmap.org/way/133117326",
+      "height_m": 9.6,
+      "height_units": 1.5999999999999999,
+      "height_basis": "assumed 9.6 m"
+    },
+    {
+      "id": "eee",
+      "osm_id": "133117327",
+      "name": "Electrical and Electronics Department",
+      "points": [
+        [-16.9351, -14.2313],
+        [-13.8049, -11.2034],
+        [-7.7035, -17.5153],
+        [-9.812, -19.5561],
+        [-12.369, -22.0256],
+        [-18.4704, -15.7156],
+        [-16.9351, -14.2313]
+      ],
+      "centroid": [-13.7186, -16.3541],
+      "tags": {
+        "building": "college",
+        "building:levels": "3",
+        "name": "Electrical and Electronics Department",
+        "nohousenumber": "yes"
+      },
+      "source_url": "https://www.openstreetmap.org/way/133117327",
+      "height_m": 9.600000000000001,
+      "height_units": 1.6000000000000003,
+      "height_basis": "OSM levels × assumed 3.2 m per level"
+    },
+    {
+      "id": "ete",
+      "osm_id": "133259801",
+      "name": "Telecommunication Block",
+      "points": [
+        [-10.5589, -4.9231],
+        [-8.6927, -3.1624],
+        [-5.9603, -6.0604],
+        [-2.5353, -9.6913],
+        [-4.4033, -11.452],
+        [-7.5408, -8.1254],
+        [-10.5589, -4.9231]
+      ],
+      "centroid": [-7.1786, -6.9054],
+      "tags": {
+        "building": "yes",
+        "building:levels": "4",
+        "layer": "-1",
+        "name": "Telecommunication Block"
+      },
+      "source_url": "https://www.openstreetmap.org/way/133259801",
+      "height_m": 12.8,
+      "height_units": 2.1333333333333333,
+      "height_basis": "OSM levels × assumed 3.2 m per level"
+    },
+    {
+      "id": "osm-133268637",
+      "osm_id": "133268637",
+      "name": "Kriya kalpa",
+      "points": [
+        [-25.6115, -6.9621],
+        [-21.465, -3.8007],
+        [-17.1901, -8.4316],
+        [-14.8609, -10.9548],
+        [-18.7308, -14.6358],
+        [-19.4487, -13.8807],
+        [-22.04, -10.9715],
+        [-23.2408, -9.6245],
+        [-25.6115, -6.9621]
+      ],
+      "centroid": [-20.911, -9.5804],
+      "tags": {
+        "building": "yes",
+        "check_date": "2025-09-19",
+        "fee": "no",
+        "name": "Kriya kalpa",
+        "name:kn": "ಕ್ರಿಯಾಕಲ್ಪ"
+      },
+      "source_url": "https://www.openstreetmap.org/way/133268637",
+      "height_m": 9.6,
+      "height_units": 1.5999999999999999,
+      "height_basis": "assumed 9.6 m"
+    },
+    {
+      "id": "food-court",
+      "osm_id": "513025074",
+      "name": "Big Mingos",
+      "points": [
+        [-21.2227, 16.762],
+        [-20.1576, 15.6451],
+        [-16.9839, 12.3148],
+        [-15.8772, 11.1533],
+        [-14.6819, 12.2944],
+        [-13.6367, 13.2907],
+        [-14.8591, 14.5746],
+        [-15.0436, 14.7675],
+        [-15.8302, 15.5931],
+        [-18.9821, 18.8994],
+        [-20.1594, 17.7769],
+        [-21.2227, 16.762]
+      ],
+      "centroid": [-17.3881, 14.9861],
+      "tags": {
+        "amenity": "fast_food",
+        "building": "university",
+        "name": "Big Mingos"
+      },
+      "source_url": "https://www.openstreetmap.org/way/513025074",
+      "height_m": 9.6,
+      "height_units": 1.5999999999999999,
+      "height_basis": "assumed 9.6 m"
+    },
+    {
+      "id": "osm-581289525",
+      "osm_id": "581289525",
+      "name": "Cauvery Block",
+      "points": [
+        [14.5101, -18.0719],
+        [18.6169, -14.3705],
+        [19.1521, -14.9623],
+        [6.4286, -26.4283],
+        [4.6619, -24.4691],
+        [9.3328, -20.2593],
+        [6.7777, -17.4244],
+        [7.7162, -16.5783],
+        [6.0561, -14.736],
+        [7.0815, -13.812],
+        [9.0616, -12.0272],
+        [14.5101, -18.0719]
+      ],
+      "centroid": [10.3255, -17.6009],
+      "tags": {
+        "building": "university",
+        "building:levels": "4",
+        "name": "Cauvery Block",
+        "name:kn": "ಕಾವೇರಿ ಬ್ಲಾಕ್"
+      },
+      "source_url": "https://www.openstreetmap.org/way/581289525",
+      "height_m": 12.8,
+      "height_units": 2.1333333333333333,
+      "height_basis": "OSM levels × assumed 3.2 m per level"
+    },
+    {
+      "id": "osm-581289540",
+      "osm_id": "581289540",
+      "name": "MM Foods",
+      "points": [
+        [-4.3093, -11.363],
+        [-3.17, -12.5708],
+        [-2.2695, -11.7211],
+        [-1.1194, -10.6376],
+        [-2.2586, -9.4297],
+        [-2.5353, -9.6913],
+        [-4.3093, -11.363]
+      ],
+      "centroid": [-2.853, -10.9681],
+      "tags": {
+        "amenity": "fast_food",
+        "building": "yes",
+        "check_date": "2025-09-19",
+        "internet_access": "no",
+        "name": "MM Foods",
+        "name:bn": "এম এম ফুডস",
+        "payment:cash": "yes",
+        "payment:upi": "yes",
+        "wheelchair": "no"
+      },
+      "source_url": "https://www.openstreetmap.org/way/581289540",
+      "height_m": 9.6,
+      "height_units": 1.5999999999999999,
+      "height_basis": "assumed 9.6 m"
+    },
+    {
+      "id": "osm-636268124",
+      "osm_id": "636268124",
+      "name": "Campus building 8124",
+      "points": [
+        [-14.4034, 15.8343],
+        [-13.6168, 14.9994],
+        [-10.5697, 17.8752],
+        [-11.3582, 18.7101],
+        [-13.3202, 16.8585],
+        [-14.4034, 15.8343]
+      ],
+      "centroid": [-12.9453, 16.6853],
+      "tags": {
+        "building": "yes"
+      },
+      "source_url": "https://www.openstreetmap.org/way/636268124",
+      "height_m": 9.6,
+      "height_units": 1.5999999999999999,
+      "height_basis": "assumed 9.6 m"
+    },
+    {
+      "id": "osm-636268136",
+      "osm_id": "636268136",
+      "name": "Campus building 8136",
+      "points": [
+        [-21.6042, -29.2707],
+        [-23.4451, -30.8922],
+        [-24.6242, -31.9331],
+        [-23.1268, -33.6307],
+        [-20.1087, -30.9664],
+        [-21.6042, -29.2707]
+      ],
+      "centroid": [-22.4189, -30.994],
+      "tags": {
+        "building": "yes"
+      },
+      "source_url": "https://www.openstreetmap.org/way/636268136",
+      "height_m": 9.6,
+      "height_units": 1.5999999999999999,
+      "height_basis": "assumed 9.6 m"
+    },
+    {
+      "id": "osm-695545713",
+      "osm_id": "695545713",
+      "name": "Aerospace Workshop",
+      "points": [
+        [-3.7306, 11.9715],
+        [-1.1519, 11.6097],
+        [3.5335, 10.953],
+        [4.0941, 14.9419],
+        [-0.7613, 15.6228],
+        [-3.1718, 15.9605],
+        [-3.7306, 11.9715]
+      ],
+      "centroid": [-0.7027, 13.2902],
+      "tags": {
+        "building": "university",
+        "name": "Aerospace Workshop"
+      },
+      "source_url": "https://www.openstreetmap.org/way/695545713",
+      "height_m": 9.6,
+      "height_units": 1.5999999999999999,
+      "height_basis": "assumed 9.6 m"
+    },
+    {
+      "id": "osm-695545714",
+      "osm_id": "695545714",
+      "name": "Campus building 5714",
+      "points": [
+        [33.3458, 36.0185],
+        [35.9679, 37.7811],
+        [37.2861, 35.8218],
+        [34.6641, 34.0574],
+        [33.3458, 36.0185]
+      ],
+      "centroid": [34.9219, 35.9395],
+      "tags": {
+        "building": "yes"
+      },
+      "source_url": "https://www.openstreetmap.org/way/695545714",
+      "height_m": 9.6,
+      "height_units": 1.5999999999999999,
+      "height_basis": "assumed 9.6 m"
+    },
+    {
+      "id": "osm-715447530",
+      "osm_id": "715447530",
+      "name": "Telecommunication Block",
+      "points": [
+        [-3.2532, -7.3425],
+        [-3.425, -5.7951],
+        [-3.1718, -5.7673],
+        [-3.208, -5.4408],
+        [-3.2966, -4.6467],
+        [0.0977, -4.27],
+        [0.3942, -6.9362],
+        [-3.2532, -7.3425]
+      ],
+      "centroid": [-2.3895, -5.9426],
+      "tags": {
+        "building": "yes",
+        "building:levels": "2",
+        "name": "Telecommunication Block"
+      },
+      "source_url": "https://www.openstreetmap.org/way/715447530",
+      "height_m": 6.4,
+      "height_units": 1.0666666666666667,
+      "height_basis": "OSM levels × assumed 3.2 m per level"
+    },
+    {
+      "id": "osm-1286468161",
+      "osm_id": "1286468161",
+      "name": "Campus building 8161",
+      "points": [
+        [2.1971, -19.584],
+        [4.9114, -22.4263],
+        [4.2568, -23.0516],
+        [5.0814, -23.9125],
+        [8.2623, -20.8753],
+        [4.7234, -17.1702],
+        [2.1971, -19.584]
+      ],
+      "centroid": [4.5185, -20.9434],
+      "tags": {
+        "building": "yes"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1286468161",
+      "height_m": 9.6,
+      "height_units": 1.5999999999999999,
+      "height_basis": "assumed 9.6 m"
+    },
+    {
+      "id": "osm-1286468169",
+      "osm_id": "1286468169",
+      "name": "RVU Block",
+      "points": [
+        [13.8121, 8.3407],
+        [20.087, 10.3815],
+        [18.6096, 14.9252],
+        [14.0743, 13.4502],
+        [14.662, 11.6431],
+        [12.6656, 10.9288],
+        [11.1611, 16.2388],
+        [13.1738, 17.2333],
+        [13.9495, 15.7787],
+        [16.3745, 17.1368],
+        [13.7615, 21.1258],
+        [7.0652, 17.3965],
+        [8.4938, 14.8325],
+        [9.1882, 15.2184],
+        [12.1557, 7.3388],
+        [14.1195, 7.2664],
+        [13.8121, 8.3407]
+      ],
+      "centroid": [13.3627, 13.3868],
+      "tags": {
+        "building": "university",
+        "building:levels": "4",
+        "name": "RVU Block"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1286468169",
+      "height_m": 12.8,
+      "height_units": 2.1333333333333333,
+      "height_basis": "OSM levels × assumed 3.2 m per level"
+    },
+    {
+      "id": "osm-1286468170",
+      "osm_id": "1286468170",
+      "name": "RVU A Block",
+      "points": [
+        [16.0996, -9.5262],
+        [23.4704, -3.617],
+        [19.6964, 5.2218],
+        [12.3817, 4.4259],
+        [12.8121, 0.4833],
+        [16.8664, 0.9249],
+        [17.5861, -0.7227],
+        [18.2968, -2.3498],
+        [13.9333, -6.0437],
+        [14.4938, -6.9584],
+        [16.0996, -9.5262]
+      ],
+      "centroid": [16.5215, -2.5171],
+      "tags": {
+        "building": "university",
+        "building:levels": "4",
+        "name": "RVU A Block",
+        "nohousenumber": "yes"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1286468170",
+      "height_m": 12.8,
+      "height_units": 2.1333333333333333,
+      "height_basis": "OSM levels × assumed 3.2 m per level"
+    },
+    {
+      "id": "osm-1286468172",
+      "osm_id": "1286468172",
+      "name": "Campus building 8172",
+      "points": [
+        [27.6278, 0.2328],
+        [29.9624, 0.1586],
+        [30.3494, 12.2591],
+        [28.0166, 12.3352],
+        [27.6278, 0.2328]
+      ],
+      "centroid": [28.7168, 5.0437],
+      "tags": {
+        "building": "yes"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1286468172",
+      "height_m": 9.6,
+      "height_units": 1.5999999999999999,
+      "height_basis": "assumed 9.6 m"
+    },
+    {
+      "id": "osm-1286468176",
+      "osm_id": "1286468176",
+      "name": "New Library",
+      "points": [
+        [-11.671, 9.4],
+        [-10.7379, 12.2498],
+        [-10.6837, 13.8695],
+        [-9.671, 14.8454],
+        [-7.5607, 16.8214],
+        [-4.2369, 14.3612],
+        [-5.1972, 10.4427],
+        [-2.4557, 9.4854],
+        [-4.1899, 6.951],
+        [-6.7198, 7.7785],
+        [-11.671, 9.4]
+      ],
+      "centroid": [-7.7086, 11.4186],
+      "tags": {
+        "building": "yes",
+        "building:levels": "4",
+        "name": "New Library"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1286468176",
+      "height_m": 12.8,
+      "height_units": 2.1333333333333333,
+      "height_basis": "OSM levels × assumed 3.2 m per level"
+    },
+    {
+      "id": "osm-1286468178",
+      "osm_id": "1286468178",
+      "name": "Campus building 8178",
+      "points": [
+        [-25.1431, 9.1217],
+        [-22.5337, 6.489],
+        [-21.4813, 7.5336],
+        [-24.0925, 10.1644],
+        [-25.1431, 9.1217]
+      ],
+      "centroid": [-23.6788, 8.4861],
+      "tags": {
+        "building": "university"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1286468178",
+      "height_m": 9.6,
+      "height_units": 1.5999999999999999,
+      "height_basis": "assumed 9.6 m"
+    },
+    {
+      "id": "osm-1286468180",
+      "osm_id": "1286468180",
+      "name": "CS LAB 9 and 10",
+      "points": [
+        [-17.8917, 5.6615],
+        [-16.5662, 6.8193],
+        [-14.2117, 8.875],
+        [-15.8555, 10.7582],
+        [-19.5355, 7.5429],
+        [-17.8917, 5.6615]
+      ],
+      "centroid": [-16.9921, 7.5531],
+      "tags": {
+        "building": "industrial",
+        "name": "CS LAB 9 and 10"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1286468180",
+      "height_m": 9.6,
+      "height_units": 1.5999999999999999,
+      "height_basis": "assumed 9.6 m"
+    },
+    {
+      "id": "osm-1286468181",
+      "osm_id": "1286468181",
+      "name": "Central Computing Hub",
+      "points": [
+        [-20.1576, 15.6451],
+        [-21.5681, 14.3],
+        [-18.3944, 10.9697],
+        [-16.9839, 12.3148],
+        [-20.1576, 15.6451]
+      ],
+      "centroid": [-19.4523, 13.7749],
+      "tags": {
+        "building": "university",
+        "building:levels": "2",
+        "name": "Central Computing Hub"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1286468181",
+      "height_m": 6.4,
+      "height_units": 1.0666666666666667,
+      "height_basis": "OSM levels × assumed 3.2 m per level"
+    },
+    {
+      "id": "osm-1286468183",
+      "osm_id": "1286468183",
+      "name": "Innovation Center",
+      "points": [
+        [-40.8106, -1.0028],
+        [-33.6568, -8.5948],
+        [-27.06, -5.3202],
+        [-22.6223, -3.7932],
+        [-22.6458, -3.4055],
+        [-29.7996, 4.3313],
+        [-34.3584, -0.2032],
+        [-36.6152, 2.2218],
+        [-40.8106, -1.0028]
+      ],
+      "centroid": [-32.0422, -1.8633],
+      "tags": {
+        "building": "construction",
+        "building:levels": "6",
+        "building:levels:underground": "1",
+        "construction": "university",
+        "name": "Innovation Center"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1286468183",
+      "height_m": 19.200000000000003,
+      "height_units": 3.2000000000000006,
+      "height_basis": "OSM levels × assumed 3.2 m per level"
+    },
+    {
+      "id": "osm-1313225781",
+      "osm_id": "1313225781",
+      "name": "Campus building 5781",
+      "points": [
+        [22.3547, -14.0328],
+        [27.4343, -9.35],
+        [31.7599, -5.0808],
+        [30.0076, -2.9713],
+        [24.8213, -7.4223],
+        [23.7381, -6.2478],
+        [19.1105, -10.5151],
+        [22.3547, -14.0328]
+      ],
+      "centroid": [25.1976, -8.7066],
+      "tags": {
+        "building": "yes"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1313225781",
+      "height_m": 9.6,
+      "height_units": 1.5999999999999999,
+      "height_basis": "assumed 9.6 m"
+    },
+    {
+      "id": "osm-1313225782",
+      "osm_id": "1313225782",
+      "name": "RVU C Block",
+      "points": [
+        [25.6386, -6.1532],
+        [27.796, -4.6393],
+        [22.3276, 9.3704],
+        [18.7344, 9.1162],
+        [21.2914, 6.3239],
+        [25.0654, -2.5149],
+        [25.6386, -6.1532]
+      ],
+      "centroid": [23.7846, 0.7643],
+      "tags": {
+        "building": "university",
+        "building:levels": "4",
+        "name": "RVU C Block",
+        "nohousenumber": "yes"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1313225782",
+      "height_m": 12.8,
+      "height_units": 2.1333333333333333,
+      "height_basis": "OSM levels × assumed 3.2 m per level"
+    },
+    {
+      "id": "osm-1313422260",
+      "osm_id": "1313422260",
+      "name": "Central Computing Hub",
+      "points": [
+        [-21.2028, 10.3221],
+        [-19.5337, 11.8769],
+        [-22.2064, 14.7453],
+        [-23.8755, 13.1905],
+        [-22.5012, 11.7155],
+        [-21.2028, 10.3221]
+      ],
+      "centroid": [-21.7537, 12.0287],
+      "tags": {
+        "building": "university",
+        "name": "Central Computing Hub"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1313422260",
+      "height_m": 9.6,
+      "height_units": 1.5999999999999999,
+      "height_basis": "assumed 9.6 m"
+    },
+    {
+      "id": "osm-1313422263",
+      "osm_id": "1313422263",
+      "name": "thoda aur",
+      "points": [
+        [-16.1376, -4.7042],
+        [-15.1087, -3.8118],
+        [-14.5535, -4.4519],
+        [-15.0038, -4.8415],
+        [-15.5825, -5.3443],
+        [-16.1376, -4.7042]
+      ],
+      "centroid": [-15.4206, -4.643],
+      "tags": {
+        "building": "yes",
+        "check_date": "2025-09-19",
+        "name": "thoda aur",
+        "opening_hours": "Mo-Fr 09:00-18:30",
+        "shop": "bakery"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1313422263",
+      "height_m": 9.6,
+      "height_units": 1.5999999999999999,
+      "height_basis": "assumed 9.6 m"
+    },
+    {
+      "id": "osm-1313422269",
+      "osm_id": "1313422269",
+      "name": "Design block",
+      "points": [
+        [32.6405, 0.205],
+        [32.7219, 4.6875],
+        [37.288, 4.8563],
+        [37.1596, 0.2551],
+        [32.6405, 0.205]
+      ],
+      "centroid": [34.4901, 2.0418],
+      "tags": {
+        "building": "yes",
+        "name": "Design block"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1313422269",
+      "height_m": 9.6,
+      "height_units": 1.5999999999999999,
+      "height_basis": "assumed 9.6 m"
+    },
+    {
+      "id": "osm-1327820761",
+      "osm_id": "1327820761",
+      "name": "Campus building 0761",
+      "points": [
+        [-31.1233, -26.7289],
+        [-29.2083, -27.1983],
+        [-27.2679, -27.6732],
+        [-27.0057, -25.9941],
+        [-30.7834, -25.1592],
+        [-31.1233, -26.7289]
+      ],
+      "centroid": [-29.4187, -26.5804],
+      "tags": {
+        "building": "roof"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1327820761",
+      "height_m": 9.6,
+      "height_units": 1.5999999999999999,
+      "height_basis": "assumed 9.6 m"
+    },
+    {
+      "id": "osm-1327820768",
+      "osm_id": "1327820768",
+      "name": "Campus building 0768",
+      "points": [
+        [-29.2463, 6.8508],
+        [-26.8737, 4.4593],
+        [-25.1829, 6.1365],
+        [-27.5555, 8.528],
+        [-29.2463, 6.8508]
+      ],
+      "centroid": [-27.6209, 6.5651],
+      "tags": {
+        "building": "university"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1327820768",
+      "height_m": 9.6,
+      "height_units": 1.5999999999999999,
+      "height_basis": "assumed 9.6 m"
+    },
+    {
+      "id": "osm-1327820769",
+      "osm_id": "1327820769",
+      "name": "Campus building 0769",
+      "points": [
+        [-28.3566, 10.4669],
+        [-26.8141, 8.9121],
+        [-24.682, 11.0253],
+        [-26.2263, 12.5819],
+        [-28.3566, 10.4669]
+      ],
+      "centroid": [-26.8871, 10.6906],
+      "tags": {
+        "building": "university"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1327820769",
+      "height_m": 9.6,
+      "height_units": 1.5999999999999999,
+      "height_basis": "assumed 9.6 m"
+    },
+    {
+      "id": "osm-1327820771",
+      "osm_id": "1327820771",
+      "name": "Staff Quarters",
+      "points": [
+        [3.4214, -31.3505],
+        [6.6258, -28.4135],
+        [5.246, -26.9088],
+        [2.0416, -29.8458],
+        [3.4214, -31.3505]
+      ],
+      "centroid": [4.1512, -29.5738],
+      "tags": {
+        "building": "university",
+        "name": "Staff Quarters"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1327820771",
+      "height_m": 9.6,
+      "height_units": 1.5999999999999999,
+      "height_basis": "assumed 9.6 m"
+    },
+    {
+      "id": "osm-1327820775",
+      "osm_id": "1327820775",
+      "name": "Gymnatorium",
+      "points": [
+        [-26.0401, 16.7008],
+        [-18.9858, 22.8252],
+        [-18.7127, 23.239],
+        [-18.5391, 23.7028],
+        [-18.474, 24.1945],
+        [-18.5264, 24.7158],
+        [-18.6982, 25.2093],
+        [-18.9839, 25.6491],
+        [-22.8393, 28.9237],
+        [-23.3004, 28.6566],
+        [-24.3457, 29.0425],
+        [-25.4307, 29.3022],
+        [-26.5374, 29.4302],
+        [-27.6513, 29.4247],
+        [-28.758, 29.2874],
+        [-29.6947, 29.0629],
+        [-30.6025, 28.7419],
+        [-31.4741, 28.3319],
+        [-32.2987, 27.8309],
+        [-34.1903, 28.9478],
+        [-39.7672, 21.0404],
+        [-38.118, 19.6823],
+        [-34.9172, 19.3929],
+        [-33.995, 20.6526],
+        [-31.6676, 20.4114],
+        [-26.9135, 16.7731],
+        [-26.7182, 16.6191],
+        [-26.4777, 16.5542],
+        [-26.2444, 16.5858],
+        [-26.0401, 16.7008]
+      ],
+      "centroid": [-26.8314, 23.9211],
+      "tags": {
+        "building": "construction",
+        "building:levels": "4",
+        "building:levels:underground": "1",
+        "construction": "university",
+        "name": "Gymnatorium"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1327820775",
+      "height_m": 12.8,
+      "height_units": 2.1333333333333333,
+      "height_basis": "OSM levels × assumed 3.2 m per level"
+    },
+    {
+      "id": "osm-1327820779",
+      "osm_id": "1327820779",
+      "name": "Old Sports Block",
+      "points": [
+        [-2.9042, -30.7846],
+        [0.736, -34.6177],
+        [3.5462, -31.9479],
+        [-0.094, -28.1148],
+        [-2.9042, -30.7846]
+      ],
+      "centroid": [-0.3241, -31.2499],
+      "tags": {
+        "building": "university",
+        "name": "Old Sports Block"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1327820779",
+      "height_m": 9.6,
+      "height_units": 1.5999999999999999,
+      "height_basis": "assumed 9.6 m"
+    },
+    {
+      "id": "osm-1341013548",
+      "osm_id": "1341013548",
+      "name": "AIML",
+      "points": [
+        [-37.2446, 14.5022],
+        [-35.1071, 14.3612],
+        [-34.7997, 19.0125],
+        [-36.9389, 19.1535],
+        [-37.2446, 14.5022]
+      ],
+      "centroid": [-36.267, 16.3063],
+      "tags": {
+        "building": "yes",
+        "name": "AIML"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1341013548",
+      "height_m": 9.6,
+      "height_units": 1.5999999999999999,
+      "height_basis": "assumed 9.6 m"
+    },
+    {
+      "id": "osm-1341013556",
+      "osm_id": "1341013556",
+      "name": "PG Lab",
+      "points": [
+        [-14.8266, 8.0067],
+        [-14.0852, 8.7136],
+        [-13.7054, 8.3518],
+        [-14.4468, 7.6282],
+        [-14.8266, 8.0067]
+      ],
+      "centroid": [-14.3781, 8.1414],
+      "tags": {
+        "building": "garage",
+        "name": "PG Lab"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1341013556",
+      "height_m": 9.6,
+      "height_units": 1.5999999999999999,
+      "height_basis": "assumed 9.6 m"
+    },
+    {
+      "id": "osm-1341013567",
+      "osm_id": "1341013567",
+      "name": "CS Lab 1,2,3,4",
+      "points": [
+        [-25.3366, -25.406],
+        [-21.6458, -28.5656],
+        [-20.9586, -27.9404],
+        [-24.3981, -24.5006],
+        [-24.8339, -24.9218],
+        [-25.3366, -25.406]
+      ],
+      "centroid": [-23.7516, -26.1234],
+      "tags": {
+        "building": "industrial",
+        "name": "CS Lab 1,2,3,4"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1341013567",
+      "height_m": 9.6,
+      "height_units": 1.5999999999999999,
+      "height_basis": "assumed 9.6 m"
+    },
+    {
+      "id": "osm-1467210436",
+      "osm_id": "1467210436",
+      "name": "Club Workspace",
+      "points": [
+        [-51.0982, 2.4444],
+        [-50.9391, 2.6114],
+        [-49.2176, 0.9546],
+        [-48.5684, 0.3293],
+        [-47.2917, -0.8989],
+        [-48.2302, -1.873],
+        [-50.4852, 0.2959],
+        [-49.7058, 1.1049],
+        [-51.0982, 2.4444]
+      ],
+      "centroid": [-49.626, 0.8237],
+      "tags": {
+        "building": "yes",
+        "building:levels": "0",
+        "name": "Club Workspace"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1467210436",
+      "height_m": 3.2,
+      "height_units": 0.5333333333333333,
+      "height_basis": "OSM levels × assumed 3.2 m per level"
+    },
+    {
+      "id": "osm-1467210438",
+      "osm_id": "1467210438",
+      "name": "RVU Admin Block",
+      "points": [
+        [-21.031, 6.784],
+        [-24.9949, 3.322],
+        [-21.1214, -1.0974],
+        [-17.0653, 2.411],
+        [-19.1612, 4.2793],
+        [-20.0274, 5.4185],
+        [-21.031, 6.784]
+      ],
+      "centroid": [-20.6331, 3.9859],
+      "tags": {
+        "building": "yes",
+        "name": "RVU Admin Block"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1467210438",
+      "height_m": 9.6,
+      "height_units": 1.5999999999999999,
+      "height_basis": "assumed 9.6 m"
+    },
+    {
+      "id": "osm-1467210439",
+      "osm_id": "1467210439",
+      "name": "MM Foods",
+      "points": [
+        [1.2062, 9.1088],
+        [1.5244, 10.4298],
+        [3.302, 10.2943],
+        [2.8011, 8.9715],
+        [1.2062, 9.1088]
+      ],
+      "centroid": [2.008, 9.5826],
+      "tags": {
+        "amenity": "fast_food",
+        "building": "yes",
+        "cuisine": "coffee_shop;regional",
+        "fast_food": "cafeteria",
+        "name": "MM Foods"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1467210439",
+      "height_m": 9.6,
+      "height_units": 1.5999999999999999,
+      "height_basis": "assumed 9.6 m"
+    }
+  ],
+  "roads": [
+    {
+      "id": "osm-133016407",
+      "osm_id": "133016407",
+      "name": "Campus building 6407",
+      "points": [
+        [38.1813, -1.2997],
+        [38.174, 7.7989]
+      ],
+      "centroid": [38.1777, 3.2496],
+      "tags": {
+        "access": "private",
+        "highway": "service",
+        "maxspeed": "20",
+        "oneway": "no"
+      },
+      "source_url": "https://www.openstreetmap.org/way/133016407",
+      "width_units": 0.8333333333333334
+    },
+    {
+      "id": "osm-133016409",
+      "osm_id": "133016409",
+      "name": "Campus building 6409",
+      "points": [
+        [50.6534, -10.5132],
+        [51.8559, -10.1793],
+        [51.9608, -10.1496],
+        [52.704, -9.6895],
+        [53.2122, -9.016],
+        [53.4274, -8.259],
+        [52.8939, -0.3089],
+        [52.2266, 5.0122],
+        [51.9789, 5.9157],
+        [51.384, 6.9788],
+        [50.1959, 7.8991]
+      ],
+      "centroid": [52.0448, -2.9372],
+      "tags": {
+        "access": "private",
+        "highway": "service",
+        "maxspeed": "20",
+        "oneway": "no"
+      },
+      "source_url": "https://www.openstreetmap.org/way/133016409",
+      "width_units": 0.8333333333333334
+    },
+    {
+      "id": "osm-133052375",
+      "osm_id": "133052375",
+      "name": "Campus building 2375",
+      "points": [
+        [-3.2858, -13.1515],
+        [-2.4557, -14.0272]
+      ],
+      "centroid": [-2.8707, -13.5894],
+      "tags": {
+        "access": "permissive",
+        "highway": "service",
+        "horse": "no",
+        "maxspeed": "20",
+        "motor_vehicle": "destination",
+        "oneway": "no",
+        "surface": "paving_stones"
+      },
+      "source_url": "https://www.openstreetmap.org/way/133052375",
+      "width_units": 0.8333333333333334
+    },
+    {
+      "id": "osm-133117429",
+      "osm_id": "133117429",
+      "name": "Campus building 7429",
+      "points": [
+        [20.3764, -15.8102],
+        [18.2335, -13.723],
+        [17.0327, -12.556],
+        [13.4522, -9.0754],
+        [13.6747, -7.8137]
+      ],
+      "centroid": [16.5539, -11.7957],
+      "tags": {
+        "access": "permissive",
+        "highway": "footway",
+        "surface": "paving_stones"
+      },
+      "source_url": "https://www.openstreetmap.org/way/133117429",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-532559717",
+      "osm_id": "532559717",
+      "name": "Campus building 9717",
+      "points": [
+        [-38.7364, 4.3851],
+        [-39.0619, 4.7784],
+        [-39.2825, 5.0511],
+        [-45.1, 12.2127]
+      ],
+      "centroid": [-40.5452, 6.6068],
+      "tags": {
+        "access": "permissive",
+        "highway": "footway"
+      },
+      "source_url": "https://www.openstreetmap.org/way/532559717",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-532559718",
+      "osm_id": "532559718",
+      "name": "Campus building 9718",
+      "points": [
+        [-9.7849, -2.5186],
+        [-7.6891, -2.4834],
+        [-5.0308, -2.6745],
+        [-4.5263, -2.7413],
+        [-2.2695, -3.0381],
+        [-0.2333, -4.1383]
+      ],
+      "centroid": [-4.9223, -2.9324],
+      "tags": {
+        "access": "permissive",
+        "highway": "footway",
+        "surface": "paving_stones"
+      },
+      "source_url": "https://www.openstreetmap.org/way/532559718",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-532559719",
+      "osm_id": "532559719",
+      "name": "Campus building 9719",
+      "points": [
+        [-0.2333, -4.1383],
+        [1.8156, -3.745],
+        [4.3382, -3.2663],
+        [4.9078, -2.5297],
+        [5.3961, -1.9008],
+        [5.293, -1.2459]
+      ],
+      "centroid": [3.5862, -2.8043],
+      "tags": {
+        "access": "permissive",
+        "highway": "footway"
+      },
+      "source_url": "https://www.openstreetmap.org/way/532559719",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-532559720",
+      "osm_id": "532559720",
+      "name": "Campus building 9720",
+      "points": [
+        [4.3382, -3.2663],
+        [6.1393, -4.3276],
+        [7.1556, -4.8823]
+      ],
+      "centroid": [5.8777, -4.1587],
+      "tags": {
+        "access": "permissive",
+        "highway": "footway"
+      },
+      "source_url": "https://www.openstreetmap.org/way/532559720",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-532559721",
+      "osm_id": "532559721",
+      "name": "Campus building 9721",
+      "points": [
+        [1.6944, -2.9064],
+        [1.8156, -3.745],
+        [2.7541, -7.4334],
+        [3.1447, -8.5132]
+      ],
+      "centroid": [2.3522, -5.6495],
+      "tags": {
+        "access": "permissive",
+        "highway": "footway"
+      },
+      "source_url": "https://www.openstreetmap.org/way/532559721",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-532559722",
+      "osm_id": "532559722",
+      "name": "Campus building 9722",
+      "points": [
+        [-2.4557, -14.0272],
+        [-1.3291, -15.2147]
+      ],
+      "centroid": [-1.8924, -14.621],
+      "tags": {
+        "access": "permissive",
+        "highway": "footway",
+        "surface": "paving_stones"
+      },
+      "source_url": "https://www.openstreetmap.org/way/532559722",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-532559723",
+      "osm_id": "532559723",
+      "name": "Campus building 9723",
+      "points": [
+        [3.1447, -8.5132],
+        [5.7107, -10.3982],
+        [8.1665, -11.8324],
+        [8.9187, -11.5485]
+      ],
+      "centroid": [6.4852, -10.5731],
+      "tags": {
+        "access": "permissive",
+        "highway": "footway"
+      },
+      "source_url": "https://www.openstreetmap.org/way/532559723",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-532559725",
+      "osm_id": "532559725",
+      "name": "Campus building 9725",
+      "points": [
+        [-21.6639, 19.6081],
+        [-20.3963, 18.096]
+      ],
+      "centroid": [-21.0301, 18.852],
+      "tags": {
+        "access": "permissive",
+        "highway": "steps"
+      },
+      "source_url": "https://www.openstreetmap.org/way/532559725",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-532559735",
+      "osm_id": "532559735",
+      "name": "Campus building 9735",
+      "points": [
+        [-14.0002, -10.6524],
+        [-13.8682, -10.5782]
+      ],
+      "centroid": [-13.9342, -10.6153],
+      "tags": {
+        "access": "permissive",
+        "handrail": "yes",
+        "highway": "steps",
+        "incline": "up",
+        "ramp": "no",
+        "step_count": "3",
+        "surface": "concrete:lanes"
+      },
+      "source_url": "https://www.openstreetmap.org/way/532559735",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-532669941",
+      "osm_id": "532669941",
+      "name": "RV Univ Road",
+      "points": [
+        [-19.2787, -15.6303],
+        [-14.0002, -10.6524]
+      ],
+      "centroid": [-16.6394, -13.1413],
+      "tags": {
+        "access": "private",
+        "highway": "service",
+        "maxspeed": "20",
+        "name": "RV Univ Road",
+        "surface": "asphalt"
+      },
+      "source_url": "https://www.openstreetmap.org/way/532669941",
+      "width_units": 0.8333333333333334
+    },
+    {
+      "id": "osm-533140474",
+      "osm_id": "533140474",
+      "name": "Campus building 0474",
+      "points": [
+        [-11.011, -3.0066],
+        [-9.7849, -2.5186]
+      ],
+      "centroid": [-10.3979, -2.7626],
+      "tags": {
+        "access": "permissive",
+        "handrail": "no",
+        "highway": "steps",
+        "incline": "down",
+        "ramp": "separate",
+        "ramp:wheelchair": "separate",
+        "surface": "paving_stones"
+      },
+      "source_url": "https://www.openstreetmap.org/way/533140474",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-533140475",
+      "osm_id": "533140475",
+      "name": "Campus building 0475",
+      "points": [
+        [-20.0436, -4.7228],
+        [-18.9948, -4.3313]
+      ],
+      "centroid": [-19.5192, -4.527],
+      "tags": {
+        "access": "permissive",
+        "handrail": "no",
+        "highway": "steps",
+        "incline": "up",
+        "ramp": "yes",
+        "ramp:wheelchair": "yes",
+        "surface": "concrete"
+      },
+      "source_url": "https://www.openstreetmap.org/way/533140475",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-581289527",
+      "osm_id": "581289527",
+      "name": "Campus building 9527",
+      "points": [
+        [-27.3493, -24.8605],
+        [-25.8014, -24.9199],
+        [-25.4234, -24.5321],
+        [-21.6874, -20.7157],
+        [-18.4197, -17.6934],
+        [-13.6891, -22.4801],
+        [-13.2443, -22.8215]
+      ],
+      "centroid": [-20.8021, -22.5748],
+      "tags": {
+        "access": "permissive",
+        "footway": "sidewalk",
+        "highway": "footway",
+        "surface": "paving_stones"
+      },
+      "source_url": "https://www.openstreetmap.org/way/581289527",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-581289536",
+      "osm_id": "581289536",
+      "name": "Campus building 9536",
+      "points": [
+        [-39.675, 11.2461],
+        [-39.5484, 9.5596],
+        [-38.0583, 8.0939],
+        [-36.4308, 7.8972],
+        [-37.2337, 6.4426],
+        [-38.1053, 5.7914],
+        [-41.8034, 9.7451],
+        [-39.675, 11.2461]
+      ],
+      "centroid": [-38.8162, 8.7528],
+      "tags": {
+        "area": "yes",
+        "highway": "pedestrian",
+        "leisure": "outdoor_seating"
+      },
+      "source_url": "https://www.openstreetmap.org/way/581289536",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-581289538",
+      "osm_id": "581289538",
+      "name": "Campus building 9538",
+      "points": [
+        [-15.0092, 15.7026],
+        [-13.653, 16.9958],
+        [-12.2551, 18.3298],
+        [-14.3022, 20.1517],
+        [-15.606, 20.8475],
+        [-16.8393, 20.9922],
+        [-18.2172, 20.3836],
+        [-18.8628, 19.5135],
+        [-15.0092, 15.7026]
+      ],
+      "centroid": [-15.5282, 18.7355],
+      "tags": {
+        "area": "yes",
+        "highway": "pedestrian",
+        "leisure": "outdoor_seating"
+      },
+      "source_url": "https://www.openstreetmap.org/way/581289538",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-636268121",
+      "osm_id": "636268121",
+      "name": "Campus building 8121",
+      "points": [
+        [-14.8844, 14.9178],
+        [-15.0436, 14.7675]
+      ],
+      "centroid": [-14.964, 14.8427],
+      "tags": {
+        "access": "permissive",
+        "highway": "footway"
+      },
+      "source_url": "https://www.openstreetmap.org/way/636268121",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-636268126",
+      "osm_id": "636268126",
+      "name": "Campus building 8126",
+      "points": [
+        [-20.3963, 18.096],
+        [-18.8628, 19.5135],
+        [-15.0092, 15.7026],
+        [-14.5463, 15.2443],
+        [-14.8844, 14.9178]
+      ],
+      "centroid": [-16.7398, 16.6948],
+      "tags": {
+        "access": "permissive",
+        "highway": "footway"
+      },
+      "source_url": "https://www.openstreetmap.org/way/636268126",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-636268127",
+      "osm_id": "636268127",
+      "name": "Campus building 8127",
+      "points": [
+        [-20.3963, 18.096],
+        [-20.1594, 17.7769]
+      ],
+      "centroid": [-20.2778, 17.9364],
+      "tags": {
+        "access": "permissive",
+        "highway": "footway"
+      },
+      "source_url": "https://www.openstreetmap.org/way/636268127",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-636268129",
+      "osm_id": "636268129",
+      "name": "Campus building 8129",
+      "points": [
+        [-31.3512, 5.6727],
+        [-31.5067, 5.5224]
+      ],
+      "centroid": [-31.4289, 5.5975],
+      "tags": {
+        "access": "permissive",
+        "highway": "footway"
+      },
+      "source_url": "https://www.openstreetmap.org/way/636268129",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-636268130",
+      "osm_id": "636268130",
+      "name": "Campus building 8130",
+      "points": [
+        [-42.9661, 1.3405],
+        [-43.3296, 0.9731],
+        [-43.5828, 0.7189]
+      ],
+      "centroid": [-43.2928, 1.0108],
+      "tags": {
+        "access": "permissive",
+        "highway": "footway"
+      },
+      "source_url": "https://www.openstreetmap.org/way/636268130",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-636268132",
+      "osm_id": "636268132",
+      "name": "Campus building 8132",
+      "points": [
+        [-44.3784, 1.5075],
+        [-43.5828, 0.7189]
+      ],
+      "centroid": [-43.9806, 1.1132],
+      "tags": {
+        "access": "permissive",
+        "highway": "steps",
+        "ramp": "yes"
+      },
+      "source_url": "https://www.openstreetmap.org/way/636268132",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-636268133",
+      "osm_id": "636268133",
+      "name": "Campus building 8133",
+      "points": [
+        [-43.7636, 2.1327],
+        [-42.9661, 1.3405]
+      ],
+      "centroid": [-43.3649, 1.7366],
+      "tags": {
+        "access": "permissive",
+        "highway": "steps"
+      },
+      "source_url": "https://www.openstreetmap.org/way/636268133",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-671051778",
+      "osm_id": "671051778",
+      "name": "Campus building 1778",
+      "points": [
+        [-10.9133, -1.5761],
+        [-10.973, -2.4277],
+        [-11.011, -3.0066]
+      ],
+      "centroid": [-10.9658, -2.3368],
+      "tags": {
+        "access": "permissive",
+        "highway": "footway",
+        "surface": "paving_stones"
+      },
+      "source_url": "https://www.openstreetmap.org/way/671051778",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-672590444",
+      "osm_id": "672590444",
+      "name": "Campus building 0444",
+      "points": [
+        [-11.011, -3.0066],
+        [-11.4251, -2.5817],
+        [-13.879, -0.0362]
+      ],
+      "centroid": [-12.105, -1.8748],
+      "tags": {
+        "highway": "footway",
+        "surface": "paving_stones"
+      },
+      "source_url": "https://www.openstreetmap.org/way/672590444",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-672590446",
+      "osm_id": "672590446",
+      "name": "Campus building 0446",
+      "points": [
+        [-13.3275, -4.7543],
+        [-13.8754, -5.2979]
+      ],
+      "centroid": [-13.6014, -5.0261],
+      "tags": {
+        "access": "permissive",
+        "handrail": "no",
+        "highway": "steps",
+        "incline": "up",
+        "ramp": "no",
+        "step_count": "17",
+        "surface": "sett"
+      },
+      "source_url": "https://www.openstreetmap.org/way/672590446",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-672590448",
+      "osm_id": "672590448",
+      "name": "Campus building 0448",
+      "points": [
+        [-13.8754, -5.2979],
+        [-14.2352, -5.6541],
+        [-14.841, -6.2571],
+        [-15.5608, -6.9733]
+      ],
+      "centroid": [-14.6281, -6.0456],
+      "tags": {
+        "access": "permissive",
+        "highway": "footway",
+        "surface": "cobblestone"
+      },
+      "source_url": "https://www.openstreetmap.org/way/672590448",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-672590450",
+      "osm_id": "672590450",
+      "name": "Campus building 0450",
+      "points": [
+        [-15.9387, -7.348],
+        [-16.3872, -7.7952]
+      ],
+      "centroid": [-16.1629, -7.5716],
+      "tags": {
+        "access": "permissive",
+        "highway": "footway",
+        "surface": "cobblestone"
+      },
+      "source_url": "https://www.openstreetmap.org/way/672590450",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-672590452",
+      "osm_id": "672590452",
+      "name": "Campus building 0452",
+      "points": [
+        [-15.5608, -6.9733],
+        [-15.9387, -7.348]
+      ],
+      "centroid": [-15.7497, -7.1607],
+      "tags": {
+        "access": "permissive",
+        "handrail": "no",
+        "highway": "steps",
+        "incline": "up"
+      },
+      "source_url": "https://www.openstreetmap.org/way/672590452",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-672590454",
+      "osm_id": "672590454",
+      "name": "Campus building 0454",
+      "points": [
+        [-13.8682, -10.5782],
+        [-13.3636, -10.2387]
+      ],
+      "centroid": [-13.6159, -10.4084],
+      "tags": {
+        "access": "permissive",
+        "highway": "footway",
+        "surface": "concrete:lanes"
+      },
+      "source_url": "https://www.openstreetmap.org/way/672590454",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-695545690",
+      "osm_id": "695545690",
+      "name": "Campus building 5690",
+      "points": [
+        [-35.4398, 15.6637],
+        [-35.4706, 15.1887]
+      ],
+      "centroid": [-35.4552, 15.4262],
+      "tags": {
+        "access": "permissive",
+        "highway": "steps"
+      },
+      "source_url": "https://www.openstreetmap.org/way/695545690",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-695545691",
+      "osm_id": "695545691",
+      "name": "Campus building 5691",
+      "points": [
+        [-35.3946, 16.3446],
+        [-35.4398, 15.6637]
+      ],
+      "centroid": [-35.4172, 16.0041],
+      "tags": {
+        "access": "permissive",
+        "highway": "footway"
+      },
+      "source_url": "https://www.openstreetmap.org/way/695545691",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-695545692",
+      "osm_id": "695545692",
+      "name": "Campus building 5692",
+      "points": [
+        [-35.3621, 16.8325],
+        [-35.3946, 16.3446]
+      ],
+      "centroid": [-35.3783, 16.5885],
+      "tags": {
+        "access": "permissive",
+        "highway": "steps"
+      },
+      "source_url": "https://www.openstreetmap.org/way/695545692",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-695545693",
+      "osm_id": "695545693",
+      "name": "Campus building 5693",
+      "points": [
+        [-35.3151, 17.5598],
+        [-35.3621, 16.8325]
+      ],
+      "centroid": [-35.3386, 17.1962],
+      "tags": {
+        "access": "permissive",
+        "highway": "footway"
+      },
+      "source_url": "https://www.openstreetmap.org/way/695545693",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-695545694",
+      "osm_id": "695545694",
+      "name": "Campus building 5694",
+      "points": [
+        [-35.2934, 17.8863],
+        [-35.3151, 17.5598]
+      ],
+      "centroid": [-35.3042, 17.7231],
+      "tags": {
+        "access": "permissive",
+        "highway": "steps"
+      },
+      "source_url": "https://www.openstreetmap.org/way/695545694",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-695545695",
+      "osm_id": "695545695",
+      "name": "Campus building 5695",
+      "points": [
+        [-36.7093, 18.7268],
+        [-35.9588, 18.6767],
+        [-35.2445, 18.6285]
+      ],
+      "centroid": [-35.9709, 18.6773],
+      "tags": {
+        "access": "permissive",
+        "highway": "footway"
+      },
+      "source_url": "https://www.openstreetmap.org/way/695545695",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-695545696",
+      "osm_id": "695545696",
+      "name": "Campus building 5696",
+      "points": [
+        [-36.7798, 17.6563],
+        [-36.7581, 17.9847]
+      ],
+      "centroid": [-36.769, 17.8205],
+      "tags": {
+        "access": "permissive",
+        "highway": "steps"
+      },
+      "source_url": "https://www.openstreetmap.org/way/695545696",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-695545697",
+      "osm_id": "695545697",
+      "name": "Campus building 5697",
+      "points": [
+        [-36.8268, 16.929],
+        [-36.7798, 17.6563]
+      ],
+      "centroid": [-36.8033, 17.2926],
+      "tags": {
+        "access": "permissive",
+        "highway": "footway"
+      },
+      "source_url": "https://www.openstreetmap.org/way/695545697",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-695545698",
+      "osm_id": "695545698",
+      "name": "Campus building 5698",
+      "points": [
+        [-36.8594, 16.441],
+        [-36.8268, 16.929]
+      ],
+      "centroid": [-36.8431, 16.685],
+      "tags": {
+        "access": "permissive",
+        "highway": "steps"
+      },
+      "source_url": "https://www.openstreetmap.org/way/695545698",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-695545699",
+      "osm_id": "695545699",
+      "name": "Campus building 5699",
+      "points": [
+        [-36.9046, 15.7601],
+        [-36.8594, 16.441]
+      ],
+      "centroid": [-36.882, 16.1006],
+      "tags": {
+        "access": "permissive",
+        "highway": "footway"
+      },
+      "source_url": "https://www.openstreetmap.org/way/695545699",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-695545700",
+      "osm_id": "695545700",
+      "name": "Campus building 5700",
+      "points": [
+        [-36.9353, 15.2852],
+        [-36.9046, 15.7601]
+      ],
+      "centroid": [-36.92, 15.5226],
+      "tags": {
+        "access": "permissive",
+        "highway": "steps"
+      },
+      "source_url": "https://www.openstreetmap.org/way/695545700",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-695545701",
+      "osm_id": "695545701",
+      "name": "Campus building 5701",
+      "points": [
+        [-34.2282, 10.285],
+        [-34.2735, 10.3463],
+        [-34.9082, 11.196],
+        [-36.2554, 12.9975],
+        [-36.136, 14.8176],
+        [-36.9625, 14.8714]
+      ],
+      "centroid": [-35.4606, 12.419],
+      "tags": {
+        "access": "permissive",
+        "highway": "footway"
+      },
+      "source_url": "https://www.openstreetmap.org/way/695545701",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-695545702",
+      "osm_id": "695545702",
+      "name": "Campus building 5702",
+      "points": [
+        [-33.5411, 10.0717],
+        [-33.145, 10.3611]
+      ],
+      "centroid": [-33.3431, 10.2164],
+      "tags": {
+        "highway": "steps"
+      },
+      "source_url": "https://www.openstreetmap.org/way/695545702",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-695545703",
+      "osm_id": "695545703",
+      "name": "Campus building 5703",
+      "points": [
+        [-33.145, 10.3611],
+        [-33.2156, 10.4576]
+      ],
+      "centroid": [-33.1803, 10.4093],
+      "tags": {
+        "highway": "footway"
+      },
+      "source_url": "https://www.openstreetmap.org/way/695545703",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-695545704",
+      "osm_id": "695545704",
+      "name": "Campus building 5704",
+      "points": [
+        [-33.2156, 10.4576],
+        [-33.6116, 10.1663]
+      ],
+      "centroid": [-33.4136, 10.3119],
+      "tags": {
+        "access": "permissive",
+        "highway": "steps"
+      },
+      "source_url": "https://www.openstreetmap.org/way/695545704",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-695545705",
+      "osm_id": "695545705",
+      "name": "Campus building 5705",
+      "points": [
+        [-33.6116, 10.1663],
+        [-33.9787, 10.6672],
+        [-34.2282, 10.285]
+      ],
+      "centroid": [-33.9395, 10.3729],
+      "tags": {
+        "access": "permissive",
+        "highway": "footway"
+      },
+      "source_url": "https://www.openstreetmap.org/way/695545705",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-695545706",
+      "osm_id": "695545706",
+      "name": "Campus building 5706",
+      "points": [
+        [-34.2282, 10.285],
+        [-33.8485, 9.5206]
+      ],
+      "centroid": [-34.0384, 9.9028],
+      "tags": {
+        "access": "permissive",
+        "highway": "steps"
+      },
+      "source_url": "https://www.openstreetmap.org/way/695545706",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-695545707",
+      "osm_id": "695545707",
+      "name": "Campus building 5707",
+      "points": [
+        [-35.4706, 15.1887],
+        [-35.4977, 14.7749]
+      ],
+      "centroid": [-35.4841, 14.9818],
+      "tags": {
+        "access": "permissive",
+        "highway": "footway"
+      },
+      "source_url": "https://www.openstreetmap.org/way/695545707",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-695545708",
+      "osm_id": "695545708",
+      "name": "Campus building 5708",
+      "points": [
+        [-32.9244, 9.567],
+        [-33.5411, 10.0717]
+      ],
+      "centroid": [-33.2328, 9.8194],
+      "tags": {
+        "access": "permissive",
+        "highway": "footway"
+      },
+      "source_url": "https://www.openstreetmap.org/way/695545708",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-695545712",
+      "osm_id": "695545712",
+      "name": "Campus building 5712",
+      "points": [
+        [-0.5732, 20.0033],
+        [-0.7613, 15.6228]
+      ],
+      "centroid": [-0.6673, 17.8131],
+      "tags": {
+        "access": "permissive",
+        "highway": "path"
+      },
+      "source_url": "https://www.openstreetmap.org/way/695545712",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-695555149",
+      "osm_id": "695555149",
+      "name": "Campus building 5149",
+      "points": [
+        [-35.2445, 18.6285],
+        [-35.2934, 17.8863]
+      ],
+      "centroid": [-35.2689, 18.2574],
+      "tags": {
+        "access": "permissive",
+        "highway": "footway"
+      },
+      "source_url": "https://www.openstreetmap.org/way/695555149",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-695555150",
+      "osm_id": "695555150",
+      "name": "Campus building 5150",
+      "points": [
+        [-35.4977, 14.7749],
+        [-36.136, 14.8176]
+      ],
+      "centroid": [-35.8169, 14.7963],
+      "tags": {
+        "highway": "footway"
+      },
+      "source_url": "https://www.openstreetmap.org/way/695555150",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-695555151",
+      "osm_id": "695555151",
+      "name": "Campus building 5151",
+      "points": [
+        [-36.7581, 17.9847],
+        [-36.7093, 18.7268]
+      ],
+      "centroid": [-36.7337, 18.3557],
+      "tags": {
+        "access": "permissive",
+        "highway": "footway"
+      },
+      "source_url": "https://www.openstreetmap.org/way/695555151",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-695555152",
+      "osm_id": "695555152",
+      "name": "Campus building 5152",
+      "points": [
+        [-36.9625, 14.8714],
+        [-36.9353, 15.2852]
+      ],
+      "centroid": [-36.9489, 15.0783],
+      "tags": {
+        "access": "permissive",
+        "highway": "footway"
+      },
+      "source_url": "https://www.openstreetmap.org/way/695555152",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-715447529",
+      "osm_id": "715447529",
+      "name": "Campus building 7529",
+      "points": [
+        [-5.9603, -6.0604],
+        [-3.208, -5.4408]
+      ],
+      "centroid": [-4.5841, -5.7506],
+      "tags": {
+        "handrail": "no",
+        "highway": "steps",
+        "incline": "up"
+      },
+      "source_url": "https://www.openstreetmap.org/way/715447529",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-715447531",
+      "osm_id": "715447531",
+      "name": "Campus building 7531",
+      "points": [
+        [-33.1107, 12.4521],
+        [-34.9082, 11.196]
+      ],
+      "centroid": [-34.0094, 11.824],
+      "tags": {
+        "access": "permissive",
+        "highway": "footway"
+      },
+      "source_url": "https://www.openstreetmap.org/way/715447531",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-715447532",
+      "osm_id": "715447532",
+      "name": "Campus building 7532",
+      "points": [
+        [-21.6874, -20.7157],
+        [-21.2444, -21.1183]
+      ],
+      "centroid": [-21.4659, -20.917],
+      "tags": {
+        "access": "permissive",
+        "footway": "sidewalk",
+        "highway": "footway",
+        "surface": "paving_stones"
+      },
+      "source_url": "https://www.openstreetmap.org/way/715447532",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-736950244",
+      "osm_id": "736950244",
+      "name": "Campus building 0244",
+      "points": [
+        [-35.1957, 5.4556],
+        [-37.297, 3.476],
+        [-37.429, 3.3517]
+      ],
+      "centroid": [-36.6406, 4.0944],
+      "tags": {
+        "access": "permissive",
+        "highway": "footway"
+      },
+      "source_url": "https://www.openstreetmap.org/way/736950244",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-736950245",
+      "osm_id": "736950245",
+      "name": "Campus building 0245",
+      "points": [
+        [-35.2355, 1.4945],
+        [-35.3657, 1.3479]
+      ],
+      "centroid": [-35.3006, 1.4212],
+      "tags": {
+        "access": "permissive",
+        "highway": "footway"
+      },
+      "source_url": "https://www.openstreetmap.org/way/736950245",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-736950246",
+      "osm_id": "736950246",
+      "name": "Campus building 0246",
+      "points": [
+        [-34.042, -13.3779],
+        [-34.6062, -13.9493]
+      ],
+      "centroid": [-34.3241, -13.6636],
+      "tags": {
+        "access": "permissive",
+        "highway": "steps"
+      },
+      "source_url": "https://www.openstreetmap.org/way/736950246",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-736950247",
+      "osm_id": "736950247",
+      "name": "Campus building 0247",
+      "points": [
+        [-34.6062, -13.9493],
+        [-36.268, -15.8492]
+      ],
+      "centroid": [-35.4371, -14.8993],
+      "tags": {
+        "access": "permissive",
+        "highway": "footway"
+      },
+      "source_url": "https://www.openstreetmap.org/way/736950247",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-736950248",
+      "osm_id": "736950248",
+      "name": "Campus building 0248",
+      "points": [
+        [-33.9389, -12.4335],
+        [-33.5212, -12.8306],
+        [-34.042, -13.3779]
+      ],
+      "centroid": [-33.834, -12.8807],
+      "tags": {
+        "access": "permissive",
+        "highway": "footway"
+      },
+      "source_url": "https://www.openstreetmap.org/way/736950248",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-770851387",
+      "osm_id": "770851387",
+      "name": "Campus building 1387",
+      "points": [
+        [2.4159, 20.9309],
+        [7.4142, 14.0254],
+        [8.5299, 12.0847],
+        [10.2714, 7.8119],
+        [10.9097, 5.8174],
+        [11.1629, 4.2459],
+        [11.3311, 2.4815],
+        [11.2081, 1.5],
+        [10.8754, 0.5612],
+        [10.5101, -0.4054],
+        [9.7234, -2.0399],
+        [9.3021, -3.3313]
+      ],
+      "centroid": [9.4712, 5.3069],
+      "tags": {
+        "access": "private",
+        "highway": "service",
+        "maxspeed": "20",
+        "oneway": "no"
+      },
+      "source_url": "https://www.openstreetmap.org/way/770851387",
+      "width_units": 0.8333333333333334
+    },
+    {
+      "id": "osm-996235339",
+      "osm_id": "996235339",
+      "name": "Campus building 5339",
+      "points": [
+        [-51.1543, -7.6412],
+        [-47.7582, -4.6894]
+      ],
+      "centroid": [-49.4563, -6.1653],
+      "tags": {
+        "access": "private",
+        "highway": "service",
+        "maxspeed": "20",
+        "oneway": "no"
+      },
+      "source_url": "https://www.openstreetmap.org/way/996235339",
+      "width_units": 0.8333333333333334
+    },
+    {
+      "id": "osm-1068853790",
+      "osm_id": "1068853790",
+      "name": "Campus building 3790",
+      "points": [
+        [17.0327, -12.556],
+        [16.691, -12.9586]
+      ],
+      "centroid": [16.8619, -12.7573],
+      "tags": {
+        "access": "permissive",
+        "highway": "footway"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1068853790",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-1068853791",
+      "osm_id": "1068853791",
+      "name": "Campus building 3791",
+      "points": [
+        [8.9187, -11.5485],
+        [9.3455, -11.2721],
+        [9.7578, -11.0031]
+      ],
+      "centroid": [9.3407, -11.2746],
+      "tags": {
+        "access": "permissive",
+        "highway": "footway",
+        "surface": "paving_stones"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1068853791",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-1068853792",
+      "osm_id": "1068853792",
+      "name": "Campus building 3792",
+      "points": [
+        [5.7107, -10.3982],
+        [7.0815, -13.812]
+      ],
+      "centroid": [6.3961, -12.1051],
+      "tags": {
+        "access": "permissive",
+        "highway": "footway"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1068853792",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-1068853795",
+      "osm_id": "1068853795",
+      "name": "Campus building 3795",
+      "points": [
+        [9.3021, -3.3313],
+        [13.6747, -7.8137]
+      ],
+      "centroid": [11.4884, -5.5725],
+      "tags": {
+        "access": "private",
+        "highway": "service",
+        "maxspeed": "20",
+        "oneway": "no",
+        "surface": "paving_stones"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1068853795",
+      "width_units": 0.8333333333333334
+    },
+    {
+      "id": "osm-1068853797",
+      "osm_id": "1068853797",
+      "name": "Campus building 3797",
+      "points": [
+        [-13.879, -0.0362],
+        [-18.5933, 4.5855],
+        [-19.04, 5.0233],
+        [-20.7742, 8.3481]
+      ],
+      "centroid": [-18.0716, 4.4802],
+      "tags": {
+        "access": "permissive",
+        "highway": "footway",
+        "smoothness": "intermediate",
+        "surface": "unpaved"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1068853797",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-1101392851",
+      "osm_id": "1101392851",
+      "name": "Campus building 2851",
+      "points": [
+        [-4.6366, -16.198],
+        [-0.443, -20.3076],
+        [4.6655, -25.3151],
+        [5.6908, -26.3188],
+        [6.8862, -27.4914],
+        [7.8229, -28.4079]
+      ],
+      "centroid": [3.331, -24.0065],
+      "tags": {
+        "access": "private",
+        "highway": "service"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1101392851",
+      "width_units": 0.8333333333333334
+    },
+    {
+      "id": "osm-1198867691",
+      "osm_id": "1198867691",
+      "name": "Campus building 7691",
+      "points": [
+        [-27.8665, -25.6973],
+        [-27.3493, -24.8605]
+      ],
+      "centroid": [-27.6079, -25.2789],
+      "tags": {
+        "access": "private",
+        "highway": "service",
+        "oneway": "yes"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1198867691",
+      "width_units": 0.8333333333333334
+    },
+    {
+      "id": "osm-1226405407",
+      "osm_id": "1226405407",
+      "name": "Campus building 5407",
+      "points": [
+        [-28.6242, -23.6843],
+        [-29.3909, -25.3485]
+      ],
+      "centroid": [-29.0076, -24.5164],
+      "tags": {
+        "access": "private",
+        "highway": "service",
+        "oneway": "yes"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1226405407",
+      "width_units": 0.8333333333333334
+    },
+    {
+      "id": "osm-1226405409",
+      "osm_id": "1226405409",
+      "name": "Campus building 5409",
+      "points": [
+        [-27.3493, -24.8605],
+        [-19.9008, -17.6618],
+        [-18.6874, -16.4874]
+      ],
+      "centroid": [-21.9792, -19.6699],
+      "tags": {
+        "access": "private",
+        "highway": "service",
+        "maxspeed": "20",
+        "oneway": "yes",
+        "surface": "asphalt"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1226405409",
+      "width_units": 0.8333333333333334
+    },
+    {
+      "id": "osm-1226405410",
+      "osm_id": "1226405410",
+      "name": "Campus building 5410",
+      "points": [
+        [-19.9279, -14.9085],
+        [-28.6242, -23.6843]
+      ],
+      "centroid": [-24.276, -19.2964],
+      "tags": {
+        "access": "private",
+        "highway": "service",
+        "maxspeed": "20",
+        "oneway": "yes",
+        "surface": "asphalt"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1226405410",
+      "width_units": 0.8333333333333334
+    },
+    {
+      "id": "osm-1226405411",
+      "osm_id": "1226405411",
+      "name": "Campus building 5411",
+      "points": [
+        [-47.7582, -4.6894],
+        [-42.5556, -9.6579],
+        [-40.4761, -11.645],
+        [-36.268, -15.8492],
+        [-35.4091, -16.7063],
+        [-30.2553, -21.8085],
+        [-28.6242, -23.6843]
+      ],
+      "centroid": [-37.3352, -14.8629],
+      "tags": {
+        "access": "private",
+        "highway": "service",
+        "lit": "yes",
+        "oneway": "no",
+        "sidewalk": "no",
+        "smoothness": "bad",
+        "surface": "asphalt",
+        "width": "4"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1226405411",
+      "width_units": 0.6666666666666666
+    },
+    {
+      "id": "osm-1226405413",
+      "osm_id": "1226405413",
+      "name": "Campus building 5413",
+      "points": [
+        [52.8939, -0.3089],
+        [41.6316, -0.1327],
+        [40.4308, -0.1735],
+        [39.9354, -0.3015],
+        [39.5484, -0.4889],
+        [38.1813, -1.2997],
+        [37.0221, -2.1364],
+        [36.3386, -2.5075],
+        [35.6044, -2.7301],
+        [33.9859, -2.8507],
+        [28.1685, -2.2477],
+        [27.4904, -1.9713],
+        [27.0745, -1.424]
+      ],
+      "centroid": [36.7927, -1.4287],
+      "tags": {
+        "access": "private",
+        "highway": "service",
+        "maxspeed": "20",
+        "oneway": "no"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1226405413",
+      "width_units": 0.8333333333333334
+    },
+    {
+      "id": "osm-1226405414",
+      "osm_id": "1226405414",
+      "name": "Campus building 5414",
+      "points": [
+        [-15.3401, 24.5266],
+        [-14.7145, 24.5136],
+        [-13.785, 24.6156],
+        [-12.8519, 24.5934],
+        [-11.9296, 24.4487],
+        [-11.0327, 24.1852],
+        [-10.1809, 23.8067],
+        [-6.2026, 20.6155],
+        [-5.0398, 19.6099],
+        [-4.3038, 19.3521],
+        [-3.5353, 19.2222],
+        [-2.7288, 19.2259],
+        [-1.9349, 19.3688],
+        [-0.5732, 20.0033],
+        [2.4159, 20.9309],
+        [12.1086, 25.5285],
+        [19.8972, 29.0332],
+        [22.6079, 30.0852],
+        [26.2697, 31.5082],
+        [29.0293, 32.6288],
+        [29.787, 33.1928],
+        [30.4741, 33.9628],
+        [31.6893, 36.449],
+        [32.2933, 38.2523],
+        [33.0691, 40.0984],
+        [33.4886, 40.4936],
+        [34.089, 40.8535],
+        [34.8358, 41.0131],
+        [35.6279, 41.0242],
+        [36.4055, 40.7774],
+        [37.1451, 40.3433],
+        [37.957, 39.59],
+        [39.1542, 38.4397],
+        [39.8052, 37.6401],
+        [40.3459, 36.9517],
+        [41.9679, 34.0333],
+        [45.3079, 27.4673],
+        [46.4183, 23.9459],
+        [48.1687, 14.3241],
+        [49.0494, 9.9641],
+        [49.4707, 8.721],
+        [50.1959, 7.8991]
+      ],
+      "centroid": [20.3553, 28.1724],
+      "tags": {
+        "access": "private",
+        "highway": "service",
+        "maxspeed": "20",
+        "oneway": "no"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1226405414",
+      "width_units": 0.8333333333333334
+    },
+    {
+      "id": "osm-1226405415",
+      "osm_id": "1226405415",
+      "name": "RV Univ Road",
+      "points": [
+        [-14.0002, -10.6524],
+        [-16.1647, -8.0401],
+        [-16.3872, -7.7952],
+        [-20.0436, -4.7228],
+        [-33.4091, 9.1347]
+      ],
+      "centroid": [-20.001, -4.4151],
+      "tags": {
+        "access": "private",
+        "highway": "service",
+        "maxspeed": "20",
+        "name": "RV Univ Road",
+        "surface": "asphalt"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1226405415",
+      "width_units": 0.8333333333333334
+    },
+    {
+      "id": "osm-1226405416",
+      "osm_id": "1226405416",
+      "name": "Campus building 5416",
+      "points": [
+        [-28.6242, -23.6843],
+        [-27.3493, -24.8605]
+      ],
+      "centroid": [-27.9868, -24.2724],
+      "tags": {
+        "access": "permissive",
+        "highway": "service",
+        "horse": "no",
+        "maxspeed": "20",
+        "motor_vehicle": "permissive",
+        "oneway": "no",
+        "surface": "asphalt"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1226405416",
+      "width_units": 0.8333333333333334
+    },
+    {
+      "id": "osm-1226405418",
+      "osm_id": "1226405418",
+      "name": "Campus building 5418",
+      "points": [
+        [-19.9279, -14.9085],
+        [-20.8266, -13.7916]
+      ],
+      "centroid": [-20.3773, -14.3501],
+      "tags": {
+        "access": "private",
+        "highway": "service",
+        "maxspeed": "20",
+        "oneway": "no",
+        "surface": "asphalt"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1226405418",
+      "width_units": 0.8333333333333334
+    },
+    {
+      "id": "osm-1226405419",
+      "osm_id": "1226405419",
+      "name": "Campus building 5419",
+      "points": [
+        [-39.4724, 3.7468],
+        [-42.8323, 0.3256],
+        [-45.5484, -2.4388],
+        [-47.1, -4.0196],
+        [-47.7582, -4.6894]
+      ],
+      "centroid": [-44.5423, -1.4151],
+      "tags": {
+        "access": "private",
+        "highway": "service",
+        "maxspeed": "20",
+        "oneway": "no"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1226405419",
+      "width_units": 0.8333333333333334
+    },
+    {
+      "id": "osm-1226405420",
+      "osm_id": "1226405420",
+      "name": "Campus building 5420",
+      "points": [
+        [-18.6874, -16.4874],
+        [-19.2787, -15.6303],
+        [-19.9279, -14.9085]
+      ],
+      "centroid": [-19.298, -15.6754],
+      "tags": {
+        "access": "permissive",
+        "highway": "service",
+        "horse": "no",
+        "maxspeed": "20",
+        "motor_vehicle": "permissive",
+        "oneway": "no",
+        "surface": "asphalt"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1226405420",
+      "width_units": 0.8333333333333334
+    },
+    {
+      "id": "osm-1255229374",
+      "osm_id": "1255229374",
+      "name": "Campus building 9374",
+      "points": [
+        [-18.6874, -16.4874],
+        [-13.955, -21.6991],
+        [-13.6674, -22.0145],
+        [-13.36, -22.2835],
+        [-13.1539, -22.469],
+        [-12.7144, -22.7399],
+        [-12.0725, -22.675],
+        [-11.4811, -22.508],
+        [-10.8826, -22.02],
+        [-4.6366, -16.198],
+        [-2.4557, -14.0272],
+        [-1.434, -13.0217],
+        [3.1447, -8.5132],
+        [4.8771, -6.9065],
+        [7.1556, -4.8823],
+        [9.3021, -3.3313]
+      ],
+      "centroid": [-6.5013, -16.361],
+      "tags": {
+        "access": "private",
+        "highway": "service",
+        "incline": "down",
+        "lit": "automatic",
+        "maxspeed": "20",
+        "oneway": "no",
+        "sidewalk": "both",
+        "smoothness": "excellent",
+        "surface": "asphalt",
+        "width": "7"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1255229374",
+      "width_units": 1.1666666666666667
+    },
+    {
+      "id": "osm-1286468163",
+      "osm_id": "1286468163",
+      "name": "Campus building 8163",
+      "points": [
+        [-10.8826, -22.02],
+        [-9.0507, -22.6842],
+        [-8.0218, -22.5655],
+        [-6.2858, -23.0831]
+      ],
+      "centroid": [-8.5602, -22.5882],
+      "tags": {
+        "access": "permissive",
+        "bicycle": "no",
+        "foot": "yes",
+        "highway": "footway",
+        "horse": "no",
+        "motor_vehicle": "no"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1286468163",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-1313422258",
+      "osm_id": "1313422258",
+      "name": "Campus building 2258",
+      "points": [
+        [20.3764, -15.8102],
+        [21.4722, -14.7824],
+        [22.4813, -14.1219],
+        [32.9082, -4.7005],
+        [33.9859, -2.8507]
+      ],
+      "centroid": [26.2448, -10.4531],
+      "tags": {
+        "highway": "footway"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1313422258",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-1313422259",
+      "osm_id": "1313422259",
+      "name": "Campus building 2259",
+      "points": [
+        [8.9187, -11.5485],
+        [14.9315, -17.2129],
+        [18.2335, -13.723]
+      ],
+      "centroid": [14.0279, -14.1615],
+      "tags": {
+        "highway": "footway"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1313422259",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-1313422261",
+      "osm_id": "1313422261",
+      "name": "Campus building 2261",
+      "points": [
+        [-26.7616, 15.0625],
+        [-23.1847, 11.0513],
+        [-20.7742, 8.3481]
+      ],
+      "centroid": [-23.5735, 11.4873],
+      "tags": {
+        "highway": "footway"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1313422261",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-1318092292",
+      "osm_id": "1318092292",
+      "name": "Campus building 2292",
+      "points": [
+        [10.671, -12.6469],
+        [9.3455, -11.2721],
+        [4.8771, -6.9065]
+      ],
+      "centroid": [8.2979, -10.2751],
+      "tags": {
+        "access": "private",
+        "highway": "service",
+        "surface": "paving_stones"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1318092292",
+      "width_units": 0.8333333333333334
+    },
+    {
+      "id": "osm-1318092293",
+      "osm_id": "1318092293",
+      "name": "Campus building 2293",
+      "points": [
+        [17.483, -10.9047],
+        [23.5482, -5.7803]
+      ],
+      "centroid": [20.5156, -8.3425],
+      "tags": {
+        "highway": "path"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1318092293",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-1319007271",
+      "osm_id": "1319007271",
+      "name": "Campus building 7271",
+      "points": [
+        [-11.011, -3.0066],
+        [-11.9658, -3.3238],
+        [-12.3998, -3.7802],
+        [-12.5589, -3.9472],
+        [-13.3275, -4.7543]
+      ],
+      "centroid": [-12.2526, -3.7624],
+      "tags": {
+        "highway": "footway",
+        "surface": "sett"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1319007271",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-1319007273",
+      "osm_id": "1319007273",
+      "name": "Campus building 7273",
+      "points": [
+        [-29.7598, -27.163],
+        [-30.3277, -31.152]
+      ],
+      "centroid": [-30.0437, -29.1575],
+      "tags": {
+        "access": "private",
+        "highway": "service",
+        "oneway": "yes"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1319007273",
+      "width_units": 0.8333333333333334
+    },
+    {
+      "id": "osm-1319007274",
+      "osm_id": "1319007274",
+      "name": "Campus building 7274",
+      "points": [
+        [-28.975, -32.5453],
+        [-28.2155, -27.5341]
+      ],
+      "centroid": [-28.5953, -30.0397],
+      "tags": {
+        "access": "private",
+        "highway": "service",
+        "oneway": "yes"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1319007274",
+      "width_units": 0.8333333333333334
+    },
+    {
+      "id": "osm-1319007275",
+      "osm_id": "1319007275",
+      "name": "Campus building 7275",
+      "points": [
+        [-10.6837, -24.1073],
+        [-10.8826, -22.02]
+      ],
+      "centroid": [-10.7831, -23.0636],
+      "tags": {
+        "access": "private",
+        "highway": "service"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1319007275",
+      "width_units": 0.8333333333333334
+    },
+    {
+      "id": "osm-1327820763",
+      "osm_id": "1327820763",
+      "name": "Campus building 0763",
+      "points": [
+        [7.8229, -28.4079],
+        [19.9858, -17.5672],
+        [22.3927, -15.634],
+        [21.4722, -14.7824],
+        [17.483, -10.9047],
+        [13.6747, -7.8137]
+      ],
+      "centroid": [17.1385, -15.8517],
+      "tags": {
+        "access": "private",
+        "highway": "service"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1327820763",
+      "width_units": 0.8333333333333334
+    },
+    {
+      "id": "osm-1327820765",
+      "osm_id": "1327820765",
+      "name": "Campus building 0765",
+      "points": [
+        [-9.812, -19.5561],
+        [-9.6909, -19.699]
+      ],
+      "centroid": [-9.7515, -19.6276],
+      "tags": {
+        "access": "permissive",
+        "highway": "footway",
+        "surface": "asphalt"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1327820765",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-1327820766",
+      "osm_id": "1327820766",
+      "name": "Campus building 0766",
+      "points": [
+        [-13.2172, -21.8363],
+        [-18.3836, -15.9586]
+      ],
+      "centroid": [-15.8004, -18.8975],
+      "tags": {
+        "access": "permissive",
+        "highway": "footway",
+        "surface": "asphalt"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1327820766",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-1327820767",
+      "osm_id": "1327820767",
+      "name": "Campus building 0767",
+      "points": [
+        [-3.2858, -13.1515],
+        [-9.6909, -19.699],
+        [-11.8048, -21.8605],
+        [-12.0652, -22.0553],
+        [-12.3745, -22.1518],
+        [-12.6855, -22.1406],
+        [-12.9766, -22.033],
+        [-13.2172, -21.8363]
+      ],
+      "centroid": [-11.0126, -20.616],
+      "tags": {
+        "access": "permissive",
+        "highway": "footway",
+        "surface": "asphalt"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1327820767",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-1327820770",
+      "osm_id": "1327820770",
+      "name": "Campus building 0770",
+      "points": [
+        [-39.4724, 3.7468],
+        [-38.7364, 4.3851],
+        [-34.1885, 8.439],
+        [-33.4091, 9.1347],
+        [-32.9244, 9.567],
+        [-26.7616, 15.0625],
+        [-24.7417, 16.8641],
+        [-21.6639, 19.6081],
+        [-15.3401, 24.5266]
+      ],
+      "centroid": [-29.6931, 12.3704],
+      "tags": {
+        "access": "private",
+        "highway": "service",
+        "maxspeed": "20",
+        "oneway": "no"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1327820770",
+      "width_units": 0.8333333333333334
+    },
+    {
+      "id": "osm-1327820772",
+      "osm_id": "1327820772",
+      "name": "Campus building 0772",
+      "points": [
+        [24.0455, 11.4483],
+        [26.5699, 13.7434]
+      ],
+      "centroid": [25.3077, 12.5959],
+      "tags": {
+        "access": "private",
+        "highway": "service",
+        "maxspeed": "20",
+        "oneway": "no",
+        "surface": "concrete"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1327820772",
+      "width_units": 0.8333333333333334
+    },
+    {
+      "id": "osm-1327820773",
+      "osm_id": "1327820773",
+      "name": "Campus building 0773",
+      "points": [
+        [27.0745, -1.424],
+        [26.7905, -0.5705],
+        [24.0455, 11.4483],
+        [20.9641, 15.8028]
+      ],
+      "centroid": [24.7186, 6.3142],
+      "tags": {
+        "access": "private",
+        "highway": "service",
+        "maxspeed": "20",
+        "oneway": "no"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1327820773",
+      "width_units": 0.8333333333333334
+    },
+    {
+      "id": "osm-1327820774",
+      "osm_id": "1327820774",
+      "name": "Campus building 0774",
+      "points": [
+        [6.8862, -27.4914],
+        [20.3764, -15.8102]
+      ],
+      "centroid": [13.6313, -21.6508],
+      "tags": {
+        "access": "permissive",
+        "highway": "footway"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1327820774",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-1327820778",
+      "osm_id": "1327820778",
+      "name": "Campus building 0778",
+      "points": [
+        [5.6908, -26.3188],
+        [2.2604, -29.3059]
+      ],
+      "centroid": [3.9756, -27.8124],
+      "tags": {
+        "access": "permissive",
+        "highway": "footway"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1327820778",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-1341013543",
+      "osm_id": "1341013543",
+      "name": "Campus building 3543",
+      "points": [
+        [-26.9641, -7.2961],
+        [-33.1125, -10.9864],
+        [-37.5447, -6.9881]
+      ],
+      "centroid": [-32.5405, -8.4235],
+      "tags": {
+        "description": "Way to admission office",
+        "highway": "footway"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1341013543",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-1341013544",
+      "osm_id": "1341013544",
+      "name": "Campus building 3544",
+      "points": [
+        [-42.5556, -9.6579],
+        [-42.4779, -5.4871]
+      ],
+      "centroid": [-42.5168, -7.5725],
+      "tags": {
+        "highway": "footway"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1341013544",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-1341013545",
+      "osm_id": "1341013545",
+      "name": "way to DTL huddle",
+      "points": [
+        [-47.7582, -4.6894],
+        [-50.4834, -4.5873]
+      ],
+      "centroid": [-49.1208, -4.6383],
+      "tags": {
+        "highway": "footway",
+        "name": "way to DTL huddle"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1341013545",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-1341013546",
+      "osm_id": "1341013546",
+      "name": "Technical Clubs",
+      "points": [
+        [-47.1, -4.0196],
+        [-48.3369, -2.3405]
+      ],
+      "centroid": [-47.7185, -3.18],
+      "tags": {
+        "highway": "footway",
+        "name": "Technical Clubs"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1341013546",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-1341013547",
+      "osm_id": "1341013547",
+      "name": "Campus building 3547",
+      "points": [
+        [-42.8323, 0.3256],
+        [-43.3296, 0.9731]
+      ],
+      "centroid": [-43.081, 0.6494],
+      "tags": {
+        "highway": "footway"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1341013547",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-1341013549",
+      "osm_id": "1341013549",
+      "name": "Campus building 3549",
+      "points": [
+        [-38.7364, 4.3851],
+        [-36.08, 2.001],
+        [-35.7545, 1.6911],
+        [-35.3657, 1.3479]
+      ],
+      "centroid": [-36.4841, 2.3563],
+      "tags": {
+        "highway": "path"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1341013549",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-1341013550",
+      "osm_id": "1341013550",
+      "name": "Campus building 3550",
+      "points": [
+        [-31.3512, 5.6727],
+        [-34.1885, 8.439]
+      ],
+      "centroid": [-32.7698, 7.0558],
+      "tags": {
+        "highway": "steps"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1341013550",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-1341013552",
+      "osm_id": "1341013552",
+      "name": "Campus building 3552",
+      "points": [
+        [-15.0092, 15.7026],
+        [-13.653, 16.9958],
+        [-13.3202, 16.8585]
+      ],
+      "centroid": [-13.9941, 16.519],
+      "tags": {
+        "highway": "path"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1341013552",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-1341013553",
+      "osm_id": "1341013553",
+      "name": "Campus building 3553",
+      "points": [
+        [-23.1847, 11.0513],
+        [-22.5012, 11.7155]
+      ],
+      "centroid": [-22.8429, 11.3834],
+      "tags": {
+        "highway": "footway"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1341013553",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-1341013554",
+      "osm_id": "1341013554",
+      "name": "Campus building 3554",
+      "points": [
+        [-18.5933, 4.5855],
+        [-16.3637, 6.5781],
+        [-16.5662, 6.8193]
+      ],
+      "centroid": [-17.1744, 5.9943],
+      "tags": {
+        "highway": "footway"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1341013554",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-1341013555",
+      "osm_id": "1341013555",
+      "name": "Campus building 3555",
+      "points": [
+        [-16.3637, 6.5781],
+        [-14.8266, 8.0067]
+      ],
+      "centroid": [-15.5951, 7.2924],
+      "tags": {
+        "highway": "footway"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1341013555",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-1341013557",
+      "osm_id": "1341013557",
+      "name": "Campus building 3557",
+      "points": [
+        [-14.2352, -5.6541],
+        [-15.0038, -4.8415]
+      ],
+      "centroid": [-14.6195, -5.2478],
+      "tags": {
+        "highway": "path"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1341013557",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-1341013558",
+      "osm_id": "1341013558",
+      "name": "Campus building 3558",
+      "points": [
+        [-3.2858, -13.1515],
+        [-7.9368, -8.5355],
+        [-12.5589, -3.9472]
+      ],
+      "centroid": [-7.9272, -8.5447],
+      "tags": {
+        "highway": "footway",
+        "surface": "paving_stones"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1341013558",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-1341013559",
+      "osm_id": "1341013559",
+      "name": "Campus building 3559",
+      "points": [
+        [-7.9368, -8.5355],
+        [-7.5408, -8.1254]
+      ],
+      "centroid": [-7.7388, -8.3304],
+      "tags": {
+        "highway": "footway",
+        "surface": "paving_stones"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1341013559",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-1341013560",
+      "osm_id": "1341013560",
+      "name": "Campus building 3560",
+      "points": [
+        [-1.434, -13.0217],
+        [-2.2695, -11.7211]
+      ],
+      "centroid": [-1.8517, -12.3714],
+      "tags": {
+        "highway": "footway"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1341013560",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-1341013561",
+      "osm_id": "1341013561",
+      "name": "Campus building 3561",
+      "points": [
+        [13.6747, -7.8137],
+        [14.4938, -6.9584]
+      ],
+      "centroid": [14.0842, -7.3861],
+      "tags": {
+        "highway": "footway",
+        "surface": "paving_stones"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1341013561",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-1341013562",
+      "osm_id": "1341013562",
+      "name": "Campus building 3562",
+      "points": [
+        [-26.9641, -7.2961],
+        [-23.3131, -11.3166],
+        [-22.7435, -11.8843],
+        [-20.8266, -13.7916]
+      ],
+      "centroid": [-23.4618, -11.0722],
+      "tags": {
+        "access": "private",
+        "highway": "service"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1341013562",
+      "width_units": 0.8333333333333334
+    },
+    {
+      "id": "osm-1341013563",
+      "osm_id": "1341013563",
+      "name": "Campus building 3563",
+      "points": [
+        [-23.3131, -11.3166],
+        [-23.2408, -9.6245]
+      ],
+      "centroid": [-23.2769, -10.4706],
+      "tags": {
+        "highway": "footway",
+        "surface": "asphalt"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1341013563",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-1341013564",
+      "osm_id": "1341013564",
+      "name": "Campus building 3564",
+      "points": [
+        [-22.7435, -11.8843],
+        [-22.04, -10.9715]
+      ],
+      "centroid": [-22.3918, -11.4279],
+      "tags": {
+        "highway": "footway",
+        "surface": "asphalt"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1341013564",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-1341013565",
+      "osm_id": "1341013565",
+      "name": "Campus building 3565",
+      "points": [
+        [-17.1901, -8.4316],
+        [-16.3872, -7.7952]
+      ],
+      "centroid": [-16.7886, -8.1134],
+      "tags": {
+        "highway": "footway",
+        "surface": "asphalt"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1341013565",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-1341013566",
+      "osm_id": "1341013566",
+      "name": "Campus building 3566",
+      "points": [
+        [-27.3493, -24.8605],
+        [-22.3167, -29.2762]
+      ],
+      "centroid": [-24.833, -27.0684],
+      "tags": {
+        "highway": "footway"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1341013566",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-1341013568",
+      "osm_id": "1341013568",
+      "name": "Campus building 3568",
+      "points": [
+        [-25.4234, -24.5321],
+        [-24.8339, -24.9218]
+      ],
+      "centroid": [-25.1287, -24.727],
+      "tags": {
+        "highway": "footway"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1341013568",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-1425365489",
+      "osm_id": "1425365489",
+      "name": "Campus building 5489",
+      "points": [
+        [20.6639, -19.4782],
+        [19.9858, -17.5672]
+      ],
+      "centroid": [20.3248, -18.5227],
+      "tags": {
+        "access": "private",
+        "highway": "path",
+        "horse": "no",
+        "motor_vehicle": "no",
+        "surface": "dirt"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1425365489",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-1467210435",
+      "osm_id": "1467210435",
+      "name": "Campus building 0435",
+      "points": [
+        [-0.443, -20.3076],
+        [-1.5787, -21.8679]
+      ],
+      "centroid": [-1.0109, -21.0877],
+      "tags": {
+        "highway": "path"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1467210435",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-1467210437",
+      "osm_id": "1467210437",
+      "name": "Campus building 0437",
+      "points": [
+        [-45.5484, -2.4388],
+        [-48.2176, 0.6781],
+        [-48.5684, 0.3293]
+      ],
+      "centroid": [-47.4448, -0.4771],
+      "tags": {
+        "highway": "path"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1467210437",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-1467210440",
+      "osm_id": "1467210440",
+      "name": "Campus building 0440",
+      "points": [
+        [8.5299, 12.0847],
+        [6.9006, 12.0699],
+        [5.671, 11.478],
+        [4.076, 10.7953],
+        [3.4539, 9.7934],
+        [2.7125, 8.3778],
+        [1.7613, 7.0308],
+        [2.0036, 5.3721],
+        [2.8499, 2.9565],
+        [3.4539, -0.1698],
+        [4.9078, -2.5297]
+      ],
+      "centroid": [4.211, 7.0235],
+      "tags": {
+        "highway": "path"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1467210440",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-1467210441",
+      "osm_id": "1467210441",
+      "name": "Campus building 0441",
+      "points": [
+        [-4.3454, 3.2162],
+        [-3.0235, 4.5094],
+        [-2.0018, 6.5224],
+        [-0.5877, 9.2887],
+        [-0.7378, 10.2201],
+        [-3.5335, 10.8212],
+        [-4.4069, 10.9121],
+        [-4.1049, 12.415],
+        [-3.8952, 13.7972],
+        [-4.0453, 15.1497],
+        [-5.4286, 16.5338],
+        [-7.0218, 17.6155],
+        [-8.284, 17.6451],
+        [-8.9459, 16.9234],
+        [-10.2985, 15.4818],
+        [-11.7705, 13.8269],
+        [-11.7415, 12.1441],
+        [-13.9061, 11.3927],
+        [-13.0038, 10.6116],
+        [-11.832, 8.9882],
+        [-10.4178, 7.7247],
+        [-8.2243, 5.5298],
+        [-5.9097, 4.2682],
+        [-4.3454, 3.2162]
+      ],
+      "centroid": [-6.7422, 10.7814],
+      "tags": {
+        "highway": "path"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1467210441",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-1467524381",
+      "osm_id": "1467524381",
+      "name": "Campus building 4381",
+      "points": [
+        [-4.3454, 3.2162],
+        [-4.3454, 1.0214],
+        [-4.5263, -2.7413]
+      ],
+      "centroid": [-4.4057, 0.4988],
+      "tags": {
+        "highway": "path"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1467524381",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-1467524382",
+      "osm_id": "1467524382",
+      "name": "Campus building 4382",
+      "points": [
+        [-13.9061, 11.3927],
+        [-14.6819, 12.2944]
+      ],
+      "centroid": [-14.294, 11.8435],
+      "tags": {
+        "highway": "path"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1467524382",
+      "width_units": 0.25
+    },
+    {
+      "id": "osm-1525677036",
+      "osm_id": "1525677036",
+      "name": "Campus building 7036",
+      "points": [
+        [-31.6405, 30.0351],
+        [-30.8919, 30.9535],
+        [-30.1052, 31.5973],
+        [-29.1179, 32.1835],
+        [-27.8557, 32.5082],
+        [-26.5048, 32.4544],
+        [-24.9912, 32.2893],
+        [-23.2082, 31.7809],
+        [-21.6512, 30.792],
+        [-15.3401, 24.5266]
+      ],
+      "centroid": [-26.1307, 30.9121],
+      "tags": {
+        "access": "private",
+        "highway": "service"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1525677036",
+      "width_units": 0.8333333333333334
+    },
+    {
+      "id": "osm-1525677037",
+      "osm_id": "1525677037",
+      "name": "Campus building 7037",
+      "points": [
+        [-29.3909, -25.3485],
+        [-29.6134, -26.1352]
+      ],
+      "centroid": [-29.5021, -25.7418],
+      "tags": {
+        "access": "private",
+        "highway": "service",
+        "oneway": "yes",
+        "tunnel": "building_passage"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1525677037",
+      "width_units": 0.8333333333333334
+    },
+    {
+      "id": "osm-1525677038",
+      "osm_id": "1525677038",
+      "name": "Campus building 7038",
+      "points": [
+        [-28.0274, -26.291],
+        [-27.8665, -25.6973]
+      ],
+      "centroid": [-27.947, -25.9941],
+      "tags": {
+        "access": "private",
+        "highway": "service",
+        "oneway": "yes",
+        "tunnel": "building_passage"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1525677038",
+      "width_units": 0.8333333333333334
+    },
+    {
+      "id": "osm-1525677039",
+      "osm_id": "1525677039",
+      "name": "Campus building 7039",
+      "points": [
+        [-29.6134, -26.1352],
+        [-29.7598, -27.163]
+      ],
+      "centroid": [-29.6866, -26.6491],
+      "tags": {
+        "access": "private",
+        "highway": "service",
+        "oneway": "yes",
+        "tunnel": "building_passage"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1525677039",
+      "width_units": 0.8333333333333334
+    },
+    {
+      "id": "osm-1525677040",
+      "osm_id": "1525677040",
+      "name": "Campus building 7040",
+      "points": [
+        [-28.2155, -27.5341],
+        [-28.0274, -26.291]
+      ],
+      "centroid": [-28.1215, -26.9125],
+      "tags": {
+        "access": "private",
+        "highway": "service",
+        "oneway": "yes",
+        "tunnel": "building_passage"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1525677040",
+      "width_units": 0.8333333333333334
+    },
+    {
+      "id": "osm-1525677041",
+      "osm_id": "1525677041",
+      "name": "Campus building 7041",
+      "points": [
+        [22.3927, -15.634],
+        [32.6351, -6.3387],
+        [33.3711, -5.6486],
+        [34.0583, -4.899],
+        [34.7418, -3.9565],
+        [35.6044, -2.7301]
+      ],
+      "centroid": [32.1339, -6.5345],
+      "tags": {
+        "access": "private",
+        "highway": "service"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1525677041",
+      "width_units": 0.8333333333333334
+    },
+    {
+      "id": "osm-1525677042",
+      "osm_id": "1525677042",
+      "name": "Campus building 7042",
+      "points": [
+        [40.4308, -0.1735],
+        [48.053, -7.6245],
+        [49.4002, -8.9288],
+        [50.2031, -9.8416],
+        [50.6534, -10.5132],
+        [50.7311, -11.1478]
+      ],
+      "centroid": [48.2453, -8.0382],
+      "tags": {
+        "access": "private",
+        "highway": "service"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1525677042",
+      "width_units": 0.8333333333333334
+    },
+    {
+      "id": "osm-1525677043",
+      "osm_id": "1525677043",
+      "name": "Campus building 7043",
+      "points": [
+        [54.6842, -13.697],
+        [54.1561, -13.2907],
+        [52.2628, -11.838],
+        [51.4274, -11.1496],
+        [50.7311, -11.1478]
+      ],
+      "centroid": [52.6523, -12.2246],
+      "tags": {
+        "access": "private",
+        "highway": "service",
+        "oneway": "yes"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1525677043",
+      "width_units": 0.8333333333333334
+    },
+    {
+      "id": "osm-1525677044",
+      "osm_id": "1525677044",
+      "name": "Campus building 7044",
+      "points": [
+        [50.7311, -11.1478],
+        [50.534, -12.1645],
+        [51.3098, -13.0068],
+        [53.0024, -14.979],
+        [53.4563, -15.5078]
+      ],
+      "centroid": [51.8067, -13.3612],
+      "tags": {
+        "access": "private",
+        "highway": "service",
+        "oneway": "yes"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1525677044",
+      "width_units": 0.8333333333333334
+    }
+  ],
+  "green": [
+    {
+      "id": "osm-581289531",
+      "osm_id": "581289531",
+      "name": "Campus building 9531",
+      "points": [
+        [-12.7506, -4.9064],
+        [-11.4594, -6.207],
+        [-14.19, -8.9158],
+        [-15.4812, -7.6152],
+        [-12.7506, -4.9064]
+      ],
+      "centroid": [-13.3264, -6.5102],
+      "tags": {
+        "leisure": "outdoor_seating"
+      },
+      "source_url": "https://www.openstreetmap.org/way/581289531"
+    },
+    {
+      "id": "osm-581289535",
+      "osm_id": "581289535",
+      "name": "Campus building 9535",
+      "points": [
+        [-41.297, 4.4945],
+        [-40.1723, 5.5521],
+        [-44.9662, 10.658],
+        [-46.0909, 9.6004],
+        [-41.297, 4.4945]
+      ],
+      "centroid": [-42.7647, 6.9599],
+      "tags": {
+        "leisure": "outdoor_seating"
+      },
+      "source_url": "https://www.openstreetmap.org/way/581289535"
+    },
+    {
+      "id": "garden",
+      "osm_id": "636268134",
+      "name": "Campus building 8134",
+      "points": [
+        [-48.2139, 4.4964],
+        [-46.2519, 2.5706],
+        [-45.1832, 3.6615],
+        [-45.9372, 4.3999],
+        [-45.1741, 5.1773],
+        [-46.3821, 6.3629],
+        [-48.2139, 4.4964]
+      ],
+      "centroid": [-46.4795, 4.4521],
+      "tags": {
+        "leisure": "garden"
+      },
+      "source_url": "https://www.openstreetmap.org/way/636268134"
+    },
+    {
+      "id": "osm-695545687",
+      "osm_id": "695545687",
+      "name": "Campus building 5687",
+      "points": [
+        [-32.1523, 15.1237],
+        [-31.7635, 14.7842],
+        [-30.7201, 15.5616],
+        [-31.0853, 15.851],
+        [-32.1034, 15.7787],
+        [-32.1523, 15.1237]
+      ],
+      "centroid": [-31.6628, 15.3705],
+      "tags": {
+        "leisure": "garden"
+      },
+      "source_url": "https://www.openstreetmap.org/way/695545687"
+    },
+    {
+      "id": "osm-695545709",
+      "osm_id": "695545709",
+      "name": "Campus building 5709",
+      "points": [
+        [-37.2446, 14.5022],
+        [-35.1071, 14.3612],
+        [-34.7997, 19.0125],
+        [-36.9389, 19.1535],
+        [-37.2446, 14.5022]
+      ],
+      "centroid": [-36.267, 16.3063],
+      "tags": {
+        "leisure": "garden"
+      },
+      "source_url": "https://www.openstreetmap.org/way/695545709"
+    },
+    {
+      "id": "osm-695545710",
+      "osm_id": "695545710",
+      "name": "Campus building 5710",
+      "points": [
+        [-14.4342, 4.2534],
+        [-12.794, 5.9343],
+        [-9.5028, 2.7246],
+        [-11.143, 1.0436],
+        [-14.4342, 4.2534]
+      ],
+      "centroid": [-12.4616, 3.6418],
+      "tags": {
+        "leisure": "garden"
+      },
+      "source_url": "https://www.openstreetmap.org/way/695545710"
+    },
+    {
+      "id": "osm-695545728",
+      "osm_id": "695545728",
+      "name": "Campus building 5728",
+      "points": [
+        [-35.4579, -15.8752],
+        [-33.9281, -14.3222],
+        [-29.5627, -18.6211],
+        [-26.9967, -16.0143],
+        [-31.9534, -11.1329],
+        [-28.8123, -7.9436],
+        [-21.9279, -14.7211],
+        [-29.1667, -22.0701],
+        [-35.4579, -15.8752]
+      ],
+      "centroid": [-30.3626, -15.1751],
+      "tags": {
+        "leisure": "garden"
+      },
+      "source_url": "https://www.openstreetmap.org/way/695545728"
+    },
+    {
+      "id": "osm-695545729",
+      "osm_id": "695545729",
+      "name": "Campus building 5729",
+      "points": [
+        [-41.8974, -9.3407],
+        [-40.344, -7.7915],
+        [-34.787, -13.3667],
+        [-36.3422, -14.916],
+        [-41.8974, -9.3407]
+      ],
+      "centroid": [-39.0536, -10.9511],
+      "tags": {
+        "leisure": "garden"
+      },
+      "source_url": "https://www.openstreetmap.org/way/695545729"
+    },
+    {
+      "id": "osm-695545730",
+      "osm_id": "695545730",
+      "name": "Campus building 5730",
+      "points": [
+        [-45.7329, -5.5502],
+        [-44.0059, -3.8953],
+        [-42.4779, -5.4871],
+        [-41.1379, -6.8842],
+        [-42.8649, -8.541],
+        [-45.7329, -5.5502]
+      ],
+      "centroid": [-43.6587, -5.9847],
+      "tags": {
+        "leisure": "garden"
+      },
+      "source_url": "https://www.openstreetmap.org/way/695545730"
+    },
+    {
+      "id": "parking",
+      "osm_id": "1313225783",
+      "name": "Ground parking",
+      "points": [
+        [-24.0021, -35.5528],
+        [-16.3727, -27.3504],
+        [-3.8952, -39.7347],
+        [-12.0815, -46.7238],
+        [-24.0021, -35.5528]
+      ],
+      "centroid": [-16.0707, -36.9829],
+      "tags": {
+        "landuse": "recreation_ground",
+        "leisure": "pitch",
+        "name": "Ground parking",
+        "sport": "cricket"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1313225783"
+    },
+    {
+      "id": "osm-1327820764",
+      "osm_id": "1327820764",
+      "name": "Campus building 0764",
+      "points": [
+        [5.293, 17.9606],
+        [14.0707, 22.2297],
+        [13.2949, 23.2241],
+        [12.5589, 23.2297],
+        [11.841, 23.393],
+        [11.3528, 23.6063],
+        [10.9043, 23.8902],
+        [10.5064, 24.2427],
+        [3.6908, 21.0163],
+        [3.4015, 20.0719],
+        [5.293, 17.9606]
+      ],
+      "centroid": [9.2916, 21.8932],
+      "tags": {
+        "leisure": "park"
+      },
+      "source_url": "https://www.openstreetmap.org/way/1327820764"
+    }
+  ],
+  "trees": [
+    [7.2424, -5.7079],
+    [22.0129, -13.2591],
+    [5.6927, -5.3684],
+    [-25.843, -24.0331]
+  ]
+}

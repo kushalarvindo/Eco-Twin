@@ -1,0 +1,38 @@
+node_modules/
+dist/
+.venv/
+__pycache__/
+*.pyc
+backend/db.sqlite3
+backend/.dev-secret
+backend/media/
+backend/staticfiles/
+.env
+playwright-report/
+test-results/
+*.tsbuildinfo
+
+.local/
+.publish/
+.agent/
+sync.md
+*.sqlite3*
+.env.*
+!.env.example
+*.pem
+*.key
+*.pub
+*.p12
+*.pfx
+*.db
+*.log
+*.pdf
+*.docx
+*.osm
+RVCE Research/*
+!RVCE Research/data/
+RVCE Research/data/*
+!RVCE Research/data/facts.json
+docs/qa/*
+!docs/qa/desktop-explorer.jpg
+!docs/qa/dark-explorer.jpg

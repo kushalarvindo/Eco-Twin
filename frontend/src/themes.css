@@ -1,0 +1,325 @@
+:root[data-accent="ocean"] {
+  --green: #2f647b;
+}
+:root[data-accent="clay"] {
+  --green: #8a5140;
+}
+:root[data-theme="dark"] {
+  --background: #111b16;
+  --surface: #19251e;
+  --text: #e2ece1;
+  --muted: #b2c0aa;
+  --green: #90bb78;
+  --border: #344638;
+  color-scheme: dark;
+}
+:root[data-theme="dark"][data-accent="ocean"] {
+  --green: #87bbd2;
+}
+:root[data-theme="dark"][data-accent="clay"] {
+  --green: #dfaa90;
+}
+[data-theme="dark"]
+  :is(
+    .sidebar,
+    .topbar,
+    .scene-caption,
+    .modal,
+    .search-results,
+    .search-results button,
+    .button.secondary,
+    .zone-tabs button,
+    .scene-search,
+    .layer-select,
+    .scene-controls,
+    .report-photo,
+    .search-input,
+    .vote-button,
+    .data-needed,
+    .source-list,
+    .compose-post textarea,
+    .form-stack input:not([type="range"]),
+    .form-stack select,
+    .form-stack textarea,
+    .scene-label
+  ) {
+  background: #19251e;
+  color: var(--text);
+  border-color: var(--border);
+}
+[data-theme="dark"]
+  :is(
+    .grow-card,
+    .possibility-card,
+    .challenge-banner,
+    .report-summary,
+    .notice,
+    .badge.neutral,
+    .sidebar nav a.active,
+    .tabs button.active,
+    .zone-tabs button.active,
+    .metric-icon,
+    .round-icon,
+    .empty-icon,
+    .avatar,
+    .profile-banner,
+    .profile-avatar,
+    .earned-badge,
+    .community-guide,
+    .badge.light,
+    .campus-symbol,
+    .pilot-pill,
+    .segmented,
+    .saved-grid article,
+    .upload-label,
+    .demo-help,
+    .demo-help code,
+    .modal-head .icon-button
+  ) {
+  background: #263927;
+  color: #dae7cb;
+  border-color: #3c5137;
+}
+[data-theme="dark"] :is(.art-0, .art-1, .art-2, .location-cover) {
+  background: #2b3c2c;
+  color: #b1cc99;
+}
+[data-theme="dark"]
+  :is(
+    h1,
+    h2,
+    h3,
+    .brand,
+    .sidebar nav a,
+    .user-menu,
+    .metric-number,
+    .profile-points,
+    .result-highlight > strong,
+    .comparison-numbers strong,
+    .challenge-banner h2,
+    .possibility-card h2,
+    .grow-card h3
+  ) {
+  color: var(--text);
+}
+[data-theme="dark"]
+  :is(
+    p,
+    small,
+    .muted,
+    .small-text,
+    .eyebrow,
+    .workspace-label,
+    .source-link,
+    .sidebar-foot,
+    .topbar-left small,
+    .pilot-pill,
+    .user-menu small,
+    .page-description,
+    .page-head .eyebrow,
+    .scene-caption,
+    .scene-caption button,
+    .location-body .eyebrow,
+    .location-body > p,
+    .location-stats .small-stat,
+    .section-heading p,
+    .metric > .inline-between > span:first-child,
+    .metric-number > span,
+    .metric small,
+    .gentle-empty p,
+    .main-footer,
+    .main-footer button,
+    .report-summary span,
+    .report-summary p,
+    .tabs button,
+    .report-row small,
+    .empty p,
+    th,
+    td,
+    .checklist-item,
+    .unavailable-grid small,
+    .challenge-meta,
+    .formula-note,
+    .input-unit,
+    .range-labels,
+    .comparison-numbers span,
+    .compose-post select,
+    .post-author small,
+    .community-guide p,
+    .profile-stats span,
+    .gps-section small,
+    .source-list small,
+    .source-list p,
+    .timeline small,
+    .timeline p,
+    .inline-notice,
+    .form-stack label,
+    .reduction-label,
+    .possibility-card .eyebrow,
+    .grow-card p
+  ) {
+  color: #b7c6ad;
+}
+[data-theme="dark"] .button:not(.secondary) {
+  background: var(--green);
+  color: #132015;
+  border-color: var(--green);
+}
+[data-theme="dark"]
+  :is(.text-button, .source-list > a, .grow-card a, .possibility-card a) {
+  color: var(--green);
+}
+[data-theme="dark"]
+  :is(
+    .report-row:hover,
+    .sidebar nav a:hover,
+    .icon-button:hover,
+    .scene-controls button:hover,
+    .search-results button:hover,
+    .button.secondary:hover
+  ) {
+  background: #304534;
+}
+[data-theme="dark"] .segmented button.active {
+  background: #3e583c;
+  color: #f0f8e9;
+}
+[data-theme="dark"] .scene-search input {
+  color: #e2ece1;
+}
+[data-theme="dark"] :is(.segmented button, .north-label, .location-chip) {
+  color: #c4d2ba;
+}
+[data-theme="dark"] .skip-link {
+  background: #19251e;
+  color: #e2ece1;
+}
+[data-theme="dark"] :is(.reduction-label > span, .result-highlight > span) {
+  color: var(--green);
+}
+[data-theme="dark"] .points-label {
+  background: #263927;
+  color: #dae7cb;
+}
+[data-theme="dark"] .north-label {
+  background: #19251e;
+}
+[data-theme="dark"] .location-chip {
+  background: #263927;
+}
+[data-theme="dark"] .scene-controls button {
+  color: #c4d2ba;
+}
+[data-theme="dark"] :is(.layer-select select, .scene-controls select) {
+  color: #c4d2ba;
+}
+[data-theme="dark"] :is(input, textarea)::placeholder {
+  color: #a4b49a !important;
+}
+[data-theme="dark"] .badge.warning {
+  background: #443821;
+  color: #f2d18f;
+}
+[data-theme="dark"] .badge.success {
+  background: #28432b;
+  color: #c7e8b8;
+}
+[data-theme="dark"] :is(.badge.danger, .form-error) {
+  background: #442b28;
+  color: #ffd0c4;
+  border-color: #735148;
+}
+[data-theme="dark"] :is(th, .notice.subtle) {
+  background: #223026;
+}
+[data-theme="dark"]
+  :is(
+    .report-row,
+    .location-stats,
+    .timeline > div,
+    .reward-list > div,
+    .form-stack .notice,
+    .sidebar-foot,
+    td
+  ) {
+  border-color: var(--border);
+}
+[data-theme="dark"] :is(.geographic-map, .scene-wrap) {
+  background: #233029;
+}
+[data-theme="dark"] .geographic-map polygon {
+  filter: brightness(0.65) saturate(0.8);
+}
+[data-density="compact"]
+  :is(
+    .panel-heading,
+    .activity-panel,
+    .location-body,
+    .metric,
+    .challenge-body,
+    .community-post
+  ) {
+  padding: 14px 16px;
+}
+[data-density="compact"] .report-row {
+  padding: 11px 0;
+}
+[data-density="compact"] main {
+  padding-top: 22px;
+}
+[data-text="large"]
+  :is(
+    .page-description,
+    .muted,
+    .small-text,
+    .location-body > p,
+    .notice p,
+    .form-stack label,
+    .form-stack input,
+    .form-stack textarea,
+    .form-stack select,
+    .report-row strong,
+    .challenge-body > p,
+    .source-list p,
+    .source-list small,
+    td,
+    .community-post > p
+  ) {
+  font-size: 14px;
+  line-height: 1.85;
+}
+[data-text="large"]
+  :is(.metric small, .scene-caption, .zone-tabs button, .eyebrow) {
+  font-size: 11px;
+}
+[data-reduced-motion="true"] *,
+[data-reduced-motion="true"] *::before,
+[data-reduced-motion="true"] *::after {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
+.preference-check {
+  display: flex !important;
+  align-items: center;
+  gap: 12px;
+}
+.preference-check input {
+  width: 18px !important;
+  height: 18px;
+  margin: 0 !important;
+  accent-color: var(--green);
+}
+@media (max-width: 480px) {
+  .topbar-right {
+    gap: 0;
+  }
+  .topbar-right .icon-button {
+    min-width: 32px;
+    width: 32px;
+  }
+  .topbar-right .button.small {
+    padding: 9px;
+    font-size: 9px;
+  }
+}

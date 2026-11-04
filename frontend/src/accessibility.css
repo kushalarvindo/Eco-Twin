@@ -1,0 +1,206 @@
+/* Readable secondary text; decorative diagrams retain their own colors. */
+@media (max-width: 760px) {
+  .sidebar {
+    visibility: hidden;
+  }
+  .sidebar.is-open {
+    visibility: visible;
+  }
+}
+.location-body .eyebrow {
+  color: #526a43;
+}
+.possibility-card .eyebrow {
+  color: #536448;
+}
+.zone-tabs button {
+  min-height: 28px;
+}
+@media (max-width: 480px) {
+  .scene-controls {
+    flex-direction: column;
+  }
+  .scene-controls button {
+    width: 38px;
+    height: 38px;
+    border-right: 0;
+    border-bottom: 1px solid #dfe6d8;
+  }
+  .scene-controls button:last-child {
+    border-bottom: 0;
+  }
+  .icon-button {
+    min-width: 40px;
+    min-height: 40px;
+  }
+  .zone-tabs button {
+    min-height: 34px;
+  }
+  .segmented button {
+    min-height: 30px;
+  }
+}
+.muted,
+.small-text,
+small,
+.eyebrow,
+.workspace-label,
+.sidebar nav a,
+.grow-card p,
+.source-link,
+.sidebar-foot,
+.topbar-left small,
+.pilot-pill,
+.user-menu small,
+.page-head .eyebrow,
+.page-description,
+.segmented button,
+.scene-search,
+.scene-caption,
+.scene-caption button,
+.zone-tabs button,
+.location-body > p,
+.inline-notice,
+.location-stats .small-stat,
+.section-heading p,
+.metric > .inline-between > span:first-child,
+.metric-number > span,
+.metric small,
+.gentle-empty p,
+.main-footer,
+.main-footer button,
+.badge.neutral,
+.notice,
+.report-summary span,
+.report-summary p,
+.tabs button,
+.report-row small,
+.empty p,
+th,
+td,
+.data-needed > p,
+.checklist-item,
+.unavailable-grid small,
+.challenge-banner p,
+.challenge-body > p,
+.challenge-meta,
+.formula-note,
+.simulation-empty p,
+.result-highlight p,
+.comparison-numbers span,
+.comparison-numbers strong small,
+.input-unit,
+.range-labels,
+.compose-post select,
+.post-author small,
+.vote-button,
+.community-guide p,
+.profile-banner p,
+.profile-stats span,
+.demo-help,
+.gps-section small,
+.source-list small,
+.source-list p,
+.timeline small,
+.timeline p {
+  color: #596b50;
+}
+.scene-search input::placeholder,
+.search-input input::placeholder,
+.form-stack input::placeholder,
+.form-stack textarea::placeholder,
+.compose-post textarea::placeholder {
+  color: #6c7b60;
+  opacity: 1;
+}
+.scene-label small {
+  display: block;
+  font-size: 8px;
+  margin-top: 4px;
+}
+.scene-report-marker {
+  width: 23px;
+  height: 23px;
+  border-radius: 50%;
+  border: 2px solid white;
+  background: #9a5a29;
+  color: white;
+  font-weight: 700;
+  box-shadow: 0 2px 5px #27392330;
+}
+.geographic-map {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: #eaf0e9;
+  padding: 35px 15px 25px;
+}
+.geographic-map [role="button"] {
+  cursor: pointer;
+}
+.geographic-map [role="button"]:focus {
+  stroke: #345a2a;
+  stroke-width: 0.6;
+  outline: none;
+}
+.location-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.geometry-source {
+  font-size: 9px;
+}
+.credit-heading {
+  margin-top: 24px;
+}
+.photo-credit {
+  font-size: 11px;
+  line-height: 1.8;
+}
+.photo-credit a {
+  text-decoration: underline;
+}
+.simulation-preview {
+  margin-top: 24px;
+}
+.simulation-preview > p {
+  margin: 0;
+  padding: 0 22px 19px;
+  font-size: 11px;
+}
+.simulation-preview-scene {
+  height: 330px;
+}
+.simulation-preview .scene-label {
+  font-size: 9px;
+}
+.zone-tabs {
+  max-height: 110px;
+  overflow: auto;
+}
+@media (max-width: 480px) {
+  .layer-select {
+    gap: 3px;
+    padding: 6px;
+  }
+  .layer-select select {
+    max-width: 98px;
+    font-size: 8px;
+  }
+  .layer-select > svg {
+    display: none;
+  }
+  .scene-controls button {
+    width: 22px;
+  }
+  .scene-caption {
+    font-size: 8px;
+  }
+  .location-body > p {
+    min-height: 0;
+  }
+  .simulation-preview-scene {
+    height: 280px;
+  }
+}

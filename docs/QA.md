@@ -1,55 +1,79 @@
-# Verification record
+# Testing
 
-Checked locally on 4–5 November 2026. This records the tested scope, not a production-readiness certification.
+Last verification: 5 November 2026.
 
 ## Automated checks
 
-- TypeScript checking and the production Vite build pass.
-- A separate clean publication checkout completed `npm ci`, a fresh Python virtual-environment install, migrations, local demo seeding and its production frontend build.
-- **14 Django tests pass** in both the development workspace and the clean checkout. Tests use a temporary SQLite database and temporary media storage.
-- Coverage includes calculation examples and boundaries; invalid/non-finite inputs; unauthorised writes; CSRF and registration; ignored privilege escalation; pending report/image privacy; validated moderation transitions and rejection reasons; upload decoding, re-encoding and metadata removal; unique rewards; saved-scenario ownership; challenge verification and expiration; and vote toggling.
-- Fresh demo passwords were checked against both newly created local accounts without displaying the password. Runtime credentials remain outside the source package.
-- `npm audit --omit=dev` reported zero known vulnerabilities in the checked dependency set. The clean `npm ci` audit also reported zero. This is a point-in-time advisory check.
-- The clean checkout served the compiled page and its JavaScript/CSS assets with HTTP 200 and correct MIME types. Bootstrap returned 81 seeded zones and 30 curated facts, with contact records absent.
-- Django system checks reported no errors. Test runs may warn that the optional collected-static directory has not been created; this did not prevent tests or built-asset HTTP checks.
+| Check | Result |
+| --- | --- |
+| `npm run check` | Passed |
+| `npm run build` | Passed |
+| `npm test` | 14 tests passed |
+| Fresh dependency installation, migrations and seed | Passed |
+| Compiled frontend and asset HTTP checks | 200 responses with expected MIME types |
+| `npm audit --omit=dev` | No known vulnerabilities reported |
 
-## Browser checks
+The backend suite runs against a temporary SQLite database and media directory. It covers:
 
-The actual application was exercised through the browser, including its compiled frontend served by Django.
+- Calculation examples, boundaries and invalid/non-finite inputs.
+- Session authentication, CSRF and registration permissions.
+- Pending report and image visibility.
+- Moderation transitions, assignment and rejection requirements.
+- Image validation, re-encoding and metadata removal.
+- Reward uniqueness and saved-scenario ownership.
+- Challenge evidence, expiration and review.
+- Support-vote toggling.
 
-Earlier workflow checks used clearly synthetic evidence: member report creation, moderator image inspection and Pending → Verified → Assigned → In Progress → Resolved history; one 10-point reward; challenge evidence approval; a community suggestion and support vote; saving and reloading a waste scenario; and geographic/historical 2D/3D selection. Synthetic contributions were removed from the development database after the walkthrough.
+The installation and backend tests were repeated in a clean checkout with fresh dependencies. Bootstrap returned 81 seeded zones and 30 campus facts. Django system checks passed.
 
-The display-customization pass checked:
+## Browser coverage
 
-1. All seven preference controls, plus reset: appearance, accent, density, text size, default campus view, rendering quality and reduced motion.
-2. Persistence after page reload, confirmed through selected controls and rendered document attributes.
-3. A saved default 2D view opening after reload; switching back to 3D; light/dark quick toggling; ocean and clay accents.
-4. Dark-mode navigation through explorer, reports, environment, scenarios, challenges and community; sign-in and customization dialogs.
-5. A waste calculation of 100 kg/day with a 30% reduction returning 70 kg/day, with readable comparison/chart labels.
-6. The 375 × 812 phone layout, customization-dialog scrolling, and larger text without horizontal document overflow. Earlier responsive checks covered 375, 768, 1024 and 1440 px widths.
-7. Escape closing the settings dialog and returning focus to its trigger. Earlier sign-in-dialog checks confirmed focus containment and Escape dismissal.
-8. Rendered text-color inspection and visual review. Faint map, scenario and challenge labels were corrected. This was a focused inspection, not a complete accessibility audit.
-9. The clean publication copy loading its real compiled explorer. No new browser console errors were captured during this display-verification sequence.
+| Area | Verified behavior |
+| --- | --- |
+| Reports | Photo submission, moderator image access and complete status history |
+| Rewards | Verified report awarded 10 points |
+| Challenges | Participation, evidence submission and approval |
+| Community | Post creation and support voting |
+| Scenarios | Calculation, save and reload |
+| Campus explorer | Geographic/historical selection, 2D/3D switching and camera controls |
+| Appearance | Light/dark toggle, accents, density, text size and saved preferences |
+| Dialogs | Keyboard focus, Escape dismissal and mobile scrolling |
+| Responsive layout | 375, 768, 1024 and 1440 px widths |
 
-The app responds to system color-scheme changes in code; an OS-theme change was not manually exercised during this pass. Low-power mode reduces the pixel-ratio limit; no battery-life improvement is claimed.
+The waste scenario returned 70 kg/day for a 100 kg/day baseline and 30% reduction. Saved preferences were retained after reload. Larger text and the settings dialog were checked at 375 × 812 px without horizontal document overflow.
 
-## Graphics and accuracy
+The compiled application was checked through Django, including route navigation. No new console errors were recorded in the final display verification sequence.
 
-A previous geographic-scene sample measured 125 draw calls and 67,841 triangles. A settled frame counter remained unchanged across observations, consistent with demand rendering. These are single-session diagnostics, not a sustained FPS, GPU-memory or low-end-phone benchmark.
+## Rendering measurements
 
-The renderer uses merged paths and instanced windows. A previous production-navigation DOM teardown error involving in-canvas HTML labels was repaired by keeping labels/details in the ordinary React interface. The 2D SVG view remains available independently of WebGL.
+| Metric | Observed value |
+| --- | --- |
+| Draw calls | 125 |
+| Triangles | 67,841 |
+| Three.js dependency chunk | Approximately 1.13 MB before gzip |
+| Idle rendering | Frame counter remained unchanged after settling |
 
-The model has public mapped footprints and explicitly estimated heights/materials. The calculator is a linear hypothetical scenario model. Neither is presented as a surveyed replica, calibrated forecast or connected live sensor system.
+These measurements come from one browser session. Sustained frame rate, GPU memory usage and physical low-end-device performance have not been measured.
 
-## Public evidence
+## Remaining coverage
 
-- [Light explorer](qa/desktop-explorer.jpg)
-- [Dark explorer](qa/dark-explorer.jpg)
+- Full screen-reader and WCAG evaluation.
+- System-theme changes during an active session.
+- Physical-device GPS denial and WebGL context loss.
+- Concurrent workloads and shared-cache throttling.
+- Production PostgreSQL/PostGIS.
+- Hosted deployment and backup restoration.
 
-Both screenshots are signed out and show no submitted evidence or private account information. Detailed local logs, raw archives, synthetic report screenshots and runtime databases are excluded from the public repository.
+## Screenshots
 
-## Limits and reproduction
+[Light theme](qa/desktop-explorer.jpg) · [Dark theme](qa/dark-explorer.jpg)
 
-Follow the README, then run `npm run check`, `npm run build` and `npm test`. Repeat browser contributions only with synthetic data and test-only local accounts.
+## Reproduce
 
-A complete screen-reader/WCAG audit, physical GPS denial, real institutional uploads, forced WebGL context loss on physical low-end devices, prolonged concurrency, production PostgreSQL/PostGIS, hosted deployment, account recovery and backup restoration were not verified. The sizeable Three.js dependency chunk remains documented in the README.
+Follow the development setup in the README, then run:
+
+```powershell
+npm run check
+npm run build
+npm test
+```

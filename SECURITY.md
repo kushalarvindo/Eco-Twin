@@ -1,11 +1,23 @@
-# Security and local data
+# Security
 
-This is a local pilot. No external API key is required. Development mode creates a secret in `backend/.dev-secret`; optional demo accounts use a generated password stored in `.local/demo-password.txt`. Both are ignored by Git. Environment variables are read from the process; `.env.example` contains placeholders only.
+## Authentication and authorization
 
-Do not commit runtime databases, uploads, logs, account exports, credentials or key files. The initial public checkout was assembled from an explicit source-file allowlist, then its staged blobs were inspected. `python scripts/audit_public.py --staged` repeats targeted checks before a commit; `python scripts/audit_public.py` checks the committed tracked files. These checks cannot recognise every possible sensitive value, so review the changed files too.
+The API uses Django sessions and CSRF protection. Moderator actions and resource ownership are enforced on the server. Public registration creates member accounts.
 
-The backend uses session authentication, CSRF protection, server-side moderation permissions, protected pending evidence, image decoding/re-encoding and unique reward events. These controls are covered by automated tests. Approved public contributions are visible in the app; authors should avoid submitting personal details in photos or text.
+Pending reports and their images are accessible to the author and moderators. Reviewed reports follow the application's public visibility rules. Challenge evidence requires an authenticated, authorized request.
 
-Before hosting, use production settings, a new host-managed secret, HTTPS, private persistent media, a production WSGI server, a shared cache/throttling strategy and tested backups. Account recovery, monitoring and data retention need a deployment plan. Do not expose the DEBUG server or demo accounts publicly.
+Reward records enforce uniqueness to prevent duplicate points for the same verified action.
 
-For an issue, use GitHub's private vulnerability reporting if enabled on this repository. Do not paste working credentials, personal evidence or exploit-sensitive information into a public issue. Ordinary reproducible bugs can be reported with synthetic data.
+## Upload handling
+
+Report and challenge uploads accept JPEG or PNG files. The backend validates file size and dimensions, decodes the image and re-encodes it as JPEG with metadata removed. Uploaded files are served through API endpoints with access checks.
+
+## Configuration
+
+Development mode generates a signing key in `backend/.dev-secret`. Optional demo accounts use a generated password in `.local/demo-password.txt`.
+
+Production requires `DJANGO_SECRET_KEY` and `DJANGO_DEBUG=0`. Secure cookies, HTTPS redirection and HSTS are enabled when DEBUG is disabled. Upload storage must remain private; the application serves authorized files through the API.
+
+## Reporting vulnerabilities
+
+Use GitHub private vulnerability reporting when available. Include the affected version, reproduction steps and expected impact. Use synthetic accounts and files in reproduction cases.

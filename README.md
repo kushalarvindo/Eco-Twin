@@ -1,177 +1,160 @@
 # ECO-TWIN
 
-A 3D campus map and sustainability app built around RV College of Engineering, Bengaluru.
+An environmental digital twin for RV College of Engineering, Bengaluru, built with React, Three.js and Django.
 
-You can look around campus, report issues with photos, review reports, join challenges and compare basic waste, water and electricity scenarios. It runs locally with a React frontend and Django backend.
+ECO-TWIN provides an interactive campus map, photo-based issue reporting, moderator review and waste, water and energy scenario calculations.
 
-![Dark mode](docs/qa/dark-explorer.jpg)
+![Campus explorer](docs/qa/dark-explorer.jpg)
 
 ## Features
 
-- 3D campus map with search, location selection, layers, zoom and camera controls.
-- Keyboard-accessible 2D map for use without WebGL.
-- 55 mapped building footprints, 143 roads/paths, 11 open/green polygons and 4 mapped tree points.
-- Separate historical event-map view with 28 numbered locations and one virtual study area.
-- Photo reports with a campus zone or optional GPS location.
-- Moderator review: Pending → Verified → Assigned → In Progress → Resolved, or Pending → Rejected.
-- 10 points per verified report, awarded once.
-- Challenges with photo evidence, moderator approval, points and badges.
-- Waste, electricity and water calculations, saved scenarios and JSON export.
-- Community posts and support votes.
-- Campus infrastructure figures with source links.
-- Light, dark and system themes; three accent colors; compact layout; larger text; reduced motion; low-power 3D; and a default 2D/3D view.
+| Module | Functionality |
+| --- | --- |
+| Campus explorer | Geographic 3D model, keyboard-accessible 2D map, location search, layers and camera controls |
+| Issue reporting | Photo uploads, campus zones, optional GPS coordinates and status history |
+| Moderation | Verification, assignment, progress tracking, resolution and rejection |
+| Scenario analysis | Waste, electricity and water reductions, chart comparisons, saved scenarios and JSON export |
+| Challenges | Participation, evidence submission, moderator review, points and badges |
+| Community | Location-based suggestions and support votes |
+| Display settings | Light/dark/system themes, three accent colors, layout density, text size, reduced motion and low-power rendering |
 
-Display settings are saved in the current browser. Reports, accounts, reviews, points and saved scenarios are stored in the backend database.
+Report verification awards 10 points through a unique reward record. Accounts, reports, reviews and scenarios persist in the backend database. Display preferences are stored in the browser.
 
-## Stack
+## Architecture
 
-| Part | Tools |
+| Layer | Implementation |
 | --- | --- |
 | Frontend | React 19, TypeScript, Vite, React Router |
-| 3D | Three.js, React Three Fiber, Drei |
+| Rendering | Three.js, React Three Fiber, Drei |
 | Charts | Chart.js |
-| UI | Radix Dialog, Lucide icons, local fonts |
-| Backend | Django 5.2, Django REST Framework |
-| Database | SQLite for local development |
-| Static files | WhiteNoise |
+| Components | Radix Dialog, Lucide icons |
+| API | Django 5.2, Django REST Framework |
+| Database | SQLite; optional PostgreSQL configuration |
+| Static assets | WhiteNoise |
 
-## Run locally
+Vite proxies API requests to Django during development. A production frontend build can also be served by Django. The renderer uses on-demand frames, merged road geometry and instanced windows.
 
-Tested with Node.js 24 and Python 3.13. You also need Git. No external API key is required.
+## Development setup
 
-### Install
+### Requirements
 
-Open PowerShell:
+- Node.js 24
+- Python 3.13
+- Git
+
+### Installation
 
 ```powershell
 git clone https://github.com/kushalarvindo/Eco-Twin.git
 cd Eco-Twin
+
 npm ci
 python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r backend/requirements.txt
 .\.venv\Scripts\python.exe backend/manage.py migrate
-.\.venv\Scripts\python.exe backend/manage.py seed --demo
+.\.venv\Scripts\python.exe backend/manage.py seed
 ```
 
-### Start
+### Start the application
 
-Open two terminals in the project folder.
+Run the backend and frontend in separate terminals from the project root.
 
-Backend:
+**Backend**
 
 ```powershell
 .\.venv\Scripts\python.exe backend/manage.py runserver 127.0.0.1:8000 --noreload
 ```
 
-Frontend:
+**Frontend**
 
 ```powershell
 npm run dev
 ```
 
-Open [http://127.0.0.1:5173/](http://127.0.0.1:5173/). Keep both terminals running. Stop them with Ctrl+C. Vite forwards API requests to Django on port 8000.
+Open [localhost:5173](http://127.0.0.1:5173/). The API runs on port 8000. Stop either process with Ctrl+C.
 
-On macOS/Linux, use `.venv/bin/python` in place of the Windows Python path above.
+On macOS and Linux, replace the Windows Python executable with `.venv/bin/python`.
 
-If a port is busy, check whether the app is already running. To change the frontend port, use `npm run dev -- --port 5174` and add that origin to `DJANGO_CSRF_ORIGINS` for authenticated requests. To change the backend port, run Django on another free port and update the proxy target in `vite.config.ts`.
-
-After installation, `./Start-EcoTwin.ps1 -Demo` is an optional Windows shortcut. It starts both servers, checks their URLs and saves logs and process IDs in `.local/`. It refuses ports already in use.
+The Windows helper `./Start-EcoTwin.ps1 -Demo` starts both services and checks their availability. If a port is occupied, use the existing service or select another port. Frontend port changes require a matching `DJANGO_CSRF_ORIGINS` entry; backend port changes require updating the proxy in `vite.config.ts`.
 
 ### Demo accounts
 
-`seed --demo` creates two local accounts:
+To create local member and moderator accounts:
+
+```powershell
+.\.venv\Scripts\python.exe backend/manage.py seed --demo
+```
 
 | Role | Username |
 | --- | --- |
 | Member | `student` |
 | Moderator | `moderator` |
 
-The generated password is in `.local/demo-password.txt`. Both newly created accounts use it. The file stays local and is ignored by Git. Seeding again leaves existing passwords unchanged.
+The generated password is stored in `.local/demo-password.txt`. Existing account passwords are preserved when the command is repeated. Demo seeding is available only in DEBUG mode. Registration through the application creates member accounts.
 
-You can also register through the app. Moderator access cannot be selected during registration. Run `seed` without `--demo` to add only campus zones and challenge templates.
+## Commands
 
-## Tests and production build
+| Command | Purpose |
+| --- | --- |
+| `npm run check` | TypeScript validation |
+| `npm run build` | Generate the frontend build in `dist/` |
+| `npm test` | Run the Django test suite |
+| `npm run format` | Format frontend source files |
 
-```powershell
-npm run check
-npm run build
-npm test
-```
+After `npm run build`, Django serves the compiled application at [localhost:8000](http://127.0.0.1:8000/).
 
-`check` checks TypeScript. `build` creates `dist/`. With Django running, the built app is available at [http://127.0.0.1:8000/](http://127.0.0.1:8000/).
+The backend suite covers calculations, authentication, CSRF, report visibility, upload validation, moderation transitions, reward uniqueness, scenario ownership, challenge review and voting. See [Testing](docs/QA.md) for results and browser coverage.
 
-`test` runs 14 Django tests with a temporary database and image storage. They cover calculations, invalid inputs, permissions, CSRF, registration, report privacy, image validation, moderation, rewards, scenario ownership, challenge review and voting.
+## Campus model and data
 
-A fresh install, migrations, seeding and build were also checked in a separate checkout. Browser checks covered the main workflows, themes, saved preferences, dialogs and mobile layouts. Details are in [docs/QA.md](docs/QA.md).
+The geographic dataset contains 55 building footprints, 143 road/path features, 11 open/green polygons and 4 mapped tree points. A separate historical event-map view contains 28 numbered references and one virtual study area.
 
-The Three.js chunk is about 1.13 MB before gzip. The scene renders on demand, with merged roads and instanced windows. Low-power mode lowers the pixel-ratio limit. Physical low-end-device performance still needs testing.
+Building outlines are derived from OpenStreetMap. Heights use mapped values when available, mapped floor counts × 3.2 m otherwise, and a 9.6 m fallback. Facades, windows and roofs are approximate. The model does not include surveyed interiors or a complete tree inventory.
 
-## Campus data and limits
+Campus infrastructure data consists of 30 source-linked records. Published capacities retain their source dates and conflict notes. Live environmental telemetry is not connected.
 
-Building outlines come from OpenStreetMap. Heights use mapped values when present, otherwise floor count × 3.2 m, otherwise a default of 9.6 m. Windows, materials and roofs are approximate.
-
-The model still needs measured heights, current photos, interiors, courtyard holes and a complete tree inventory. Some mapped features include RV University and ongoing construction. The historical event map uses its own approximate coordinates.
-
-No live sensors are connected. Published infrastructure capacities come from dated sources. The calculator uses:
+Scenario calculations apply a linear reduction to the supplied baseline:
 
 ```text
 scenario = baseline × (1 − reduction / 100)
 ```
 
-These are hypothetical reductions. Measured baselines and a calibrated model are still needed for real-world predictions.
+Results describe the selected assumptions. They are not calibrated forecasts. See [Campus geometry](docs/GEOMETRY.md) for data sources, coordinate systems and modelling details.
 
-The repo includes 30 campus fact records with source links. Contact records and raw document archives are left out. [docs/GEOMETRY.md](docs/GEOMETRY.md) explains the geometry and assumptions.
-
-## Files
+## Repository structure
 
 ```text
-frontend/src/       Screens, styles, preferences and 3D/2D maps
-backend/config/    Django settings and routes
+frontend/src/       UI, themes, campus datasets and scene components
+backend/config/    Django configuration and URL routing
 backend/core/      Models, API, calculations, migrations and tests
-RVCE Research/data/facts.json  Public campus facts
-scripts/           Test runner, secret checks and geometry conversion
-docs/              Data assumptions and test records
-.env.example       Configuration placeholders
-Start-EcoTwin.ps1  Windows startup script
+RVCE Research/data/facts.json
+                   Campus records and source references
+scripts/           Development and data-processing utilities
+docs/              Geometry specification and test results
+public/            Static assets
 ```
 
-The main API routes are `/api/session/`, `/api/auth/<action>/`, `/api/bootstrap/`, `/api/reports/`, `/api/challenges/`, `/api/reviews/`, `/api/simulations/` and `/api/posts/`. Writes require a session and CSRF token. Moderator permissions are checked by the backend. Evidence images use endpoints with access checks.
+## Configuration
 
-## Local files and credentials
+Django reads process environment variables. The supported settings are listed in `.env.example`.
 
-Databases, uploads, sessions, logs, `.env`, generated secrets, demo passwords, key files, raw research documents and local handoff notes are excluded from GitHub. The screenshots were taken while signed out and contain no submitted evidence.
+| Variable | Purpose |
+| --- | --- |
+| `DJANGO_DEBUG` | Development mode; set to `0` for deployment |
+| `DJANGO_SECRET_KEY` | Django signing key; required in production |
+| `DJANGO_ALLOWED_HOSTS` | Allowed hostnames, comma-separated |
+| `DJANGO_CSRF_ORIGINS` | Trusted request origins, comma-separated |
+| `MEDIA_ROOT` | Persistent upload directory |
+| `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_HOST`, `POSTGRES_PORT` | PostgreSQL connection settings |
 
-Before committing:
+The default development database is SQLite. PostgreSQL configuration is available; production PostgreSQL/PostGIS integration has not been validated.
 
-```powershell
-python scripts/audit_public.py --staged
-```
+Deployment requires a Python WSGI server, HTTPS and persistent database/media storage. Build the frontend, apply migrations and seed without demo accounts. The application has not been deployed to a hosted environment.
 
-The scanner checks common token formats, key material, private paths, email addresses and excluded files. Review the diff as well; pattern checks cannot catch every possible secret. See [SECURITY.md](SECURITY.md) and [docs/PUBLICATION.md](docs/PUBLICATION.md).
+Authentication and upload handling are documented in [SECURITY.md](SECURITY.md).
 
-## Hosting
+## Attribution
 
-The source is on GitHub. The Django app has not been deployed. GitHub Pages cannot run the Python backend.
+Campus geometry: © OpenStreetMap contributors, licensed under the [Open Database License](https://www.openstreetmap.org/copyright). Source identifiers and links are included in the derived dataset.
 
-A hosted version needs a Python server, HTTPS, a database and persistent private media storage. Build the frontend, apply migrations and seed without demo accounts.
-
-Set these process environment variables:
-
-- `DJANGO_DEBUG=0`
-- `DJANGO_SECRET_KEY`
-- `DJANGO_ALLOWED_HOSTS`
-- `DJANGO_CSRF_ORIGINS`
-- `MEDIA_ROOT`
-- `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_HOST` and `POSTGRES_PORT` if using PostgreSQL
-
-`.env.example` lists the variable names and placeholders. It is not loaded automatically. Production mode requires a secret and enables secure cookies, HTTPS redirection and HSTS.
-
-SQLite is tested. PostgreSQL configuration is included, but a production PostgreSQL/PostGIS setup has not been checked. Backups, monitoring, shared throttling, account recovery and data retention still need work before a public campus rollout.
-
-## Credits
-
-Campus geometry: © OpenStreetMap contributors, under the [Open Database License](https://www.openstreetmap.org/copyright). The derived dataset includes source IDs and links.
-
-Institutional figures link to their original sources. The historical map and institutional documents retain their owners' rights. Third-party campus photos and source PDFs are not included.
-
-This is a student project, not an official RVCE service.
+Institutional records link to their original sources. The historical map remains the property of its original publisher.

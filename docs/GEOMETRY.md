@@ -1,45 +1,90 @@
-# Campus geometry and accuracy
+# Campus geometry
 
-Updated 5 November 2026. This document supersedes the original six-block-only modelling plan.
+## Sources
 
-## Geographic model
+| Dataset | Reference |
+| --- | --- |
+| Geographic boundary and features | [OpenStreetMap campus way 55685638](https://www.openstreetmap.org/way/55685638) and surrounding map extract |
+| Historical layout | 8th Mile campus event map |
 
-Source: [OpenStreetMap campus way 55685638](https://www.openstreetmap.org/way/55685638). The original OSM way/node response and surrounding area extract are retained in the local research archive and are not bundled here. The derived geographic database includes source IDs and links. The source API endpoints are `https://api.openstreetmap.org/api/0.6/way/55685638/full` and `https://www.openstreetmap.org/api/0.6/map?bbox=77.49735799999999%2C12.9204817%2C77.50393840000001%2C12.925918399999999`.
+The OSM extract was retrieved on 4 November 2026. Individual features may reflect earlier mapping.
 
-The primary OSM API succeeded after the Overpass endpoint returned HTTP 406. No authentication, paywall or TLS protection was bypassed. Data was retrieved on 4 November 2026; that retrieval date does not mean every mapped feature was surveyed then.
+`frontend/src/campus-geographic.json` contains the derived geographic dataset. `frontend/src/campus-layout.json` contains the independent historical layout.
 
-`scripts/prepare_campus.py` filters way centroids within the community-mapped campus polygon. It produces `frontend/src/campus-geographic.json`: 55 building ways, 143 road/path ways, 11 open/green ways, and 4 tree nodes. These counts describe mapped features, not an independently audited campus inventory. Shared-campus RV University buildings and construction features remain part of the source context.
+## Feature inventory
 
-The generator uses a documented local equirectangular approximation with origin at the boundary bounding-box centre. X points east, negative Z points north, and one scene unit represents 6 approximate metres. This is suitable for local visualisation, not legal boundary measurement. Latitude/longitude remain attached to database zones and their original OSM source links.
+| Feature | Count |
+| --- | --- |
+| Building footprints | 55 |
+| Roads and paths | 143 |
+| Open/green polygons | 11 |
+| Tree points | 4 |
+| Historical numbered references | 28 |
+| Virtual historical study areas | 1 |
 
-Each building uses its mapped closed-way footprint. Heights follow this order:
+The inventory includes mapped RV University buildings and construction features within the campus boundary. Tree points represent the available mapping, not the campus tree population.
 
-1. Explicit OSM `height` tag, if available and numeric.
-2. OSM `building:levels` × **assumed 3.2 metres per level**.
-3. **Assumed 9.6 metres** where height/levels are absent.
+## Coordinate system
 
-Façade colors, windows, roof appearance and unrecorded details are illustrative. Construction tagging is retained. Mapped outlines can be dated or incomplete; multipolygon courtyards/holes and interiors are not reconstructed. The four tree points do not represent the full tree population. Additional decorative tree rings were removed when geographic data became available.
+The geographic model uses a local equirectangular approximation centered on the boundary bounding box.
 
-Named blocks are mapped to stable domain IDs where identity is reasonably supported, including CSE, Civil, Admin, ECE, EEE, IEM, Library, Aerospace/ISE, AI/ML and MINGOS. Unknown buildings retain `osm-<way ID>` identifiers and explicit generic labels. Name matching is not a claim of architectural verification. Road widths use source tags where present, otherwise illustrative defaults; path connectivity is not a tested navigation/routing graph.
+```text
+x = (longitude − origin_longitude) × 111320 × cos(origin_latitude) / 6
+z = −(latitude − origin_latitude) × 111320 / 6
+```
 
-The map is a source-grounded geographic reconstruction. An **exact, current replica** still requires authorised plans, survey control points, elevation/height measurements and current façade photography or photogrammetry. Public data alone does not establish that level of fidelity.
+X points east; negative Z points north. One scene unit represents approximately 6 metres. This projection supports campus visualization, not cadastral measurement.
 
-## Historical model
+The generator retains ways whose centroids lie inside the campus polygon. Original OSM identifiers and source links remain attached to derived features.
 
-`frontend/src/campus-layout.json` digitises approximate rectangles and relationships from the one-page 8th Mile event map retained in the local research archive (not bundled). It contains all 28 legend entries plus one explicit virtual study area. Its coordinates are **map units, not metres**; it has a separate source/geometry policy and is never blended into the geographic geometry as if it were a survey.
+## Building heights
 
-Temporary event references, event parking, and neighbouring RV University context remain labeled. This historical mode is useful for comparing known place names, not for claiming current campus layout.
+Heights are assigned in this order:
 
-## Simulations and reporting
+1. Numeric OSM `height` value.
+2. OSM `building:levels` multiplied by 3.2 metres.
+3. A default height of 9.6 metres.
 
-The studio’s colored footprint is an **illustrative scenario overlay**. It indicates where a linear waste/energy/water scenario applies; it does not calculate physical pollutant dispersion, building energy physics, sunlight, rainwater hydraulics, tree growth or real emissions. Numerical results and assumptions remain accessible outside the 3D canvas.
+Mapped closed-way footprints determine the building outlines. Facades, window placement, roof details and fallback heights are approximate. Multipolygon courtyard holes and interiors are not reconstructed.
 
-Open reports associated with a mapped footprint can appear as a selectable amber 3D marker. Reports and locations also remain accessible through lists/forms and a keyboard-operable SVG map. The 2D view is independent of WebGL.
+Named features map to stable application zone IDs where a correspondence is available. Unmatched buildings retain `osm-<way ID>` identifiers. Road widths use mapped values where available and default widths otherwise. Road connectivity is not a routing network.
 
-The renderer reuses one merged road geometry and instanced windows, uses demand rendering, and limits pixel ratio to 1–1.5. Renderer diagnostics are exposed as canvas `data-*` attributes for read-only QA. Scene-owned geometries are disposed on teardown. HTML portals inside the Three.js renderer were removed after production navigation testing exposed DOM teardown errors; labels/details live in the standard React interface instead.
+## Historical layout
+
+The historical model uses approximate map units. Its coordinates are independent of the geographic projection. Temporary event locations, parking and neighboring RV University references retain their labels.
+
+The additional planting study area is virtual and does not represent a surveyed garden.
+
+## Scenario overlays
+
+The scenario overlay highlights the selected footprint and reduction percentage. Numerical results use the linear model in `backend/core/simulation.py`. The overlay does not calculate spatial dispersion, building energy demand or water flow.
+
+Reports can appear as selectable markers linked to campus zones. Location selection is also available through lists and the SVG 2D map.
+
+## Renderer
+
+The scene uses on-demand rendering, merged road geometry and instanced windows. Balanced rendering limits pixel ratio to 1–1.5; low-power mode uses 1. Scene-owned geometry is disposed on teardown.
+
+Labels and details are rendered in the React interface outside the canvas. Renderer metrics are exposed through `data-render-frames`, `data-draw-calls` and `data-triangles` canvas attributes.
+
+## Regeneration
+
+`scripts/prepare_campus.py` requires the original local source inputs:
+
+- `RVCE Research/data/osm_campus_reference.json`
+- `RVCE Research/data/osm_campus_area.osm`
+
+Source endpoints:
+
+- [Campus way and nodes](https://api.openstreetmap.org/api/0.6/way/55685638/full)
+- [Surrounding map extract](https://www.openstreetmap.org/api/0.6/map?bbox=77.49735799999999%2C12.9204817%2C77.50393840000001%2C12.925918399999999)
+
+Run the conversion script from the repository root after placing the inputs at the paths above. The committed derived dataset is sufficient to run the application.
+
+Higher geometric accuracy requires surveyed dimensions, elevation data and current photographic references.
 
 ## Attribution
 
-© OpenStreetMap contributors. OSM data and the derived geographic database are available under the [Open Database License](https://www.openstreetmap.org/copyright). The derived geographic database and derivation script are included; the raw extract stays in the local archive. This data notice does not change licensing of unrelated project code or other referenced documents.
+© OpenStreetMap contributors. The OSM-derived geographic database is available under the [Open Database License](https://www.openstreetmap.org/copyright).
 
-Historical map and institutional documents retain their original owners’ rights. Public availability is not a grant to republish sponsor artwork or arbitrary campus photographs. Wikimedia Commons metadata was inspected locally for photo references; attempted original/thumbnail downloads returned HTTP 403, so no downloaded photograph is included in the current UI.
+The historical event map remains the property of its original publisher.

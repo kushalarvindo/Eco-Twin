@@ -16,6 +16,7 @@ test-results/
 .publish/
 .agent/
 sync.md
+ANTIGRAVITY_PROMPT.md
 *.sqlite3*
 .env.*
 !.env.example

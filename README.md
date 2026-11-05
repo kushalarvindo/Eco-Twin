@@ -158,3 +158,9 @@ Authentication and upload handling are documented in [SECURITY.md](SECURITY.md).
 Campus geometry: © OpenStreetMap contributors, licensed under the [Open Database License](https://www.openstreetmap.org/copyright). Source identifiers and links are included in the derived dataset.
 
 Institutional records link to their original sources. The historical map remains the property of its original publisher.
+
+## Campus references and scenario templates
+
+The geographic explorer displays building names on hover and selection, estimated footprint areas and height provenance. Nearby Street View opens in Google Maps; coverage depends on the location. The administration detail includes a historical photograph by [Rvian00 (2009)](https://commons.wikimedia.org/wiki/File:RV_College_Admin_block.JPG), licensed under [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/), displayed with CSS cropping.
+
+Six editable templates cover waste segregation, composting, lighting, equipment shutdown, leaks and efficient water fixtures. Saved scenarios can be copied into variants. Monthly and annual projections assume constant daily inputs. Template percentages are examples, not measured intervention performance.

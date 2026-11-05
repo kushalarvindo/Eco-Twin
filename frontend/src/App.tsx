@@ -680,6 +680,9 @@ export default function App() {
             </p>
           </div>
           <h3>Geometry you can trace</h3>
+          <p>
+            Mapped campus extent: approximately {Math.round((Math.max(...geographic.boundary.map(([x]) => x)) - Math.min(...geographic.boundary.map(([x]) => x))) * 6)} m east to west and {Math.round((Math.max(...geographic.boundary.map(([, z]) => z)) - Math.min(...geographic.boundary.map(([, z]) => z))) * 6)} m north to south, measured between the outermost mapped points.
+          </p>
           <p className="muted">
             The geographic view contains 55 building footprints, 143 road/path
             features, 11 open/green polygons and 4 mapped tree points, filtered
@@ -856,6 +859,9 @@ function Explorer({
                   placeholder="Find a campus location…"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Escape") setQuery("");
+                  }}
                   aria-label="Find a campus location"
                 />
                 {query && (
@@ -1042,7 +1048,71 @@ function Explorer({
               </span>
             </div>
             <h2>{zone?.name}</h2>
+            {selected === "admin" && (
+              <p className="small-text">
+                Photo:{" "}
+                <a
+                  href="https://commons.wikimedia.org/wiki/File:RV_College_Admin_block.JPG"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Rvian00, 2009
+                </a>{" "}
+                ·{" "}
+                <a
+                  href="https://creativecommons.org/licenses/by-sa/3.0/"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  CC BY-SA 3.0
+                </a>
+                . Historical appearance.
+              </p>
+            )}
             <p>{zone?.description}</p>
+            {(() => {
+              const building = geographic.buildings.find(
+                (p) => p.id === selected,
+              );
+              if (!building) return null;
+              const area =
+                Math.abs(
+                  building.points.reduce((sum, a, i, points) => {
+                    const b = points[(i + 1) % points.length];
+                    return sum + a[0] * b[1] - b[0] * a[1];
+                  }, 0),
+                ) * 18;
+              return (
+                <div className="notice subtle">
+                  <strong>Mapped dimensions</strong>
+                  <p>
+                    Footprint: approximately {Math.round(area).toLocaleString()}{" "}
+                    m²
+                    <br />
+                    Height: {building.height_m.toFixed(1)} m<br />
+                    {building.height_basis}
+                  </p>
+                  <p>Scale: 1 model unit ≈ 6 metres.</p>
+                  <a
+                    className="text-button"
+                    target="_blank"
+                    rel="noreferrer"
+                    href={`https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${geographic.origin_lon_lat[1] - (building.centroid[1] * 6) / 111320},${geographic.origin_lon_lat[0] + (building.centroid[0] * 6) / (111320 * Math.cos((geographic.origin_lon_lat[1] * Math.PI) / 180))}`}
+                  >
+                    Open nearby Street View
+                  </a>
+                  <p>Coverage and capture date are provided by Google Maps.</p>
+                  <a
+                    className="text-button"
+                    target="_blank"
+                    rel="noreferrer"
+                    href="https://commons.wikimedia.org/wiki/Category:R.V._College_of_Engineering"
+                  >
+                    Campus photograph references
+                  </a>
+                </div>
+              );
+            })()}
             {geographic.buildings.some((p) => p.id === selected) && (
               <a
                 className="text-button geometry-source"
@@ -1295,7 +1365,10 @@ function FlatMap({
           aria-label={`Select ${p.label}`}
           onClick={() => onSelect(p.id)}
           onKeyDown={(e) => {
-            if (e.key === "Enter") onSelect(p.id);
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              onSelect(p.id);
+            }
           }}
         >
           <rect
@@ -1818,10 +1891,21 @@ function ReportModal({
           `Location ready (accuracy ±${Math.round(p.coords.accuracy)} m). Confirm this matches your observation.`,
         );
       },
-      () =>
-        setGpsStatus(
-          "Location was not shared. Choose your campus zone manually.",
-        ),
+      (err) => {
+        if (err.code === 1) {
+          setGpsStatus(
+            "Location permission was denied. Your selected campus zone will be used.",
+          );
+        } else if (err.code === 3) {
+          setGpsStatus(
+            "Location request timed out. Choose your campus zone manually.",
+          );
+        } else {
+          setGpsStatus(
+            "Location was not shared. Choose your campus zone manually.",
+          );
+        }
+      },
       { timeout: 10000, maximumAge: 0 },
     );
   }
@@ -2450,7 +2534,7 @@ function SimulationPage({
       <div className="simulation-grid">
         <section className="panel simulation-controls">
           <div className="panel-heading">
-            <h2>Your scenario</h2>
+            <h2>Scenario editor</h2>
             <button
               className="icon-button"
               aria-label="Reset scenario"
@@ -2462,7 +2546,9 @@ function SimulationPage({
                       ? "10000"
                       : "100",
                 );
-                setReduction("30");
+                setReduction(
+                  kind === "energy" ? "15" : kind === "water" ? "20" : "30",
+                );
                 dirty();
               }}
             >
@@ -2486,6 +2572,9 @@ function SimulationPage({
                       : key === "water"
                         ? "10000"
                         : "100",
+                  );
+                  setReduction(
+                    key === "energy" ? "15" : key === "water" ? "20" : "30",
                   );
                   dirty();
                 }}
@@ -2537,6 +2626,54 @@ function SimulationPage({
               Sample input from the project’s illustrative scenarios. You can
               change it.
             </small>
+            <label>
+              Scenario template
+              <select
+                defaultValue=""
+                onChange={(e) => {
+                  const presets: Record<
+                    string,
+                    [string, string, string, string]
+                  > = {
+                    segregation: ["waste", "100", "30", "Waste segregation"],
+                    compost: ["waste", "100", "50", "Organic waste composting"],
+                    lighting: ["energy", "1000", "15", "Efficient lighting"],
+                    equipment: [
+                      "energy",
+                      "1000",
+                      "10",
+                      "Equipment shutdown schedule",
+                    ],
+                    leaks: ["water", "10000", "20", "Leak reduction"],
+                    fixtures: [
+                      "water",
+                      "10000",
+                      "30",
+                      "Water-efficient fixtures",
+                    ],
+                  };
+                  const p = presets[e.target.value];
+                  if (!p) return;
+                  setKind(p[0]);
+                  setBaseline(p[1]);
+                  setReduction(p[2]);
+                  setTitle(p[3]);
+                  dirty();
+                }}
+              >
+                <option value="">Custom inputs</option>
+                <option value="segregation">Waste segregation</option>
+                <option value="compost">Composting</option>
+                <option value="lighting">Efficient lighting</option>
+                <option value="equipment">Equipment shutdown</option>
+                <option value="leaks">Leak reduction</option>
+                <option value="fixtures">Efficient water fixtures</option>
+              </select>
+              <small>
+                Templates supply editable example inputs, not measured
+                intervention effects.
+              </small>
+            </label>
             <div className="reduction-label">
               <label htmlFor="reduction">Reduction to explore</label>
               <span>{reduction}%</span>
@@ -2611,6 +2748,26 @@ function SimulationPage({
               <Suspense fallback={<Loading />}>
                 <Comparison result={result} />
               </Suspense>
+              <div className="notice subtle">
+                <strong>Projected reduction</strong>
+                <p>
+                  30 days: {num(result.saved * 30)} {result.unit.split("/")[0]}
+                  <br />
+                  365 days: {num(result.saved * 365)}{" "}
+                  {result.unit.split("/")[0]}
+                </p>
+                <meter
+                  aria-label="Reduction percentage"
+                  min={0}
+                  max={100}
+                  value={result.percent ?? 0}
+                  style={{ width: "100%" }}
+                />
+                <p>
+                  Assumes the same daily baseline and reduction throughout the
+                  period.
+                </p>
+              </div>
               <div className="comparison-numbers">
                 <div>
                   <span>Baseline</span>
@@ -2721,6 +2878,22 @@ function SimulationPage({
                 </p>
                 <span className="badge neutral">Hypothetical</span>
                 <div>
+                  <button
+                    className="text-button"
+                    onClick={() => {
+                      setZone(s.zone_id);
+                      setKind(s.kind);
+                      setBaseline(String(s.result.baseline));
+                      setReduction(String(s.result.percent ?? 0));
+                      setTitle(`${s.title} — variant`);
+                      setResult(null);
+                      notify(
+                        "Scenario copied into the editor. Change the inputs and save a new version.",
+                      );
+                    }}
+                  >
+                    Create variant
+                  </button>
                   <button
                     className="text-button"
                     onClick={() => exportScenario(s)}

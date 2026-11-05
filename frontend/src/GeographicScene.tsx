@@ -24,6 +24,41 @@ function shape(points: number[][]) {
   s.closePath();
   return s;
 }
+function BuildingName({
+  name,
+  position,
+}: {
+  name: string;
+  position: [number, number, number];
+}) {
+  const texture = useMemo(() => {
+    const canvas = document.createElement("canvas");
+    canvas.width = 1024;
+    canvas.height = 128;
+    const ctx = canvas.getContext("2d")!;
+    ctx.fillStyle = "#15251e";
+    ctx.fillRect(0, 0, 1024, 128);
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 38px sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(name, 512, 64, 980);
+    const map = new THREE.CanvasTexture(canvas);
+    map.colorSpace = THREE.SRGBColorSpace;
+    return map;
+  }, [name]);
+  useEffect(() => () => texture.dispose(), [texture]);
+  return (
+    <sprite
+      position={position}
+      scale={[28, 3.5, 1]}
+      renderOrder={100}
+      raycast={() => {}}
+    >
+      <spriteMaterial map={texture} depthTest={false} depthWrite={false} />
+    </sprite>
+  );
+}
 function Footprint({
   p,
   selected,
@@ -61,7 +96,23 @@ function Footprint({
   );
   const construction = p.tags.building === "construction";
   return (
-    <group>
+    <group
+      onPointerOver={(e) => {
+        e.stopPropagation();
+        setHover(true);
+        document.body.style.cursor = "pointer";
+      }}
+      onPointerOut={() => {
+        setHover(false);
+        document.body.style.cursor = "auto";
+      }}
+    >
+      {(hover || active) && (
+        <BuildingName
+          name={p.name}
+          position={[p.centroid[0], p.height_units + 3, p.centroid[1]]}
+        />
+      )}
       <mesh
         geometry={geometry}
         rotation={[-Math.PI / 2, 0, 0]}

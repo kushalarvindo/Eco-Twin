@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "key": "admin",
+    "author": "Rvian00",
+    "source_url": "https://commons.wikimedia.org/wiki/File:RV_College_Admin_block.JPG",
+    "license": "CC BY-SA 3.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/3.0/",
+    "year": 2009,
+    "changes": "Original image; displayed with CSS cropping."
+  }
+]

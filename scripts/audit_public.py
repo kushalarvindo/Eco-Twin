@@ -41,7 +41,7 @@ for path in paths:
         text = blob.decode('utf-8-sig')
     except UnicodeDecodeError:
         binary_count += 1
-        if path not in {'docs/qa/desktop-explorer.jpg', 'docs/qa/dark-explorer.jpg'}:
+        if path not in {'docs/qa/desktop-explorer.jpg', 'docs/qa/dark-explorer.jpg', 'public/campus/admin.jpg'}:
             failures.append((path, 'unreviewed binary'))
         continue
     # The scanner's own regex definitions are detection rules, not credentials.

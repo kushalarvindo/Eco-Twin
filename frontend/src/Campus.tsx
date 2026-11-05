@@ -89,6 +89,8 @@ function Building({
                   ? "#e0ded4"
                   : p.color
           }
+          roughness={0.7}
+          metalness={0.06}
         />
       </mesh>
       {active && (
@@ -99,13 +101,21 @@ function Building({
       )}
       {p.h > 1 && (
         <>
-          <mesh position={[0, p.h + 0.12, 0]}>
+          <mesh position={[0, p.h + 0.12, 0]} receiveShadow>
             <boxGeometry args={[p.w + 0.3, 0.25, p.d + 0.3]} />
-            <meshStandardMaterial color="#f2efe5" />
+            <meshStandardMaterial
+              color="#f2efe5"
+              roughness={0.52}
+              metalness={0.12}
+            />
           </mesh>
-          <mesh position={[0, p.h + 0.28, 0]}>
+          <mesh position={[0, p.h + 0.28, 0]} receiveShadow>
             <boxGeometry args={[p.w - 1, 0.16, p.d - 1]} />
-            <meshStandardMaterial color="#a6aaa0" />
+            <meshStandardMaterial
+              color="#a6aaa0"
+              roughness={0.6}
+              metalness={0.15}
+            />
           </mesh>
           {Array.from({ length: Math.floor(p.w / 1.3) }, (_, i) => (
             <mesh
@@ -113,7 +123,11 @@ function Building({
               position={[-p.w / 2 + 1 + i * 1.3, p.h * 0.55, p.d / 2 + 0.02]}
             >
               <boxGeometry args={[0.6, 1.3, 0.05]} />
-              <meshStandardMaterial color="#728d8a" />
+              <meshStandardMaterial
+                color="#506f75"
+                roughness={0.18}
+                metalness={0.8}
+              />
             </mesh>
           ))}
           {false &&
@@ -194,8 +208,9 @@ function CameraActions({
       makeDefault
       minZoom={2}
       maxZoom={24}
-      maxPolarAngle={Math.PI / 2.3}
-      enableDamping={false}
+      maxPolarAngle={Math.PI / 2.05}
+      enableDamping={true}
+      dampingFactor={0.06}
       target={[0, 0, 0]}
     />
   );
@@ -214,25 +229,71 @@ export default function Campus({
   const display = usePreferences();
   return (
     <Canvas
+      shadows="soft"
       orthographic
-      camera={{ position: [56, 55, 65], zoom: 6, near: 0.1, far: 400 }}
+      camera={{ position: [56, 55, 65], zoom: 6, near: 0.1, far: 450 }}
       frameloop="demand"
-      dpr={display.quality === "low" ? 1 : [1, 1.5]}
-      gl={{ antialias: true, powerPreference: "low-power" }}
+      dpr={display.quality === "low" ? 1 : [1, 2]}
+      gl={{
+        antialias: true,
+        powerPreference: "high-performance",
+        toneMapping: THREE.ACESFilmicToneMapping,
+        toneMappingExposure: display.dark ? 0.95 : 1.08,
+      }}
       onCreated={({ gl }) => {
-        gl.setClearColor("#eaf0e9");
+        gl.setClearColor(display.dark ? "#233029" : "#eaf0e9");
+        gl.shadowMap.enabled = true;
+        gl.shadowMap.type = THREE.PCFSoftShadowMap;
       }}
     >
       <ScenePalette />
-      <ambientLight intensity={display.dark ? 1.1 : 1.6} />
-      <directionalLight position={[20, 50, 20]} intensity={2.3} />
-      <mesh position={[0, -0.45, 0]}>
+      <fog
+        attach="fog"
+        args={[display.dark ? "#233029" : "#eaf0e9", 100, 320]}
+      />
+      <hemisphereLight
+        color={display.dark ? "#2d4234" : "#f0f5ff"}
+        groundColor={display.dark ? "#141c15" : "#cbd8c0"}
+        intensity={display.dark ? 0.9 : 1.25}
+      />
+      <directionalLight
+        position={[25, 55, 25]}
+        intensity={display.dark ? 1.8 : 2.3}
+        color={display.dark ? "#d6e5d3" : "#fffcf2"}
+        castShadow
+        shadow-mapSize={[1024, 1024]}
+        shadow-camera-near={10}
+        shadow-camera-far={200}
+        shadow-camera-left={-60}
+        shadow-camera-right={60}
+        shadow-camera-top={60}
+        shadow-camera-bottom={-60}
+        shadow-bias={-0.0003}
+      />
+      <directionalLight
+        position={[-30, 25, -25]}
+        intensity={display.dark ? 0.35 : 0.55}
+        color="#c2d5e5"
+      />
+      <mesh position={[0, -0.45, 0]} receiveShadow>
         <boxGeometry args={[92, 1.2, 67]} />
-        <meshStandardMaterial color="#c8d6bc" />
+        <meshStandardMaterial
+          color={display.dark ? "#1a251b" : "#c8d6bc"}
+          roughness={0.88}
+          metalness={0.04}
+        />
       </mesh>
-      <mesh position={[0, 0.2, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+      <mesh
+        position={[0, 0.2, 0]}
+        rotation={[-Math.PI / 2, 0, 0]}
+        receiveShadow
+      >
         <planeGeometry args={[90, 64]} />
-        <meshStandardMaterial color="#dde3cf" />
+        <meshStandardMaterial
+          color={display.dark ? "#202d22" : "#dde3cf"}
+          roughness={0.9}
+          metalness={0.03}
+        />
       </mesh>
       {[
         [-25.5, 0, 1.3, 60],
@@ -243,9 +304,18 @@ export default function Campus({
         [-8, 8.2, 60, 1.3],
         [-8, 21.5, 60, 1.3],
       ].map(([x, z, w, d], i) => (
-        <mesh key={i} position={[x, 0.23, z]} rotation={[-Math.PI / 2, 0, 0]}>
+        <mesh
+          key={i}
+          position={[x, 0.23, z]}
+          rotation={[-Math.PI / 2, 0, 0]}
+          receiveShadow
+        >
           <planeGeometry args={[w, d]} />
-          <meshStandardMaterial color="#f4f0e2" />
+          <meshStandardMaterial
+            color={display.dark ? "#313f33" : "#f4f0e2"}
+            roughness={0.75}
+            metalness={0.05}
+          />
         </mesh>
       ))}
 

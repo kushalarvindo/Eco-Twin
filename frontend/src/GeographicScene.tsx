@@ -36,15 +36,25 @@ function BuildingName({
   const texture = useMemo(() => {
     const canvas = document.createElement("canvas");
     canvas.width = 1024;
-    canvas.height = 128;
+    canvas.height = 140;
     const ctx = canvas.getContext("2d")!;
-    ctx.fillStyle = "#15251e";
-    ctx.fillRect(0, 0, 1024, 128);
-    ctx.fillStyle = "#ffffff";
-    ctx.font = "bold 38px sans-serif";
+    if (ctx.roundRect) {
+      ctx.beginPath();
+      ctx.roundRect(14, 14, 996, 112, 56);
+      ctx.fillStyle = "#152219f0";
+      ctx.fill();
+      ctx.lineWidth = 5;
+      ctx.strokeStyle = "#4d7a55";
+      ctx.stroke();
+    } else {
+      ctx.fillStyle = "#152219f0";
+      ctx.fillRect(14, 14, 996, 112);
+    }
+    ctx.fillStyle = "#f2f7ef";
+    ctx.font = "bold 42px sans-serif";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.fillText(name, 512, 64, 980);
+    ctx.fillText(name, 512, 70, 920);
     const map = new THREE.CanvasTexture(canvas);
     map.colorSpace = THREE.SRGBColorSpace;
     return map;
@@ -53,7 +63,7 @@ function BuildingName({
   return (
     <sprite
       position={position}
-      scale={[28, 3.5, 1]}
+      scale={[26, 3.4, 1]}
       renderOrder={100}
       raycast={() => {}}
     >
@@ -117,10 +127,27 @@ function Footprint({
           position={[p.centroid[0], p.height_units + 3, p.centroid[1]]}
         />
       )}
+      {/* Ground contact shadow plinth */}
+      <mesh
+        geometry={roof}
+        rotation={[-Math.PI / 2, 0, 0]}
+        position={[0, 0.02, 0]}
+        scale={[1.02, 1.02, 1]}
+      >
+        <meshBasicMaterial
+          color="#000000"
+          opacity={0.16}
+          transparent
+          depthWrite={false}
+        />
+      </mesh>
+      {/* Extruded building structure */}
       <mesh
         geometry={geometry}
         rotation={[-Math.PI / 2, 0, 0]}
         position={[0, 0.15, 0]}
+        castShadow
+        receiveShadow
         onClick={(e) => {
           if (e.delta > 5) return;
           e.stopPropagation();
@@ -147,42 +174,56 @@ function Footprint({
                       new THREE.Color("#467442"),
                       scenarioReduction / 100,
                     )
-                  : "#9fbd9f"
+                  : "#8db58d"
                 : hover
-                  ? "#dbc9a0"
+                  ? "#d6c39a"
                   : green
-                    ? "#d6d8cf"
+                    ? "#d1d5c7"
                     : p.id === "admin"
-                      ? "#c8dbca"
+                      ? "#c8d8c6"
                       : p.id === "cse"
-                        ? "#ddc6b2"
+                        ? "#dad0bf"
                         : construction
-                          ? "#d6c6b1"
-                          : "#d6d2c2"
+                          ? "#cfc4b0"
+                          : "#d4d4cb"
             }
+            roughness={0.72}
+            metalness={0.06}
             transparent={construction}
             opacity={construction ? 0.65 : 1}
           />
         )}
       </mesh>
+      {/* Building roof */}
       <mesh
         geometry={roof}
         rotation={[-Math.PI / 2, 0, 0]}
         position={[0, p.height_units + 0.16, 0]}
+        receiveShadow
       >
         {metric ? (
           <meshBasicMaterial color={metric.color} side={THREE.DoubleSide} />
         ) : (
           <meshStandardMaterial
-            color={active ? "#d8e7c4" : construction ? "#b4aa93" : "#f0eddf"}
+            color={active ? "#cde0bc" : construction ? "#b0a58e" : "#ece9de"}
+            roughness={0.52}
+            metalness={0.12}
             side={THREE.DoubleSide}
           />
         )}
       </mesh>
+      {/* Architectural roof coping trim */}
+      <lineSegments
+        rotation={[-Math.PI / 2, 0, 0]}
+        position={[0, p.height_units + 0.17, 0]}
+      >
+        <edgesGeometry args={[roof]} />
+        <lineBasicMaterial color={active ? "#3e6d38" : "#bac4b2"} />
+      </lineSegments>
       {active && (
         <lineSegments rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.15, 0]}>
           <edgesGeometry args={[geometry]} />
-          <lineBasicMaterial color="#4f7c42" />
+          <lineBasicMaterial color="#355e2f" />
         </lineSegments>
       )}
       {report && (
@@ -192,9 +233,14 @@ function Footprint({
             e.stopPropagation();
             onReport(report);
           }}
+          castShadow
         >
-          <sphereGeometry args={[0.55, 12, 8]} />
-          <meshBasicMaterial color="#a66c2d" />
+          <sphereGeometry args={[0.55, 16, 12]} />
+          <meshStandardMaterial
+            color="#c27329"
+            roughness={0.3}
+            metalness={0.4}
+          />
         </mesh>
       )}
     </group>
@@ -240,16 +286,20 @@ function Roads({ layer }: { layer?: string }) {
   return (
     <>
       {walkwaysGeom && (
-        <mesh geometry={walkwaysGeom}>
+        <mesh geometry={walkwaysGeom} receiveShadow>
           <meshStandardMaterial
-            color={layer === "walkways" ? "#528c5e" : "#f5f0e1"}
+            color={layer === "walkways" ? "#448151" : "#eae4d6"}
+            roughness={0.78}
+            metalness={0.04}
           />
         </mesh>
       )}
       {serviceGeom && (
-        <mesh geometry={serviceGeom}>
+        <mesh geometry={serviceGeom} receiveShadow>
           <meshStandardMaterial
-            color={layer === "walkways" ? "#ddd7c6" : "#f5f0e1"}
+            color={layer === "walkways" ? "#ccc4b2" : "#dfd8c8"}
+            roughness={0.65}
+            metalness={0.08}
           />
         </mesh>
       )}
@@ -316,8 +366,18 @@ function InfrastructurePins({
             document.body.style.cursor = "auto";
           }}
         >
-          <mesh position={[0, 0.75, 0]}>
-            <sphereGeometry args={[0.65, 14, 14]} />
+          {/* Ground Contact Shadow */}
+          <mesh position={[0, 0.05, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+            <circleGeometry args={[0.55, 12]} />
+            <meshBasicMaterial
+              color="#000000"
+              opacity={0.2}
+              transparent
+              depthWrite={false}
+            />
+          </mesh>
+          <mesh position={[0, 0.75, 0]} castShadow>
+            <sphereGeometry args={[0.65, 16, 16]} />
             <meshStandardMaterial
               color={
                 asset.category === "Energy"
@@ -333,11 +393,17 @@ function InfrastructurePins({
                     ? "#144566"
                     : "#154d2a"
               }
+              roughness={0.3}
+              metalness={0.4}
             />
           </mesh>
-          <mesh position={[0, 0.2, 0]}>
-            <cylinderGeometry args={[0.07, 0.12, 0.4, 6]} />
-            <meshBasicMaterial color="#303830" />
+          <mesh position={[0, 0.2, 0]} castShadow>
+            <cylinderGeometry args={[0.07, 0.12, 0.4, 8]} />
+            <meshStandardMaterial
+              color="#303830"
+              roughness={0.7}
+              metalness={0.2}
+            />
           </mesh>
           <BuildingName name={asset.name} position={[0, 2.2, 0]} />
         </group>
@@ -380,11 +446,41 @@ function Windows() {
   }, [windows]);
   return (
     <instancedMesh ref={ref} args={[undefined, undefined, windows.length]}>
-      <boxGeometry args={[0.22, 0.24, 0.035]} />
-      <meshStandardMaterial color="#65867d" />
+      <boxGeometry args={[0.22, 0.24, 0.04]} />
+      <meshStandardMaterial
+        color="#466575"
+        roughness={0.16}
+        metalness={0.82}
+      />
     </instancedMesh>
   );
 }
+
+const campusTrees: [number, number][] = [
+  [7.24, -5.71],
+  [22.01, -13.26],
+  [5.69, -5.37],
+  [-25.84, -24.03],
+  [-13.5, -6.9],
+  [-43.1, 7.6],
+  [-46.7, 4.5],
+  [-36.0, 16.8],
+  [-12.0, 3.5],
+  [-28.7, -15.0],
+  [-25.7, -11.9],
+  [-31.7, -18.1],
+  [-38.3, -11.4],
+  [-36.8, -9.8],
+  [-39.9, -12.9],
+  [-43.4, -6.2],
+  [-13.9, -37.0],
+  [-9.5, -32.8],
+  [-18.4, -41.3],
+  [8.7, 21.1],
+  [11.1, 22.5],
+  [6.4, 19.7],
+];
+
 function Ground() {
   const geom = useMemo(() => new THREE.ShapeGeometry(shape(data.boundary)), []);
   const greens = useMemo(
@@ -395,6 +491,7 @@ function Ground() {
       })),
     [],
   );
+  const display = usePreferences();
   useEffect(
     () => () => {
       geom.dispose();
@@ -404,28 +501,96 @@ function Ground() {
   );
   return (
     <>
-      <mesh rotation={[-Math.PI / 2, 0, 0]} geometry={geom}>
-        <meshStandardMaterial color="#dfe6d0" side={THREE.DoubleSide} />
+      {/* Expansive Horizon Ground Base */}
+      <mesh
+        rotation={[-Math.PI / 2, 0, 0]}
+        position={[0, -0.05, 0]}
+        receiveShadow
+      >
+        <planeGeometry args={[500, 500]} />
+        <meshStandardMaterial
+          color={display.dark ? "#162217" : "#e2ebe0"}
+          roughness={0.95}
+          metalness={0.02}
+        />
       </mesh>
+      {/* Campus Boundary Terrain */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} geometry={geom} receiveShadow>
+        <meshStandardMaterial
+          color={display.dark ? "#1c291d" : "#dde6cf"}
+          roughness={0.9}
+          metalness={0.04}
+          side={THREE.DoubleSide}
+        />
+      </mesh>
+      {/* Green Quadrangles & Lawns */}
       {greens.map((g) => (
         <mesh
           key={g.id}
           geometry={g.geom}
           rotation={[-Math.PI / 2, 0, 0]}
-          position={[0, 0.09, 0]}
+          position={[0, 0.08, 0]}
+          receiveShadow
         >
-          <meshStandardMaterial color="#b8ce9d" side={THREE.DoubleSide} />
+          <meshStandardMaterial
+            color={display.dark ? "#243b24" : "#94b777"}
+            roughness={0.88}
+            metalness={0.02}
+            side={THREE.DoubleSide}
+          />
         </mesh>
       ))}
-      {data.trees.map(([x, z], i) => (
+      {/* Trees */}
+      {campusTrees.map(([x, z], i) => (
         <group key={i} position={[x, 0, z]}>
-          <mesh position={[0, 0.5, 0]}>
-            <cylinderGeometry args={[0.06, 0.08, 1, 5]} />
-            <meshStandardMaterial color="#a18662" />
+          {/* Ground Contact Shadow */}
+          <mesh position={[0, 0.04, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+            <circleGeometry args={[0.65, 12]} />
+            <meshBasicMaterial
+              color="#000000"
+              opacity={0.14}
+              transparent
+              depthWrite={false}
+            />
           </mesh>
-          <mesh position={[0, 1.1, 0]}>
-            <icosahedronGeometry args={[0.55, 1]} />
-            <meshStandardMaterial color="#88a574" />
+          {/* Trunk */}
+          <mesh position={[0, 0.45, 0]} castShadow>
+            <cylinderGeometry args={[0.07, 0.1, 0.9, 6]} />
+            <meshStandardMaterial
+              color="#554435"
+              roughness={0.92}
+              metalness={0.04}
+            />
+          </mesh>
+          {/* Lower Foliage Dome */}
+          <mesh position={[0, 1.0, 0]} castShadow>
+            <dodecahedronGeometry args={[0.55, 1]} />
+            <meshStandardMaterial
+              color={
+                i % 3 === 0
+                  ? "#3f6a36"
+                  : i % 3 === 1
+                    ? "#4a783e"
+                    : "#558847"
+              }
+              roughness={0.82}
+              metalness={0.02}
+            />
+          </mesh>
+          {/* Upper Sunlit Canopy Dome */}
+          <mesh position={[0, 1.35, 0]} castShadow>
+            <dodecahedronGeometry args={[0.42, 1]} />
+            <meshStandardMaterial
+              color={
+                i % 3 === 0
+                  ? "#4e7d43"
+                  : i % 3 === 1
+                    ? "#58884c"
+                    : "#639854"
+              }
+              roughness={0.8}
+              metalness={0.02}
+            />
           </mesh>
         </group>
       ))}
@@ -486,9 +651,10 @@ function Camera({
       ref={ref}
       makeDefault
       minZoom={2}
-      maxZoom={25}
-      maxPolarAngle={Math.PI / 2.25}
-      enableDamping={false}
+      maxZoom={30}
+      maxPolarAngle={Math.PI / 2.05}
+      enableDamping={true}
+      dampingFactor={0.06}
     />
   );
 }
@@ -531,13 +697,21 @@ export default function GeographicScene({
     );
   return (
     <Canvas
+      shadows="soft"
       orthographic
-      camera={{ position: [65, 65, 80], zoom: 8, near: 0.1, far: 400 }}
+      camera={{ position: [65, 65, 80], zoom: 8, near: 0.1, far: 450 }}
       frameloop="demand"
-      dpr={display.quality === "low" ? 1 : [1, 1.5]}
-      gl={{ antialias: true, powerPreference: "low-power" }}
+      dpr={display.quality === "low" ? 1 : [1, 2]}
+      gl={{
+        antialias: true,
+        powerPreference: "high-performance",
+        toneMapping: THREE.ACESFilmicToneMapping,
+        toneMappingExposure: display.dark ? 0.95 : 1.08,
+      }}
       onCreated={({ gl }) => {
-        gl.setClearColor("#eaf0e9");
+        gl.setClearColor(display.dark ? "#233029" : "#eaf0e9");
+        gl.shadowMap.enabled = true;
+        gl.shadowMap.type = THREE.PCFSoftShadowMap;
         gl.domElement.addEventListener(
           "webglcontextlost",
           () => setLost(true),
@@ -546,8 +720,35 @@ export default function GeographicScene({
       }}
     >
       <ScenePalette />
-      <ambientLight intensity={display.dark ? 1.1 : 1.7} />
-      <directionalLight position={[-30, 65, 30]} intensity={2.2} />
+      <fog
+        attach="fog"
+        args={[display.dark ? "#233029" : "#eaf0e9", 110, 340]}
+      />
+      <hemisphereLight
+        color={display.dark ? "#2d4234" : "#f0f5ff"}
+        groundColor={display.dark ? "#141c15" : "#cbd8c0"}
+        intensity={display.dark ? 0.9 : 1.25}
+      />
+      <directionalLight
+        position={[-42, 68, 38]}
+        intensity={display.dark ? 1.8 : 2.3}
+        color={display.dark ? "#d6e5d3" : "#fffcf2"}
+        castShadow
+        shadow-mapSize={[2048, 2048]}
+        shadow-camera-near={10}
+        shadow-camera-far={240}
+        shadow-camera-left={-85}
+        shadow-camera-right={85}
+        shadow-camera-top={85}
+        shadow-camera-bottom={-85}
+        shadow-bias={-0.0003}
+        shadow-normalBias={0.02}
+      />
+      <directionalLight
+        position={[45, 30, -35]}
+        intensity={display.dark ? 0.35 : 0.55}
+        color="#c2d5e5"
+      />
       <Diagnostics />
       <Ground />
       <Roads layer={layer} />

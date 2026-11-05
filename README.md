@@ -165,4 +165,17 @@ The geographic explorer displays building names on hover and selection, estimate
 
 Six editable templates cover waste segregation, composting, lighting, equipment shutdown, leaks and efficient water fixtures. Saved scenarios can be copied into variants. Monthly and annual projections assume constant daily inputs. Template percentages are examples, not measured intervention performance.
 
-In **Campus explorer → Campus layer**, choose footprint area, estimated height, or open reports (all categories, waste, water or energy). Both maps use the same four color bands. The legend shows the number of buildings in each band and the three highest positive values. Report layers count records assigned to mapped buildings among the latest 200 reports visible to the current user.
+In **Campus explorer → Campus layer**, choose footprint area, estimated height, or open reports (all categories, waste, water or energy). Both maps use the same four color bands. The legend shows the number of buildings in each band and the three highest positive values. Report layers count records assigned to mapped buildings across all reports visible to the current user that were opened during the selected period.
+
+### Reports and electricity records
+
+The report period applies to both campus maps and the selected building. The weekly chart counts submissions by creation date and resolutions by status-change date, in campus local time. Older submissions can contribute a resolution in the selected period. The Environment page lists the geometry and photo sources for each building. The What-if studio compares up to three saved scenarios with compatible units.
+
+To load an authorised electricity log, run migrations and import a CSV from the project root using the project Python environment:
+
+```sh
+python backend/manage.py migrate
+python backend/manage.py import_electricity path/to/readings.csv
+```
+
+Use the header `zone,meter,timestamp,unit,kind,value,source`. The zone is the building ID. Supply a public-safe meter label and source description as both appear on the dashboard. Use `kWh` and a campus-midnight ISO timestamp with UTC offset (for example `2026-10-02T00:00:00+05:30`). A `daily` value is consumption during the preceding day. A `cumulative` value is the meter register at midnight. The chart derives consumption from consecutive register readings, leaves missing intervals and resets blank, and preserves measured zeroes. It shows the latest 30 days for each meter and the number of days included in each weekly sum. Reimporting identical readings is safe. A conflicting reading rolls back the whole file. Keep original logs outside the repository.

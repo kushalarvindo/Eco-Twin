@@ -68,3 +68,14 @@ class Vote(models.Model):
     user=models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
     post=models.ForeignKey(Post,on_delete=models.CASCADE,related_name='votes')
     class Meta:constraints=[models.UniqueConstraint(fields=['user','post'],name='one_vote_per_post')]
+
+class MeterReading(models.Model):
+    zone = models.ForeignKey(Zone, on_delete=models.PROTECT)
+    meter = models.CharField(max_length=80)
+    date = models.DateField()
+    reading = models.DecimalField(max_digits=14, decimal_places=3)
+    cumulative = models.BooleanField()
+    source = models.CharField(max_length=160)
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=['zone', 'meter', 'date'], name='one_meter_day')]

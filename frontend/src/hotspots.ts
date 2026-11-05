@@ -1,5 +1,4 @@
 import data from "./campus-geographic.json";
-import type { Report } from "./types";
 
 export const hotspotModes = {
   footprint: "Building footprint",
@@ -19,22 +18,11 @@ export function footprintArea(points: number[][]) {
   return Math.abs(twiceArea) * 18; // Coordinates use six metres per unit.
 }
 
-export function hotspotLayer(mode: string, reports: Report[]) {
+export function hotspotLayer(mode: string, counts: Record<string, number>) {
   if (!Object.prototype.hasOwnProperty.call(hotspotModes, mode)) return null;
   const area = mode === "footprint";
   const height = mode === "height";
   const solar = mode === "solar";
-  const category = { waste: "Waste", water: "Water", energy: "Energy" }[mode];
-  const counts = new Map<string, number>();
-  for (const r of reports) {
-    if (
-      r.status === "Rejected" ||
-      r.status === "Resolved" ||
-      (category && r.category !== category)
-    )
-      continue;
-    counts.set(r.zone, (counts.get(r.zone) ?? 0) + 1);
-  }
   const cuts = area
     ? [500, 1000, 2000]
     : height
@@ -64,7 +52,7 @@ export function hotspotLayer(mode: string, reports: Report[]) {
           ? b.height_m
           : solar
             ? Math.round(footprintArea(b.points) * 0.6 * 0.18 * 10) / 10
-            : (counts.get(b.id) ?? 0);
+            : (counts[b.id] ?? 0);
       const bin = cuts.filter((c) => value >= c).length;
       bins[bin].count++;
       return {
@@ -94,7 +82,7 @@ export function hotspotLayer(mode: string, reports: Report[]) {
         ? "Estimated heights use mapped floor counts or a default height."
         : solar
           ? "Rooftop solar capacity potential derived from mapped footprint area assuming 60% usable rooftop space and 180 Wp/m² panel rating. Campus total installed capacity is 500 kWp."
-          : "Counts open reports at mapped buildings in the latest 200 reports visible to you. Zero means no matching report in this set.",
+          : "Counts open reports at mapped buildings opened during the selected period and visible to you. Zero means no matching report in this set.",
   };
 }
 export type Hotspots = ReturnType<typeof hotspotLayer>;

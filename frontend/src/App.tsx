@@ -1,3 +1,11 @@
+import {
+  HistoryPanel,
+  Coverage,
+  Compare,
+  MeterPanel,
+  useDataset,
+  type HistoryData,
+} from "./Insights";
 import "./hotspots.css";
 import {
   hotspotLayer,
@@ -808,6 +816,19 @@ export default function App() {
   );
 }
 
+function calendarAge(timestamp: string) {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Kolkata",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+  return (
+    (Date.parse(parts.format(new Date()) + "T00:00:00Z") -
+      Date.parse(parts.format(new Date(timestamp)) + "T00:00:00Z")) /
+    86400000
+  );
+}
 function Explorer({
   factCount,
   zones,
@@ -842,12 +863,41 @@ function Explorer({
       zoom?: number;
     }>({ type: "reset", tick: 0 });
   const [walkTarget, setWalkTarget] = useState("");
-  const [activeAsset, setActiveAsset] =
-    useState<InfrastructureAsset | null>(null);
+  const [activeAsset, setActiveAsset] = useState<InfrastructureAsset | null>(
+    null,
+  );
   const navigate = useNavigate();
   const commandTo = (type: string) =>
     setCommand((c) => ({ type, tick: c.tick + 1 }));
-  const heat = useMemo(() => hotspotLayer(layer, reports), [layer, reports]);
+  const [days, setDays] = useState("30");
+  const category =
+    (
+      { water: "Water", energy: "Energy", waste: "Waste" } as Record<
+        string,
+        string
+      >
+    )[layer] || "";
+  const reportLayer = layer === "issues" || !!category;
+  const scope = [selected, days, category].join("/");
+  const [reportPage, setReportPage] = useState({ scope: "", page: 1 });
+  const page = scope === reportPage.scope ? reportPage.page : 1;
+  const history = useDataset<HistoryData>(
+    "analytics/buildings/?" +
+      new URLSearchParams({
+        zone: selected,
+        days,
+        category,
+        page: String(page),
+      }),
+    reports,
+  );
+  const heat = useMemo(
+    () =>
+      reportLayer && !history?.data
+        ? null
+        : hotspotLayer(layer, history?.data?.counts ?? {}),
+    [layer, history, reportLayer],
+  );
   const walkRoute = useMemo(
     () => (walkTarget ? calculateWalkRoute(selected, walkTarget) : null),
     [selected, walkTarget],
@@ -904,6 +954,21 @@ function Explorer({
                 2D map
               </button>
             </div>
+          </div>
+          <div className="report-controls">
+            <label>
+              Report period{" "}
+              <select value={days} onChange={(e) => setDays(e.target.value)}>
+                <option value="30">Last 30 days</option>
+                <option value="90">Last 90 days</option>
+                <option value="all">Full history</option>
+              </select>
+            </label>
+            {reportLayer && !history?.data && (
+              <small role="status">
+                {history?.error || "Loading report totals…"}
+              </small>
+            )}
           </div>
           <div className="scene-wrap">
             <div className="scene-toolbar">
@@ -993,7 +1058,12 @@ function Explorer({
                         onSelect={onSelect}
                         layer={layer}
                         command={command}
-                        reports={reports}
+                        reports={reports.filter(
+                          (r) =>
+                            (!category || r.category === category) &&
+                            (days === "all" ||
+                              calendarAge(r.created_at) < Number(days)),
+                        )}
                         onReport={onDetail}
                         walkRoute={walkRoute}
                         onSelectAsset={(asset) => setActiveAsset(asset)}
@@ -1234,6 +1304,14 @@ function Explorer({
                     Height: {building.height_m.toFixed(1)} m<br />
                     {building.height_basis}
                   </p>
+                  <p>
+                    OpenStreetMap extract · {geographic.retrieved_date}.
+                    Building name:{" "}
+                    {building.tags.name ? "mapped" : "project label"}.{" "}
+                    {selected === "admin"
+                      ? "Reference photo: 2009."
+                      : "No reference photo on file."}
+                  </p>
                   <p>Scale: 1 model unit ≈ 6 metres.</p>
                   <a
                     className="text-button"
@@ -1338,38 +1416,17 @@ function Explorer({
                       <strong>~{walkRoute.avoidedCarbonGrams} g CO₂e</strong>
                     </div>
                     <small className="muted">
-                      Direct distance {walkRoute.straightMeters} m × 1.25 walkway
-                      circuity factor @ 1.2 m/s.
+                      Direct distance {walkRoute.straightMeters} m × 1.25
+                      walkway circuity factor @ 1.2 m/s.
                     </small>
                   </div>
                 )}
               </div>
             )}
-            <div className="location-stats">
-              <span>
-                <span className="muted">Open reports</span>
-                <strong>
-                  {
-                    reports.filter(
-                      (r) =>
-                        r.zone === selected &&
-                        r.status !== "Resolved" &&
-                        r.status !== "Rejected",
-                    ).length
-                  }
-                </strong>
-              </span>
-              <span>
-                <span className="muted">Measurement feed</span>
-                <strong className="small-stat">Not connected</strong>
-              </span>
-            </div>
-            <div className="inline-notice">
-              <Info size={16} />
-              <span>
-                Environmental readings for this zone are not available yet.
-              </span>
-            </div>
+            <p>
+              <strong>Open reports in selected period</strong> ·{" "}
+              {history?.data?.counts[selected] ?? (history?.data ? 0 : "—")}
+            </p>
             <button
               className="button full"
               onClick={() => navigate(`/simulations?zone=${selected}`)}
@@ -1383,6 +1440,13 @@ function Explorer({
           </div>
         </section>
       </div>
+      <HistoryPanel
+        page={page}
+        onPage={(next) => setReportPage({ scope, page: next })}
+        name={zone.name}
+        data={history?.data}
+        error={history?.error}
+      />
       <div className="section-heading">
         <div>
           <h2>A little context, a better perspective.</h2>
@@ -1858,9 +1922,7 @@ function ReportsPage({
         {offlineReports.length > 0 && (
           <div className="notice warning offline-queue-banner">
             <div>
-              <strong>
-                {offlineReports.length} queued offline report(s)
-              </strong>
+              <strong>{offlineReports.length} queued offline report(s)</strong>
               <p className="small-text">
                 Stored in browser storage during campus fieldwork with low
                 connectivity.
@@ -1956,8 +2018,8 @@ function Dashboard({
         <Info size={20} />
         <p>
           <strong>Published infrastructure, not live measurements.</strong>{" "}
-          Capacity does not equal consumption. Current waste, water, electricity
-          and carbon readings are unavailable.
+          Capacity figures describe installed infrastructure. Imported
+          electricity records appear in the meter pilot below.
         </p>
       </div>
       <div className="metric-grid">
@@ -1987,7 +2049,7 @@ function Dashboard({
           label="Resolved reports"
           value={String(reports.filter((r) => r.status === "Resolved").length)}
           unit="reports"
-          caption="Platform records, not environmental impact"
+          caption="Among the latest 200 visible reports"
         />
       </div>
       <div className="dashboard-grid">
@@ -2069,24 +2131,8 @@ function Dashboard({
           </NavLink>
         </section>
       </div>
-      <section className="panel measurements">
-        <h2>Environmental observations</h2>
-        <div className="unavailable-grid">
-          {[
-            { label: "Waste generation", icon: Recycle },
-            { label: "Energy use", icon: Zap },
-            { label: "Water consumption", icon: WaterWaves },
-            { label: "Carbon emissions", icon: Leaf },
-          ].map(({ label, icon: Icon }) => (
-            <div key={label}>
-              <Icon size={21} />
-              <strong>{label}</strong>
-              <span>Data unavailable</span>
-              <small>No current observation connected</small>
-            </div>
-          ))}
-        </div>
-      </section>
+      <Coverage />
+      <MeterPanel />
     </>
   );
 }
@@ -3392,6 +3438,7 @@ function SimulationPage({
           </SceneBoundary>
         </div>
       </section>
+      <Compare saved={saved} />
       <section className="panel saved-scenarios">
         <div className="panel-heading">
           <h2>Your saved possibilities</h2>

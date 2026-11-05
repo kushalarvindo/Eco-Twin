@@ -16,7 +16,7 @@ from django.views.decorators.http import require_http_methods
 from rest_framework.decorators import api_view
 from rest_framework.exceptions import ValidationError,PermissionDenied,NotAuthenticated
 from rest_framework.response import Response
-from .models import Zone,Report,ReportUpdate,Reward,Challenge,Participation,Simulation,Post,Vote
+from .models import MeterReading,Zone,Report,ReportUpdate,Reward,Challenge,Participation,Simulation,Post,Vote
 from .simulation import calculate
 
 User=get_user_model()
@@ -33,7 +33,7 @@ def profile(u):
 
 @ensure_csrf_cookie
 @require_http_methods(['GET'])
-def session_view(request):return JsonResponse({'user':profile(request.user),'mode':'Local pilot','measured_data_available':False})
+def session_view(request):return JsonResponse({'user':profile(request.user),'mode':'Local pilot','measured_data_available':MeterReading.objects.exists()})
 
 @csrf_protect
 @require_http_methods(['POST'])
@@ -101,7 +101,7 @@ def bootstrap(request):
     research=settings.BASE_DIR.parent/'RVCE Research'/'data'/'facts.json'
     facts=json.loads(research.read_text(encoding='utf-8')) if research.exists() else []
     facts=[fact for fact in facts if fact.get('topic')!='contact']
-    return Response({'zones':list(Zone.objects.values()),'facts':facts,'data_notice':'No current environmental measurements are connected. Campus geometry is schematic. Published claims may be historical.'})
+    return Response({'zones':list(Zone.objects.values()),'facts':facts,'data_notice':'Electricity observations use imported meter logs. Building heights are estimated where surveyed data is unavailable.'})
 
 @api_view(['GET','POST'])
 def reports(request):

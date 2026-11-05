@@ -38,3 +38,70 @@
   padding: 0.5rem 0;
   flex-wrap: wrap;
 }
+
+.insight {
+  padding: 1.25rem;
+  margin: 1rem 0;
+  min-width: 0;
+}
+.insight h2 {
+  margin: 0 0 0.6rem;
+}
+.insight details {
+  margin: 0.75rem 0;
+}
+.insight summary {
+  cursor: pointer;
+}
+.chart-scroll,
+.insight .table-scroll {
+  overflow-x: auto;
+}
+.history-chart svg {
+  width: 100%;
+  max-height: 180px;
+}
+.history-chart text {
+  fill: currentColor;
+  font-size: 9px;
+}
+.chart-legend,
+.report-controls,
+.compare-options {
+  display: flex;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.report-controls {
+  padding: 0 1.2rem 0.8rem;
+}
+.chart-legend i {
+  width: 0.8em;
+  height: 0.8em;
+  display: inline-block;
+  margin-right: 0.3em;
+}
+.series-0 {
+  fill: #3276ad;
+  background: #3276ad;
+}
+.series-1 {
+  fill: #c27529;
+  background: #c27529;
+}
+.coverage-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+  margin: 0.55rem 0;
+}
+.coverage-row span {
+  flex: 1 1 15rem;
+}
+.compare-options input {
+  width: auto;
+  margin-right: 0.4rem;
+}

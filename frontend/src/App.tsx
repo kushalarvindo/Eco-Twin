@@ -1295,15 +1295,22 @@ function Explorer({
               if (!building) return null;
               const area = footprintArea(building.points);
               return (
-                <div className="notice subtle">
-                  <strong>Mapped dimensions</strong>
-                  <p>
-                    Footprint: approximately {Math.round(area).toLocaleString()}{" "}
-                    m²
-                    <br />
-                    Height: {building.height_m.toFixed(1)} m<br />
-                    {building.height_basis}
-                  </p>
+                <section
+                  className="mapped-dimensions"
+                  aria-label="Mapped dimensions"
+                >
+                  <h3>Mapped dimensions</h3>
+                  <dl>
+                    <div>
+                      <dt>Footprint</dt>
+                      <dd>≈ {Math.round(area).toLocaleString()} m²</dd>
+                    </div>
+                    <div>
+                      <dt>Height</dt>
+                      <dd>{building.height_m.toFixed(1)} m</dd>
+                    </div>
+                  </dl>
+                  <p>{building.height_basis}</p>
                   <p>
                     OpenStreetMap extract · {geographic.retrieved_date}.
                     Building name:{" "}
@@ -1330,7 +1337,7 @@ function Explorer({
                   >
                     Campus photograph references
                   </a>
-                </div>
+                </section>
               );
             })()}
             {geographic.buildings.some((p) => p.id === selected) && (
@@ -2131,6 +2138,52 @@ function Dashboard({
           </NavLink>
         </section>
       </div>
+      <section className="panel insight" aria-labelledby="campus-records">
+        <h2 id="campus-records">Campus records by year</h2>
+        <p>
+          Published figures and project documents. Each row uses the period and
+          campus scope of its source.
+        </p>
+        <div className="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Period</th>
+                <th>Record</th>
+                <th>Reported value</th>
+                <th>Source</th>
+              </tr>
+            </thead>
+            <tbody>
+              {facts
+                .filter((f) => f.topic === "campus_archive")
+                .sort((a, b) =>
+                  (a.source_period ?? "").localeCompare(b.source_period ?? ""),
+                )
+                .map((f) => (
+                  <tr key={f.fact_id}>
+                    <td>{f.source_period}</td>
+                    <th scope="row">{f.field}</th>
+                    <td>
+                      {typeof f.value === "number" ? num(f.value) : f.value}{" "}
+                      {f.unit}
+                    </td>
+                    <td>
+                      <a
+                        href={f.source_url}
+                        target="_blank"
+                        rel="noreferrer"
+                        aria-label={"View source for " + f.field}
+                      >
+                        Document
+                      </a>
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
       <Coverage />
       <MeterPanel />
     </>

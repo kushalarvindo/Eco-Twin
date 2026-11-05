@@ -3494,3 +3494,21 @@ td:last-child a {
     scroll-behavior: auto !important;
   }
 }
+
+.location-body { min-width: 0; }
+.mapped-dimensions {
+  display: grid;
+  grid-template-columns: minmax(0,1fr);
+  gap: .75rem;
+  padding: clamp(.875rem, 2vw, 1.25rem);
+  margin-block: 1rem;
+  border: 1px solid var(--border);
+  border-radius: .6rem;
+  background: var(--background);
+  overflow-wrap: anywhere;
+}
+.mapped-dimensions :is(h3,p,dl,dd) {margin:0;}
+.mapped-dimensions p, .mapped-dimensions dt {font-size:.85rem; line-height:1.5;}
+.mapped-dimensions dl {display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,7.5rem),1fr)); gap:.75rem;}
+.mapped-dimensions dd {font-weight:700;font-variant-numeric:tabular-nums;}
+.mapped-dimensions .text-button {justify-self:start; white-space:normal; text-align:start;}

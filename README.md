@@ -111,7 +111,7 @@ The geographic dataset contains 55 building footprints, 143 road/path features, 
 
 Building outlines are derived from OpenStreetMap. Heights use mapped values when available, mapped floor counts × 3.2 m otherwise, and a 9.6 m fallback. Facades, windows and roofs are approximate. The model does not include surveyed interiors or a complete tree inventory.
 
-Campus infrastructure data consists of 30 source-linked records. Published capacities retain their source dates and conflict notes. Live environmental telemetry is not connected.
+Campus infrastructure data consists of 37 source-linked records. Published capacities retain their source dates and conflict notes. Live environmental telemetry is not connected.
 
 Scenario calculations apply a linear reduction to the supplied baseline:
 

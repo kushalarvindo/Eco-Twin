@@ -238,10 +238,10 @@ export default function Campus({
         antialias: true,
         powerPreference: "high-performance",
         toneMapping: THREE.ACESFilmicToneMapping,
-        toneMappingExposure: display.dark ? 0.95 : 1.08,
+        toneMappingExposure: display.dark ? 1.06 : 1.08,
       }}
       onCreated={({ gl }) => {
-        gl.setClearColor(display.dark ? "#233029" : "#eaf0e9");
+        gl.setClearColor(display.dark ? "#879d9d" : "#eaf0e9");
         gl.shadowMap.enabled = true;
         gl.shadowMap.type = THREE.PCFSoftShadowMap;
       }}
@@ -249,12 +249,12 @@ export default function Campus({
       <ScenePalette />
       <fog
         attach="fog"
-        args={[display.dark ? "#233029" : "#eaf0e9", 100, 320]}
+        args={[display.dark ? "#879d9d" : "#eaf0e9", 100, 320]}
       />
       <hemisphereLight
-        color={display.dark ? "#2d4234" : "#f0f5ff"}
-        groundColor={display.dark ? "#141c15" : "#cbd8c0"}
-        intensity={display.dark ? 0.9 : 1.25}
+        color={display.dark ? "#dce8fb" : "#f0f5ff"}
+        groundColor={display.dark ? "#a6ae92" : "#cbd8c0"}
+        intensity={display.dark ? 1.5 : 1.25}
       />
       <directionalLight
         position={[25, 55, 25]}

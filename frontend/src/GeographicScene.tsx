@@ -509,7 +509,7 @@ function Ground() {
       >
         <planeGeometry args={[500, 500]} />
         <meshStandardMaterial
-          color={display.dark ? "#162217" : "#e2ebe0"}
+          color={display.dark ? "#677b78" : "#e2ebe0"}
           roughness={0.95}
           metalness={0.02}
         />
@@ -517,7 +517,7 @@ function Ground() {
       {/* Campus Boundary Terrain */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} geometry={geom} receiveShadow>
         <meshStandardMaterial
-          color={display.dark ? "#1c291d" : "#dde6cf"}
+          color={display.dark ? "#81947e" : "#dde6cf"}
           roughness={0.9}
           metalness={0.04}
           side={THREE.DoubleSide}
@@ -533,7 +533,7 @@ function Ground() {
           receiveShadow
         >
           <meshStandardMaterial
-            color={display.dark ? "#243b24" : "#94b777"}
+            color={display.dark ? "#719363" : "#94b777"}
             roughness={0.88}
             metalness={0.02}
             side={THREE.DoubleSide}
@@ -706,10 +706,10 @@ export default function GeographicScene({
         antialias: true,
         powerPreference: "high-performance",
         toneMapping: THREE.ACESFilmicToneMapping,
-        toneMappingExposure: display.dark ? 0.95 : 1.08,
+        toneMappingExposure: display.dark ? 1.06 : 1.08,
       }}
       onCreated={({ gl }) => {
-        gl.setClearColor(display.dark ? "#233029" : "#eaf0e9");
+        gl.setClearColor(display.dark ? "#879d9d" : "#eaf0e9");
         gl.shadowMap.enabled = true;
         gl.shadowMap.type = THREE.PCFSoftShadowMap;
         gl.domElement.addEventListener(
@@ -722,12 +722,12 @@ export default function GeographicScene({
       <ScenePalette />
       <fog
         attach="fog"
-        args={[display.dark ? "#233029" : "#eaf0e9", 110, 340]}
+        args={[display.dark ? "#879d9d" : "#eaf0e9", 110, 340]}
       />
       <hemisphereLight
-        color={display.dark ? "#2d4234" : "#f0f5ff"}
-        groundColor={display.dark ? "#141c15" : "#cbd8c0"}
-        intensity={display.dark ? 0.9 : 1.25}
+        color={display.dark ? "#dce8fb" : "#f0f5ff"}
+        groundColor={display.dark ? "#a6ae92" : "#cbd8c0"}
+        intensity={display.dark ? 1.5 : 1.25}
       />
       <directionalLight
         position={[-42, 68, 38]}

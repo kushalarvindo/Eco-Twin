@@ -14,10 +14,10 @@ def photo(name='evidence.png'):
     return SimpleUploadedFile(name,out.getvalue(),content_type='image/png')
 class CalculationTests(TestCase):
     def test_known_examples(self):
-        for kind,base,pct,expected in [('waste',100,30,70),('energy',1000,15,850),('water',10000,20,8000)]:
+        for kind,base,pct,expected in [('waste',100,30,70),('energy',1000,15,850),('water',10000,20,8000),('carbon',500,20,400)]:
             self.assertEqual(calculate(kind,base,pct)['scenario'],expected)
     def test_boundary_inputs(self):
-        for kind in ['waste','energy','water']:
+        for kind in ['waste','energy','water','carbon']:
             self.assertEqual(calculate(kind,100,0)['scenario'],100)
             self.assertEqual(calculate(kind,100,100)['scenario'],0)
             self.assertIsNone(calculate(kind,0,30)['percent'])
@@ -25,7 +25,7 @@ class CalculationTests(TestCase):
         for base,pct in [(-1,10),(100,-1),(100,101),(float('nan'),2),(1,float('inf')),('bad',10),(None,10)]:
             with self.subTest(base=base,pct=pct):
                 with self.assertRaises(ValueError):calculate('waste',base,pct)
-        with self.assertRaises(ValueError):calculate('carbon',100,30)
+        with self.assertRaises(ValueError):calculate('radiation',100,30)
 
 class WorkflowTests(TestCase):
     @classmethod

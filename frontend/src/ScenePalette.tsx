@@ -5,7 +5,7 @@ export default function ScenePalette() {
   const { gl, invalidate } = useThree();
   const { dark } = usePreferences();
   useEffect(() => {
-    gl.setClearColor(dark ? "#233029" : "#eaf0e9");
+    gl.setClearColor(dark ? "#879d9d" : "#eaf0e9");
     invalidate();
   }, [dark, gl, invalidate]);
   return null;

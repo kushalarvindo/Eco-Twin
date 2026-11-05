@@ -3018,7 +3018,13 @@ function SimulationPage({
     }));
   }, []);
   const unit =
-    kind === "waste" ? "kg/day" : kind === "energy" ? "kWh/day" : "L/day";
+    kind === "waste"
+      ? "kg/day"
+      : kind === "energy"
+        ? "kWh/day"
+        : kind === "water"
+          ? "L/day"
+          : "kg CO2e/day";
   const dirty = () => setResult(null);
   async function run(save = false) {
     if (save && !user) {
@@ -3098,10 +3104,18 @@ function SimulationPage({
                     ? "1000"
                     : kind === "water"
                       ? "10000"
-                      : "100",
+                      : kind === "carbon"
+                        ? "500"
+                        : "100",
                 );
                 setReduction(
-                  kind === "energy" ? "15" : kind === "water" ? "20" : "30",
+                  kind === "energy"
+                    ? "15"
+                    : kind === "water"
+                      ? "20"
+                      : kind === "carbon"
+                        ? "25"
+                        : "30",
                 );
                 dirty();
               }}
@@ -3114,6 +3128,7 @@ function SimulationPage({
               { key: "waste", label: "Waste", icon: Recycle },
               { key: "energy", label: "Energy", icon: Zap },
               { key: "water", label: "Water", icon: WaterWaves },
+              { key: "carbon", label: "Carbon", icon: Leaf },
             ].map(({ key, label, icon: Icon }) => (
               <button
                 key={key}
@@ -3125,10 +3140,18 @@ function SimulationPage({
                       ? "1000"
                       : key === "water"
                         ? "10000"
-                        : "100",
+                        : key === "carbon"
+                          ? "500"
+                          : "100",
                   );
                   setReduction(
-                    key === "energy" ? "15" : key === "water" ? "20" : "30",
+                    key === "energy"
+                      ? "15"
+                      : key === "water"
+                        ? "20"
+                        : key === "carbon"
+                          ? "25"
+                          : "30",
                   );
                   dirty();
                 }}
@@ -3236,6 +3259,24 @@ function SimulationPage({
                       "30",
                       "Water-efficient fixtures",
                     ],
+                    solar_offset: [
+                      "carbon",
+                      "500",
+                      "30",
+                      "Rooftop solar grid offset",
+                    ],
+                    ev_shuttle: [
+                      "carbon",
+                      "400",
+                      "20",
+                      "EV campus transit & carpool",
+                    ],
+                    canopy_offset: [
+                      "carbon",
+                      "300",
+                      "15",
+                      "Canopy expansion & green sinks",
+                    ],
                   };
                   const p = presets[e.target.value];
                   if (!p) return;
@@ -3247,12 +3288,23 @@ function SimulationPage({
                 }}
               >
                 <option value="">Custom inputs</option>
-                <option value="segregation">Waste segregation</option>
-                <option value="compost">Composting</option>
-                <option value="lighting">Efficient lighting</option>
-                <option value="equipment">Equipment shutdown</option>
-                <option value="leaks">Leak reduction</option>
-                <option value="fixtures">Efficient water fixtures</option>
+                <optgroup label="Waste">
+                  <option value="segregation">Waste segregation (30%)</option>
+                  <option value="compost">Composting (50%)</option>
+                </optgroup>
+                <optgroup label="Energy">
+                  <option value="lighting">Efficient lighting (15%)</option>
+                  <option value="equipment">Equipment shutdown (10%)</option>
+                </optgroup>
+                <optgroup label="Water">
+                  <option value="leaks">Leak reduction (20%)</option>
+                  <option value="fixtures">Water-efficient fixtures (30%)</option>
+                </optgroup>
+                <optgroup label="Carbon footprint">
+                  <option value="solar_offset">Rooftop solar grid offset (30%)</option>
+                  <option value="ev_shuttle">EV transit & carpool (20%)</option>
+                  <option value="canopy_offset">Canopy expansion & green sinks (15%)</option>
+                </optgroup>
               </select>
               <small>
                 Templates supply editable example inputs, not measured
@@ -3305,8 +3357,9 @@ function SimulationPage({
           <div className="formula-note">
             <Lightbulb size={18} />
             <p>
-              Scenario = baseline × (1 − reduction ÷ 100). No emission factor or
-              automatic carbon calculation is assumed.
+              {kind === "carbon"
+                ? "Carbon scenario = baseline × (1 − reduction ÷ 100). Illustrative operational GHG baseline (grid electricity CEA factor ~0.82 kg CO2e/kWh / transit fleet). Not a certified audit."
+                : "Scenario = baseline × (1 − reduction ÷ 100). Illustrative linear scenario model."}
             </p>
           </div>
         </section>
@@ -3341,6 +3394,11 @@ function SimulationPage({
                   365 days: {num(result.saved * 365)}{" "}
                   {result.unit.split("/")[0]}
                 </p>
+                {result.unit.includes("CO2e") && (
+                  <p className="small-text" style={{ marginTop: "6px" }}>
+                    <strong>Illustrative equivalents:</strong> ~{num(Math.round((result.saved * 365) / 22))} mature tree-years of carbon sequestration (~22 kg CO₂/tree/yr) or ~{num(Math.round(result.saved / 0.82))} kWh/day grid electricity offset (CEA grid baseline ~0.82 kg CO₂e/kWh).
+                  </p>
+                )}
                 <meter
                   aria-label="Reduction percentage"
                   min={0}

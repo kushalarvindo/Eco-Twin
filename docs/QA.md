@@ -7,15 +7,15 @@ Last verification: 5 November 2026.
 | Check | Result |
 | --- | --- |
 | `npm run check` | Passed |
-| `npm run build` | Passed |
-| `npm test` | 15 tests passed |
+| `npm run build` | Passed (10.11s) |
+| `npm test` | 17 tests passed |
 | Fresh dependency installation, migrations and seed | Passed |
 | Compiled frontend and asset HTTP checks | 200 responses with expected MIME types |
 | `npm audit --omit=dev` | No known vulnerabilities reported |
 
 The backend suite runs against a temporary SQLite database and media directory. It covers:
 
-- Calculation examples, boundaries and invalid/non-finite inputs.
+- Calculation examples, boundaries and invalid/non-finite inputs (waste, energy, water, and carbon footprint).
 - Session authentication, CSRF and registration permissions.
 - Pending report and image visibility.
 - Moderation transitions, assignment and rejection requirements.
@@ -25,6 +25,7 @@ The backend suite runs against a temporary SQLite database and media directory. 
 - Reported GPS coordinate privacy (visible to author and moderators; suppressed from other users and anonymous responses).
 - Challenge evidence, expiration and review.
 - Support-vote toggling.
+- Meter reading import idempotency, zero resets, rollbacks, and report analytics visibility.
 
 The installation and backend tests were repeated in a clean checkout with fresh dependencies. Bootstrap returned 81 seeded zones and 30 campus facts. Django system checks passed.
 

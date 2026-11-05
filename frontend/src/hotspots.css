@@ -1,0 +1,40 @@
+.hotspot-key {
+  padding: 1rem 1.25rem;
+}
+.hotspot-key h3,
+.hotspot-key p {
+  margin: 0 0 0.65rem;
+}
+.hotspot-key p,
+.hotspot-key small {
+  font-size: 0.83rem;
+}
+.heat-bins {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(6rem, 1fr));
+  gap: 0.65rem;
+  margin: 0.85rem 0;
+}
+.heat-bins > div {
+  display: grid;
+  gap: 0.2rem;
+}
+.heat-bins span {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.83rem;
+}
+.heat-bins i {
+  width: 0.9rem;
+  height: 0.9rem;
+  border-radius: 3px;
+  border: 1px solid #8888;
+}
+.heat-bins meter {
+  width: 100%;
+}
+.hotspot-key .zone-tabs {
+  padding: 0.5rem 0;
+  flex-wrap: wrap;
+}

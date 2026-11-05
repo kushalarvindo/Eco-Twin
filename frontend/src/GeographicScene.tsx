@@ -1,3 +1,4 @@
+import type { Hotspots } from "./hotspots";
 import { usePreferences } from "./preferences";
 import ScenePalette from "./ScenePalette";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
@@ -60,6 +61,7 @@ function BuildingName({
   );
 }
 function Footprint({
+  metric,
   p,
   selected,
   onSelect,
@@ -68,6 +70,7 @@ function Footprint({
   onReport,
   scenarioReduction,
 }: {
+  metric?: { color: string; label: string };
   p: Feature;
   selected: string;
   onSelect: (s: string) => void;
@@ -109,7 +112,7 @@ function Footprint({
     >
       {(hover || active) && (
         <BuildingName
-          name={p.name}
+          name={metric ? p.name + " · " + metric.label : p.name}
           position={[p.centroid[0], p.height_units + 3, p.centroid[1]]}
         />
       )}
@@ -132,40 +135,48 @@ function Footprint({
           document.body.style.cursor = "auto";
         }}
       >
-        <meshStandardMaterial
-          color={
-            active
-              ? scenarioReduction
-                ? new THREE.Color("#b4c6a8").lerp(
-                    new THREE.Color("#467442"),
-                    scenarioReduction / 100,
-                  )
-                : "#9fbd9f"
-              : hover
-                ? "#dbc9a0"
-                : green
-                  ? "#d6d8cf"
-                  : p.id === "admin"
-                    ? "#c8dbca"
-                    : p.id === "cse"
-                      ? "#ddc6b2"
-                      : construction
-                        ? "#d6c6b1"
-                        : "#d6d2c2"
-          }
-          transparent={construction}
-          opacity={construction ? 0.65 : 1}
-        />
+        {metric ? (
+          <meshBasicMaterial color={metric.color} />
+        ) : (
+          <meshStandardMaterial
+            color={
+              active
+                ? scenarioReduction
+                  ? new THREE.Color("#b4c6a8").lerp(
+                      new THREE.Color("#467442"),
+                      scenarioReduction / 100,
+                    )
+                  : "#9fbd9f"
+                : hover
+                  ? "#dbc9a0"
+                  : green
+                    ? "#d6d8cf"
+                    : p.id === "admin"
+                      ? "#c8dbca"
+                      : p.id === "cse"
+                        ? "#ddc6b2"
+                        : construction
+                          ? "#d6c6b1"
+                          : "#d6d2c2"
+            }
+            transparent={construction}
+            opacity={construction ? 0.65 : 1}
+          />
+        )}
       </mesh>
       <mesh
         geometry={roof}
         rotation={[-Math.PI / 2, 0, 0]}
         position={[0, p.height_units + 0.16, 0]}
       >
-        <meshStandardMaterial
-          color={active ? "#d8e7c4" : construction ? "#b4aa93" : "#f0eddf"}
-          side={THREE.DoubleSide}
-        />
+        {metric ? (
+          <meshBasicMaterial color={metric.color} side={THREE.DoubleSide} />
+        ) : (
+          <meshStandardMaterial
+            color={active ? "#d8e7c4" : construction ? "#b4aa93" : "#f0eddf"}
+            side={THREE.DoubleSide}
+          />
+        )}
       </mesh>
       {active && (
         <lineSegments rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.15, 0]}>
@@ -354,6 +365,7 @@ function Camera({ command }: { command: { type: string; tick: number } }) {
   );
 }
 export default function GeographicScene({
+  heat,
   selected,
   onSelect,
   layer,
@@ -366,6 +378,7 @@ export default function GeographicScene({
   onSelect: (s: string) => void;
   layer: string;
   command: { type: string; tick: number };
+  heat?: Hotspots;
   reports: Report[];
   onReport: (r: Report) => void;
   scenarioReduction?: number | null;
@@ -402,6 +415,7 @@ export default function GeographicScene({
       <Roads />
       {data.buildings.map((p) => (
         <Footprint
+          metric={heat?.byId.get(p.id)}
           key={p.osm_id}
           p={p}
           selected={selected}

@@ -1,3 +1,10 @@
+import "./hotspots.css";
+import {
+  hotspotLayer,
+  hotspotModes,
+  footprintArea,
+  type Hotspots,
+} from "./hotspots";
 import PreferencesPanel from "./WorkspaceSettings";
 import { usePreferences } from "./preferences";
 import {
@@ -5,6 +12,7 @@ import {
   lazy,
   Suspense,
   useCallback,
+  useMemo,
   useEffect,
   useRef,
   useState,
@@ -681,7 +689,19 @@ export default function App() {
           </div>
           <h3>Geometry you can trace</h3>
           <p>
-            Mapped campus extent: approximately {Math.round((Math.max(...geographic.boundary.map(([x]) => x)) - Math.min(...geographic.boundary.map(([x]) => x))) * 6)} m east to west and {Math.round((Math.max(...geographic.boundary.map(([, z]) => z)) - Math.min(...geographic.boundary.map(([, z]) => z))) * 6)} m north to south, measured between the outermost mapped points.
+            Mapped campus extent: approximately{" "}
+            {Math.round(
+              (Math.max(...geographic.boundary.map(([x]) => x)) -
+                Math.min(...geographic.boundary.map(([x]) => x))) *
+                6,
+            )}{" "}
+            m east to west and{" "}
+            {Math.round(
+              (Math.max(...geographic.boundary.map(([, z]) => z)) -
+                Math.min(...geographic.boundary.map(([, z]) => z))) *
+                6,
+            )}{" "}
+            m north to south, measured between the outermost mapped points.
           </p>
           <p className="muted">
             The geographic view contains 55 building footprints, 143 road/path
@@ -805,9 +825,10 @@ function Explorer({
   const navigate = useNavigate();
   const commandTo = (type: string) =>
     setCommand((c) => ({ type, tick: c.tick + 1 }));
+  const heat = useMemo(() => hotspotLayer(layer, reports), [layer, reports]);
   const fallback =
     source === "geographic" ? (
-      <GeographicMap selected={selected} onSelect={onSelect} />
+      <GeographicMap heat={heat} selected={selected} onSelect={onSelect} />
     ) : (
       <FlatMap selected={selected} onSelect={onSelect} zones={zones} />
     );
@@ -906,6 +927,7 @@ function Explorer({
                   <Suspense fallback={<Loading />}>
                     {source === "geographic" ? (
                       <GeographicScene
+                        heat={heat}
                         selected={selected}
                         onSelect={onSelect}
                         layer={layer}
@@ -933,7 +955,10 @@ function Explorer({
                 <select
                   aria-label="Model source"
                   value={source}
-                  onChange={(e) => setSource(e.target.value)}
+                  onChange={(e) => {
+                    setSource(e.target.value);
+                    setLayer("buildings");
+                  }}
                 >
                   <option value="geographic">OSM footprints</option>
                   <option value="historical">Historical map</option>
@@ -945,6 +970,15 @@ function Explorer({
                 >
                   <option value="buildings">Campus buildings</option>
                   <option value="green">Green spaces</option>
+                  {source === "geographic" && (
+                    <optgroup label="Hotspot layers">
+                      {Object.entries(hotspotModes).map(([id, name]) => (
+                        <option key={id} value={id}>
+                          {name}
+                        </option>
+                      ))}
+                    </optgroup>
+                  )}
                 </select>
               </div>
               {view === "3d" && (
@@ -974,6 +1008,51 @@ function Explorer({
               )}
             </div>
           </div>
+          {heat && (
+            <section className="hotspot-key" aria-label="Hotspot distribution">
+              <h3>
+                {heat.title} <small>({heat.unit})</small>
+              </h3>
+              <p>{heat.note}</p>
+              <div className="heat-bins">
+                {heat.bins.map((bin) => (
+                  <div key={bin.label}>
+                    <span>
+                      <i style={{ background: bin.color }} />
+                      {bin.label}
+                    </span>
+                    <meter
+                      min={0}
+                      max={geographic.buildings.length}
+                      value={bin.count}
+                      aria-label={bin.label + " building count"}
+                    />
+                    <small>{bin.count} buildings</small>
+                  </div>
+                ))}
+              </div>
+              <p>
+                <strong>Selected building</strong> ·{" "}
+                {heat.byId.get(selected)?.name ?? "Outside mapped footprints"}{" "}
+                {heat.byId.get(selected)?.label}
+              </p>
+              {heat.rows[0].value > 0 && (
+                <div>
+                  <strong>Highest values</strong>
+                  <div className="zone-tabs">
+                    {heat.rows
+                      .filter((r) => r.value > 0)
+                      .slice(0, 3)
+                      .map((r) => (
+                        <button key={r.id} onClick={() => onSelect(r.id)}>
+                          {r.name} · {r.label}
+                        </button>
+                      ))}
+                  </div>
+                </div>
+              )}
+            </section>
+          )}
           <div className="scene-caption">
             <Info size={14} />
             <span>
@@ -1075,13 +1154,7 @@ function Explorer({
                 (p) => p.id === selected,
               );
               if (!building) return null;
-              const area =
-                Math.abs(
-                  building.points.reduce((sum, a, i, points) => {
-                    const b = points[(i + 1) % points.length];
-                    return sum + a[0] * b[1] - b[0] * a[1];
-                  }, 0),
-                ) * 18;
+              const area = footprintArea(building.points);
               return (
                 <div className="notice subtle">
                   <strong>Mapped dimensions</strong>
@@ -1280,9 +1353,11 @@ function BuildingArt() {
   );
 }
 function GeographicMap({
+  heat,
   selected,
   onSelect,
 }: {
+  heat?: Hotspots;
   selected: string;
   onSelect: (s: string) => void;
 }) {
@@ -1315,9 +1390,12 @@ function GeographicMap({
         <polygon
           key={b.osm_id}
           points={b.points.map((p) => p.join(",")).join(" ")}
-          fill={selected === b.id ? "#7d9d69" : "#bfcab4"}
+          fill={
+            heat?.byId.get(b.id)?.color ??
+            (selected === b.id ? "#7d9d69" : "#bfcab4")
+          }
           stroke={selected === b.id ? "#355d38" : "#a9b59b"}
-          strokeWidth={0.2}
+          strokeWidth={selected === b.id ? 0.6 : 0.2}
           onClick={() => onSelect(b.id)}
           onKeyDown={(e) => {
             if (e.key === "Enter" || e.key === " ") {
@@ -1329,7 +1407,9 @@ function GeographicMap({
           role="button"
           aria-label={`Select ${b.name}`}
         >
-          <title>{b.name}</title>
+          <title>
+            {b.name} {heat?.byId.get(b.id)?.label}
+          </title>
         </polygon>
       ))}
     </svg>

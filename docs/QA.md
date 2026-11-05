@@ -8,7 +8,7 @@ Last verification: 5 November 2026.
 | --- | --- |
 | `npm run check` | Passed |
 | `npm run build` | Passed |
-| `npm test` | 14 tests passed |
+| `npm test` | 15 tests passed |
 | Fresh dependency installation, migrations and seed | Passed |
 | Compiled frontend and asset HTTP checks | 200 responses with expected MIME types |
 | `npm audit --omit=dev` | No known vulnerabilities reported |
@@ -21,6 +21,8 @@ The backend suite runs against a temporary SQLite database and media directory. 
 - Moderation transitions, assignment and rejection requirements.
 - Image validation, re-encoding and metadata removal.
 - Reward uniqueness and saved-scenario ownership.
+- Coordinate validation (boundary limits, non-finite values and coordinate pair requirements).
+- Reported GPS coordinate privacy (visible to author and moderators; suppressed from other users and anonymous responses).
 - Challenge evidence, expiration and review.
 - Support-vote toggling.
 

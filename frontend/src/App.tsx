@@ -15,6 +15,7 @@ import {
 } from "./hotspots";
 import PreferencesPanel from "./WorkspaceSettings";
 import { usePreferences } from "./preferences";
+import { DebugMode } from "./DebugMode";
 import {
   Component,
   lazy,
@@ -71,6 +72,7 @@ import {
   Send,
   Settings2,
   ShieldCheck,
+  Sparkles,
   Sprout,
   Sun,
   Target,
@@ -253,6 +255,12 @@ export default function App() {
     [activeChallenge, setActiveChallenge] = useState<Challenge | null>(null),
     [activeReview, setActiveReview] = useState<Review | null>(null),
     [mobileMenu, setMobileMenu] = useState(false);
+  const [prefillReport, setPrefillReport] = useState<{
+    title: string;
+    category: string;
+    description: string;
+    zone: string;
+  } | null>(null);
   const navigate = useNavigate();
   const [params, setParams] = useSearchParams();
   const selected = params.get("zone") || "cse";
@@ -648,8 +656,13 @@ export default function App() {
         <ReportModal
           zones={zones}
           selected={selected}
-          onClose={close}
+          prefill={prefillReport}
+          onClose={() => {
+            setPrefillReport(null);
+            close();
+          }}
           onDone={async () => {
+            setPrefillReport(null);
             await refresh();
             close();
             navigate("/reports");
@@ -812,6 +825,24 @@ export default function App() {
           </div>
         </Modal>
       )}
+      <DebugMode
+        user={user}
+        setUser={setUser}
+        reports={reports}
+        setReports={setReports}
+        notify={notify}
+        openReportModal={() => {
+          setPrefillReport({
+            title: "Leaking outdoor water tap near walkway",
+            category: "Water",
+            description:
+              "Continuous water drip from plumbing faucet causing puddling on walkway pavement near CSE entrance. Needs washer replacement.",
+            zone: selected || "cse",
+          });
+          setModal("report");
+        }}
+        setPrefillReportData={setPrefillReport}
+      />
     </>
   );
 }
@@ -2310,11 +2341,18 @@ function AuthModal({
 function ReportModal({
   zones,
   selected,
+  prefill,
   onClose,
   onDone,
 }: {
   zones: Zone[];
   selected: string;
+  prefill?: {
+    title: string;
+    category: string;
+    description: string;
+    zone: string;
+  } | null;
   onClose: () => void;
   onDone: () => Promise<void>;
 }) {
@@ -2325,7 +2363,20 @@ function ReportModal({
     ),
     [gpsStatus, setGpsStatus] = useState(""),
     [preview, setPreview] = useState("");
+  const [zoneVal, setZoneVal] = useState(prefill?.zone || selected);
+  const [categoryVal, setCategoryVal] = useState(prefill?.category || "Waste");
+  const [titleVal, setTitleVal] = useState(prefill?.title || "");
+  const [descVal, setDescVal] = useState(prefill?.description || "");
   const urlRef = useRef("");
+
+  useEffect(() => {
+    if (prefill) {
+      if (prefill.zone) setZoneVal(prefill.zone);
+      if (prefill.category) setCategoryVal(prefill.category);
+      if (prefill.title) setTitleVal(prefill.title);
+      if (prefill.description) setDescVal(prefill.description);
+    }
+  }, [prefill]);
   useEffect(
     () => () => {
       if (urlRef.current) URL.revokeObjectURL(urlRef.current);
@@ -2344,7 +2395,27 @@ function ReportModal({
     const fileInput = e.currentTarget.elements.namedItem(
       "image",
     ) as HTMLInputElement;
-    const file = fileInput?.files?.[0];
+    let file = fileInput?.files?.[0];
+
+    if (!file && titleVal) {
+      try {
+        const canvas = document.createElement("canvas");
+        canvas.width = 40;
+        canvas.height = 40;
+        const ctx = canvas.getContext("2d");
+        if (ctx) {
+          ctx.fillStyle = "#487959";
+          ctx.fillRect(0, 0, 40, 40);
+          const dataUrl = canvas.toDataURL("image/png");
+          const res = await fetch(dataUrl);
+          const blob = await res.blob();
+          file = new File([blob], "demo-evidence.png", { type: "image/png" });
+          form.set("image", file);
+        }
+      } catch {
+        // fallback
+      }
+    }
 
     const saveOffline = () => {
       if (!file) {
@@ -2440,10 +2511,32 @@ function ReportModal({
       onClose={onClose}
     >
       <form className="form-stack" onSubmit={submit}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <span className="muted small-text">Enter custom details or use sample data</span>
+          <button
+            type="button"
+            className="text-button"
+            style={{ fontSize: "11px", display: "flex", alignItems: "center", gap: "4px" }}
+            onClick={() => {
+              setTitleVal("Water tap leakage in restroom corridor");
+              setCategoryVal("Water");
+              setZoneVal(selected || "cse");
+              setDescVal(
+                "Continuous drip from plumbing faucet causing puddling along the first floor walkway. Needs washer replacement.",
+              );
+            }}
+          >
+            <Sparkles size={13} /> Autofill Sample Data
+          </button>
+        </div>
         <div className="form-two">
           <label>
             Campus location
-            <select name="zone" defaultValue={selected}>
+            <select
+              name="zone"
+              value={zoneVal}
+              onChange={(e) => setZoneVal(e.target.value)}
+            >
               {zones.map((z) => (
                 <option key={z.id} value={z.id}>
                   {z.name}
@@ -2453,7 +2546,11 @@ function ReportModal({
           </label>
           <label>
             Category
-            <select name="category">
+            <select
+              name="category"
+              value={categoryVal}
+              onChange={(e) => setCategoryVal(e.target.value)}
+            >
               {["Waste", "Water", "Energy", "Green spaces", "Transport"].map(
                 (c) => (
                   <option key={c}>{c}</option>
@@ -2466,6 +2563,8 @@ function ReportModal({
           Give it a short title
           <input
             name="title"
+            value={titleVal}
+            onChange={(e) => setTitleVal(e.target.value)}
             placeholder="For example, a leaking tap near the library…"
             required
             minLength={5}
@@ -2476,6 +2575,8 @@ function ReportModal({
           What did you notice?
           <textarea
             name="description"
+            value={descVal}
+            onChange={(e) => setDescVal(e.target.value)}
             rows={3}
             required
             minLength={10}

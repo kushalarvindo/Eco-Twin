@@ -3512,3 +3512,265 @@ td:last-child a {
 .mapped-dimensions dl {display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,7.5rem),1fr)); gap:.75rem;}
 .mapped-dimensions dd {font-weight:700;font-variant-numeric:tabular-nums;}
 .mapped-dimensions .text-button {justify-self:start; white-space:normal; text-align:start;}
+
+
+/* ==========================================================================
+   Interactive Hover Button & Debug Mode Panel
+   ========================================================================== */
+.debug-hover-container {
+  position: fixed;
+  bottom: 22px;
+  right: 22px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+}
+
+.debug-hover-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: var(--surface, #ffffff);
+  color: var(--text, #273620);
+  border: 1px solid var(--border, #cddcc4);
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.09);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  backdrop-filter: blur(8px);
+}
+
+.debug-hover-btn:hover {
+  background: var(--surface-hover, #f2f7ed);
+  border-color: #487959;
+  box-shadow: 0 6px 24px rgba(72, 121, 89, 0.22);
+  transform: translateY(-2px);
+}
+
+.debug-hover-btn.active {
+  background: #254630;
+  color: #f1f8ed;
+  border-color: #559e6f;
+  box-shadow: 0 6px 24px rgba(37, 70, 48, 0.35);
+}
+
+.debug-btn-content {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.debug-icon {
+  color: #487959;
+  transition: transform 0.2s ease;
+}
+
+.debug-hover-btn.active .debug-icon {
+  color: #4ade80;
+}
+
+.debug-hover-btn:hover .debug-icon {
+  transform: scale(1.15) rotate(5deg);
+}
+
+.debug-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #94a3b8;
+  display: inline-block;
+}
+
+.debug-status-dot.active {
+  background: #22c55e;
+  box-shadow: 0 0 8px #22c55e;
+  animation: pulse-dot 2s infinite;
+}
+
+@keyframes pulse-dot {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6); }
+  70% { transform: scale(1.1); box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+}
+
+.debug-hover-hint {
+  margin-left: 6px;
+  padding-left: 8px;
+  border-left: 1px solid var(--border, #cddcc4);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--muted, #64748b);
+  animation: fade-in 0.15s ease-out;
+}
+
+.debug-hover-btn.active .debug-hover-hint {
+  border-left-color: rgba(255, 255, 255, 0.25);
+  color: #cbe3ce;
+}
+
+/* Debug Tray Panel */
+.debug-panel {
+  position: fixed;
+  bottom: 68px;
+  right: 22px;
+  width: 380px;
+  max-width: calc(100vw - 32px);
+  background: var(--surface, #ffffff);
+  border: 1px solid var(--border, #cddcc4);
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+  z-index: 1000;
+  animation: slide-up 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  backdrop-filter: blur(12px);
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.debug-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.debug-panel-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--text, #273620);
+}
+
+.debug-panel-title .badge-active {
+  background: #dcfce7;
+  color: #166534;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 9999px;
+  text-transform: uppercase;
+}
+
+[data-theme="dark"] .debug-panel-title .badge-active {
+  background: #14532d;
+  color: #86efac;
+}
+
+.debug-panel-desc {
+  font-size: 12px;
+  color: var(--muted, #64748b);
+  line-height: 1.45;
+  margin: 0 0 14px 0;
+}
+
+.debug-actions-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.debug-action-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--surface-subtle, #f6faf3);
+  border: 1px solid var(--border, #d7e4d2);
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.18s ease;
+  color: var(--text, #273620);
+}
+
+.debug-action-card:hover {
+  background: var(--surface-hover, #eaf2e5);
+  border-color: #487959;
+  transform: translateX(2px);
+}
+
+.debug-action-card strong {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.debug-action-card small {
+  display: block;
+  font-size: 11px;
+  color: var(--muted, #64748b);
+  margin-top: 2px;
+}
+
+.debug-client-switcher {
+  border-top: 1px solid var(--border, #cddcc4);
+  padding-top: 12px;
+  margin-bottom: 12px;
+}
+
+.debug-client-switcher .switcher-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted, #64748b);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.client-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.client-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 10px;
+  font-size: 12px;
+  background: transparent;
+  border: 1px solid var(--border, #cddcc4);
+  border-radius: 6px;
+  color: var(--text, #273620);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.client-btn:hover {
+  background: var(--surface-hover, #f2f7ed);
+}
+
+.client-btn.active {
+  background: #487959;
+  color: white;
+  border-color: #487959;
+  font-weight: 600;
+}
+
+.debug-panel-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--border, #cddcc4);
+  padding-top: 10px;
+}

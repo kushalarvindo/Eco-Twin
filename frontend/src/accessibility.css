@@ -138,9 +138,12 @@ td,
 .geographic-map [role="button"] {
   cursor: pointer;
 }
-.geographic-map [role="button"]:focus {
+.geographic-map [role="button"]:focus,
+.geographic-map [role="button"]:focus-visible,
+.geographic-map g[role="button"]:focus rect,
+.geographic-map g[role="button"]:focus-visible rect {
   stroke: #345a2a;
-  stroke-width: 0.6;
+  stroke-width: 0.7;
   outline: none;
 }
 .location-photo {

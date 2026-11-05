@@ -17,9 +17,10 @@ class CalculationTests(TestCase):
         for kind,base,pct,expected in [('waste',100,30,70),('energy',1000,15,850),('water',10000,20,8000)]:
             self.assertEqual(calculate(kind,base,pct)['scenario'],expected)
     def test_boundary_inputs(self):
-        self.assertEqual(calculate('waste',100,0)['scenario'],100)
-        self.assertEqual(calculate('waste',100,100)['scenario'],0)
-        self.assertIsNone(calculate('waste',0,30)['percent'])
+        for kind in ['waste','energy','water']:
+            self.assertEqual(calculate(kind,100,0)['scenario'],100)
+            self.assertEqual(calculate(kind,100,100)['scenario'],0)
+            self.assertIsNone(calculate(kind,0,30)['percent'])
     def test_invalid_values(self):
         for base,pct in [(-1,10),(100,-1),(100,101),(float('nan'),2),(1,float('inf')),('bad',10),(None,10)]:
             with self.subTest(base=base,pct=pct):
@@ -74,6 +75,10 @@ class WorkflowTests(TestCase):
         data={'zone':'cse','title':'Test image input','category':'Waste','description':'This upload is not an image.','image':SimpleUploadedFile('x.png',b'not an image',content_type='image/png')}
         self.assertEqual(self.client.post('/api/reports/',data,format='multipart').status_code,400)
         data['image']=photo();data['latitude']='NaN';data['longitude']='77'
+        self.assertEqual(self.client.post('/api/reports/',data,format='multipart').status_code,400)
+        data['latitude']='95';data['longitude']='77.5'
+        self.assertEqual(self.client.post('/api/reports/',data,format='multipart').status_code,400)
+        data['latitude']='12.9';del data['longitude']
         self.assertEqual(self.client.post('/api/reports/',data,format='multipart').status_code,400)
         self.assertEqual(Report.objects.count(),0)
     def test_anonymous_write_denied(self):
@@ -135,3 +140,24 @@ class WorkflowTests(TestCase):
         c=Challenge.objects.create(title='Expired test',category='Waste',description='Test',instructions='Test',points=15,starts=date.today()-timedelta(days=10),ends=date.today()-timedelta(days=1))
         self.assertEqual(self.client.post(f'/api/challenges/{c.pk}/join/',{},format='json').status_code,400)
         self.assertEqual(Participation.objects.count(),0)
+
+    def test_report_coordinate_privacy(self):
+        res=self.client.post('/api/reports/',{'zone':'cse','title':'Report with coordinates','category':'Water','description':'Verified location data.','image':photo(),'latitude':12.9234,'longitude':77.4987},format='multipart')
+        self.assertEqual(res.status_code,201)
+        pk=res.data['id']
+        author_report=next(r for r in self.client.get('/api/reports/').data if r['id']==pk)
+        self.assertIsNotNone(author_report['coordinates'])
+        self.assertEqual(author_report['coordinates']['latitude'],12.9234)
+        self.client.force_authenticate(self.staff)
+        staff_report=next(r for r in self.client.get('/api/reports/').data if r['id']==pk)
+        self.assertIsNotNone(staff_report['coordinates'])
+        self.client.force_authenticate(self.other)
+        self.assertEqual(self.client.get('/api/reports/').data,[])
+        self.client.force_authenticate(self.staff)
+        self.client.patch(f'/api/reports/{pk}/status/',{'status':'Verified','note':'Verified observation'},format='json')
+        self.client.force_authenticate(self.other)
+        other_report=next(r for r in self.client.get('/api/reports/').data if r['id']==pk)
+        self.assertIsNone(other_report['coordinates'])
+        self.client.force_authenticate(None)
+        anon_report=next(r for r in self.client.get('/api/reports/').data if r['id']==pk)
+        self.assertIsNone(anon_report['coordinates'])

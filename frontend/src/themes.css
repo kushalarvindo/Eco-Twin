@@ -41,7 +41,8 @@
     .form-stack input:not([type="range"]),
     .form-stack select,
     .form-stack textarea,
-    .scene-label
+    .scene-label,
+    .debug-panel
   ) {
   background: #19251e;
   color: var(--text);
@@ -74,7 +75,9 @@
     .upload-label,
     .demo-help,
     .demo-help code,
-    .modal-head .icon-button
+    .modal-head .icon-button,
+    .debug-action-card,
+    .report-row-art-fallback
   ) {
   background: #263927;
   color: #dae7cb;

@@ -42,7 +42,10 @@ import {
   ArrowUpRight,
   Award,
   Bell,
+  Bike,
   BookOpen,
+  Building2,
+  Camera,
   Check,
   CheckCircle2,
   ChevronDown,
@@ -128,14 +131,16 @@ const navigation = [
   { to: "/challenges", label: "Challenges", icon: Trophy },
   { to: "/community", label: "Community", icon: Users },
 ];
-const categoryIcon = (cat: string) =>
-  cat === "Energy"
-    ? Zap
-    : cat === "Water"
-      ? WaterWaves
-      : cat === "Green spaces"
-        ? TreePine
-        : Recycle;
+const categoryIcon = (cat: string) => {
+  const c = (cat || "").toLowerCase();
+  if (c.includes("energy")) return Zap;
+  if (c.includes("water")) return WaterWaves;
+  if (c.includes("green") || c.includes("tree")) return TreePine;
+  if (c.includes("transport") || c.includes("transit") || c.includes("parking") || c.includes("bike")) return Bike;
+  if (c.includes("carbon")) return Leaf;
+  if (c.includes("waste") || c.includes("recycle")) return Recycle;
+  return Sparkles;
+};
 const statusClass = (s: string) =>
   s === "Resolved" || s === "Approved"
     ? "success"
@@ -1284,7 +1289,7 @@ function Explorer({
                 alt="Historical photograph of RVCE Administrative Block"
               />
             ) : (
-              <BuildingArt />
+              <BuildingArt zone={zone} selected={selected} />
             )}
           </div>
           <div className="location-body">
@@ -1600,26 +1605,395 @@ function Explorer({
     </>
   );
 }
-function BuildingArt() {
+function BuildingArt({
+  zone,
+  selected,
+}: {
+  zone?: Zone | null;
+  selected?: string;
+}) {
+  const name = (zone?.name || "").toLowerCase();
+  const id = (selected || zone?.id || "").toLowerCase();
+  const kind = (zone?.kind || "").toLowerCase();
+
+  // 1. CSE & Computing Department
+  if (id === "cse" || name.includes("computer science") || name.includes("cse")) {
+    return (
+      <svg className="building-art" viewBox="0 0 320 150" aria-hidden="true">
+        <ellipse cx="160" cy="130" rx="125" ry="14" fill="#bed1b7" opacity="0.7" />
+        {/* Tech Block Main Wing */}
+        <path d="m65 55 105-28 85 35-105 34Z" fill="#eff3e8" />
+        <path d="m65 55 85 41v44l-85-44Z" fill="#a8bfa2" />
+        <path d="m150 96 105-34v44l-105 34Z" fill="#cdd8c1" />
+        {/* Recessed Glass Entrance */}
+        <path d="m95 86 35 17v22l-35-17Z" fill="#2d4a3e" />
+        <path d="m102 91 22 10v14l-22-10Z" fill="#38bdf8" opacity="0.8" />
+        {/* 4 Rooftop Photovoltaic Solar Panels */}
+        <path d="m80 58 20-5 24 10-20 5Z" fill="#38bdf8" stroke="#0284c7" strokeWidth="0.8" />
+        <path d="m106 51 20-5 24 10-20 5Z" fill="#38bdf8" stroke="#0284c7" strokeWidth="0.8" />
+        <path d="m132 44 20-5 24 10-20 5Z" fill="#38bdf8" stroke="#0284c7" strokeWidth="0.8" />
+        <path d="m158 37 20-5 24 10-20 5Z" fill="#38bdf8" stroke="#0284c7" strokeWidth="0.8" />
+        {/* Server Louvers on East Facade */}
+        {[0, 1, 2, 3, 4, 5].map((i) => (
+          <path key={i} d={`m${160 + i * 14} 94 8-2.5v12l-8 2.5Z`} fill="#5a7b6b" />
+        ))}
+        {/* Digital Twin Telemetry Mast */}
+        <line x1="225" y1="62" x2="225" y2="30" stroke="#718096" strokeWidth="2" />
+        <circle cx="225" cy="28" r="3" fill="#22c55e" />
+        {/* Campus Trees */}
+        <path d="M40 120V95m245 28V98" stroke="#8d775f" strokeWidth="3.5" />
+        <ellipse cx="40" cy="85" rx="16" ry="24" fill="#65a30d" />
+        <ellipse cx="285" cy="88" rx="17" ry="25" fill="#4d7c0f" />
+      </svg>
+    );
+  }
+
+  // 2. Central Library & Information Centre
+  if (id === "library" || name.includes("library")) {
+    return (
+      <svg className="building-art" viewBox="0 0 320 150" aria-hidden="true">
+        <ellipse cx="160" cy="130" rx="125" ry="14" fill="#bed1b7" opacity="0.7" />
+        {/* Academic Library Two-Tier Structure */}
+        <path d="m70 60 95-24 90 32-95 30Z" fill="#f5f7f0" />
+        <path d="m70 60 70 36v45l-70-38Z" fill="#b4c7af" />
+        <path d="m140 96 115-38v45l-115 38Z" fill="#dce4d2" />
+        {/* Grand Arched Reading Hall Facade */}
+        <path d="m155 90 30-10v35l-30 10Z" fill="#0284c7" opacity="0.75" />
+        <path d="m192 78 30-10v35l-30 10Z" fill="#0284c7" opacity="0.75" />
+        {/* Skylight Lantern on Roof */}
+        <path d="m120 48 35-9 30 11-35 9Z" fill="#7dd3fc" stroke="#0284c7" strokeWidth="1" />
+        {/* Book Stacks Horizontal Windows */}
+        {[0, 1, 2].map((i) => (
+          <path key={i} d={`m80 ${75 + i * 12} 45 22v4l-45-22Z`} fill="#4d6b53" />
+        ))}
+        {/* Quiet Shaded Garden Courtyard */}
+        <path d="M36 122V96m250 26V98" stroke="#8d775f" strokeWidth="3.5" />
+        <ellipse cx="36" cy="86" rx="18" ry="25" fill="#4d7c0f" />
+        <ellipse cx="286" cy="88" rx="18" ry="25" fill="#65a30d" />
+      </svg>
+    );
+  }
+
+  // 3. Administration Block
+  if (id === "admin" || name.includes("admin")) {
+    return (
+      <svg className="building-art" viewBox="0 0 320 150" aria-hidden="true">
+        <ellipse cx="160" cy="130" rx="125" ry="14" fill="#bed1b7" opacity="0.7" />
+        {/* Administrative Main Wing */}
+        <path d="m60 62 100-24 100 24-100 28Z" fill="#faf6ed" />
+        <path d="m60 62 75 35v45l-75-38Z" fill="#c2b69d" />
+        <path d="m135 97 125-35v45l-125 35Z" fill="#ded5c0" />
+        {/* Neoclassical Pediment Portico */}
+        <polygon points="120,48 160,25 200,48" fill="#efe6cf" stroke="#a39073" strokeWidth="1" />
+        {/* 4 Classical Columns */}
+        <rect x="135" y="48" width="6" height="42" fill="#ffffff" />
+        <rect x="150" y="48" width="6" height="42" fill="#ffffff" />
+        <rect x="165" y="48" width="6" height="42" fill="#ffffff" />
+        <rect x="180" y="48" width="6" height="42" fill="#ffffff" />
+        {/* Central Clock Medallion */}
+        <circle cx="160" cy="38" r="6" fill="#facc15" stroke="#78350f" strokeWidth="1" />
+        {/* Ceremonial Flagpole */}
+        <line x1="160" y1="25" x2="160" y2="8" stroke="#94a3b8" strokeWidth="2" />
+        <path d="M160 8 L175 13 L160 18 Z" fill="#22c55e" />
+        {/* Landscaped Perimeter Trees */}
+        <path d="M35 125V98m255 27V98" stroke="#8d775f" strokeWidth="3.5" />
+        <ellipse cx="35" cy="88" rx="16" ry="24" fill="#15803d" />
+        <ellipse cx="290" cy="88" rx="16" ry="24" fill="#16a34a" />
+      </svg>
+    );
+  }
+
+  // 4. Food Court / MINGOS Canteen
+  if (id === "food-court" || name.includes("food") || name.includes("canteen") || name.includes("mingos")) {
+    return (
+      <svg className="building-art" viewBox="0 0 320 150" aria-hidden="true">
+        <ellipse cx="160" cy="130" rx="125" ry="14" fill="#bed1b7" opacity="0.7" />
+        {/* Octagonal Dining Pavilion Structure */}
+        <path d="m80 65 80-22 80 22-80 24Z" fill="#fed7aa" />
+        <path d="m80 65 60 30v40l-60-32Z" fill="#c27845" />
+        <path d="m140 95 100-30v40l-100 30Z" fill="#e09f67" />
+        {/* Open Air Timber Pergola Rafters */}
+        {[0, 1, 2, 3].map((i) => (
+          <line key={i} x1={95 + i * 36} y1={60 - i * 3} x2={115 + i * 36} y2={85 - i * 3} stroke="#7c2d12" strokeWidth="3" />
+        ))}
+        {/* Outdoor Cafe Parasol */}
+        <polygon points="50,92 25,104 75,104" fill="#ef4444" />
+        <line x1="50" y1="104" x2="50" y2="128" stroke="#525252" strokeWidth="2.5" />
+        <circle cx="50" cy="128" r="8" fill="#a8a29e" />
+        {/* 3-Stream Waste Segregation Station (Green, Blue, Red Bins) */}
+        <rect x="235" y="108" width="10" height="18" rx="2" fill="#16a34a" />
+        <rect x="248" y="108" width="10" height="18" rx="2" fill="#2563eb" />
+        <rect x="261" y="108" width="10" height="18" rx="2" fill="#dc2626" />
+      </svg>
+    );
+  }
+
+  // 5. Parking, Transit & Gate
+  if (id === "parking" || name.includes("parking") || name.includes("transport") || name.includes("gate") || kind.includes("transport")) {
+    return (
+      <svg className="building-art" viewBox="0 0 320 150" aria-hidden="true">
+        <ellipse cx="160" cy="130" rx="125" ry="14" fill="#bed1b7" opacity="0.7" />
+        {/* Solar-Canopy Transit Shelter */}
+        <path d="m75 55 105-24 95 24-105 24Z" fill="#38bdf8" stroke="#0284c7" strokeWidth="1.5" />
+        {/* Support Steel Stanchions */}
+        <line x1="95" y1="75" x2="95" y2="125" stroke="#475569" strokeWidth="4" />
+        <line x1="170" y1="75" x2="170" y2="128" stroke="#475569" strokeWidth="4" />
+        <line x1="250" y1="75" x2="250" y2="125" stroke="#475569" strokeWidth="4" />
+        {/* EV Smart Charging Pedestal */}
+        <rect x="120" y="98" width="14" height="28" rx="3" fill="#22c55e" />
+        <circle cx="127" cy="106" r="3" fill="#ffffff" />
+        {/* Parked Commuter Bicycles */}
+        <circle cx="205" cy="118" r="9" fill="none" stroke="#64748b" strokeWidth="2" />
+        <circle cx="225" cy="118" r="9" fill="none" stroke="#64748b" strokeWidth="2" />
+        <line x1="205" y1="118" x2="215" y2="105" stroke="#64748b" strokeWidth="2" />
+        <line x1="225" y1="118" x2="215" y2="105" stroke="#64748b" strokeWidth="2" />
+      </svg>
+    );
+  }
+
+  // 6. Botanical Garden / Pilot Green Space
+  if (id === "garden" || kind.includes("green") || name.includes("garden") || name.includes("green space")) {
+    return (
+      <svg className="building-art" viewBox="0 0 320 150" aria-hidden="true">
+        <ellipse cx="160" cy="130" rx="130" ry="16" fill="#86efac" opacity="0.6" />
+        {/* Winding Stone Garden Walkway */}
+        <path d="M40 135 Q140 100 280 135" stroke="#d6d3d1" strokeWidth="12" fill="none" strokeLinecap="round" />
+        {/* Mature Neem / Gulmohar Canopy Layer */}
+        <path d="M70 120 V80" stroke="#78350f" strokeWidth="6" />
+        <ellipse cx="70" cy="65" rx="32" ry="32" fill="#15803d" />
+        <ellipse cx="55" cy="55" rx="24" ry="24" fill="#22c55e" />
+        {/* Center Flowering Canopy Tree */}
+        <path d="M165 125 V75" stroke="#78350f" strokeWidth="7" />
+        <ellipse cx="165" cy="55" rx="38" ry="36" fill="#16a34a" />
+        <ellipse cx="185" cy="48" rx="26" ry="26" fill="#86efac" />
+        <circle cx="155" cy="50" r="4" fill="#f43f5e" />
+        <circle cx="175" cy="42" r="4" fill="#f43f5e" />
+        {/* Right Canopy Tree */}
+        <path d="M255 120 V85" stroke="#78350f" strokeWidth="5" />
+        <ellipse cx="255" cy="70" rx="28" ry="28" fill="#15803d" />
+        <ellipse cx="240" cy="60" rx="20" ry="20" fill="#4ade80" />
+      </svg>
+    );
+  }
+
+  // 7. Mechanical / Civil / Biotech / Labs / Other Specialized Departments
+  const isMech = name.includes("mech") || name.includes("workshop");
+  const isBiotech = name.includes("biotech") || name.includes("chem");
+  const isSports = name.includes("sport") || name.includes("gym") || name.includes("ground");
+
+  if (isSports) {
+    return (
+      <svg className="building-art" viewBox="0 0 320 150" aria-hidden="true">
+        <ellipse cx="160" cy="130" rx="125" ry="14" fill="#bed1b7" opacity="0.7" />
+        {/* Curved Barrel Roof Arena */}
+        <path d="M70 70 Q160 30 250 70 L250 115 L70 115 Z" fill="#e2e8f0" />
+        <path d="M70 70 Q160 30 250 70" fill="none" stroke="#0284c7" strokeWidth="4" />
+        {/* Running Track Markings */}
+        <path d="M40 135 Q160 115 280 135" stroke="#ea580c" strokeWidth="8" fill="none" />
+        <path d="M40 142 Q160 122 280 142" stroke="#ffffff" strokeWidth="1.5" fill="none" strokeDasharray="6 4" />
+        {/* Stadium Floodlight */}
+        <line x1="285" y1="125" x2="285" y2="40" stroke="#64748b" strokeWidth="3" />
+        <polygon points="275,40 295,40 285,30" fill="#facc15" />
+      </svg>
+    );
+  }
+
+  // Default Campus Building with rich architectural details
   return (
     <svg className="building-art" viewBox="0 0 300 145" aria-hidden="true">
-      <ellipse cx="156" cy="124" rx="108" ry="12" fill="#bed1b7" />
+      <ellipse cx="156" cy="124" rx="108" ry="12" fill="#bed1b7" opacity="0.7" />
+      {/* Isometric Building Body */}
       <path d="m70 53 98-27 76 33-97 32Z" fill="#eff0db" />
       <path d="m70 53 77 38v48L70 99Z" fill="#b3c6ae" />
       <path d="m147 91 97-32v48l-97 32Z" fill="#d5dec4" />
       <path d="m84 56 84-23 62 27-83 27Z" fill="#8da899" />
+      {/* Windows & Louvers */}
       {[0, 1, 2, 3, 4].map((i) => (
         <path key={i} d={`m${158 + i * 16} 94 8-3v13l-8 3Z`} fill="#64887b" />
       ))}
       <path d="m100 81 12 6v16l-12-6Z" fill="#64887b" />
       <path d="m77 103 62 33v4l-62-33Z" fill="#7b9578" />
-      <path d="m177 43 22-6 27 12-23 7Z" fill="#527587" />
-      <path d="m151 50 22-6 27 12-23 7Z" fill="#527587" />
-      <path d="m125 57 22-6 27 12-23 7Z" fill="#527587" />
+      {/* 3 Rooftop Solar PV Panels */}
+      <path d="m177 43 22-6 27 12-23 7Z" fill="#38bdf8" stroke="#0284c7" strokeWidth="0.8" />
+      <path d="m151 50 22-6 27 12-23 7Z" fill="#38bdf8" stroke="#0284c7" strokeWidth="0.8" />
+      <path d="m125 57 22-6 27 12-23 7Z" fill="#38bdf8" stroke="#0284c7" strokeWidth="0.8" />
+      {/* Campus Trees */}
       <path d="M47 113V82m218 36V87" stroke="#9b8268" strokeWidth="4" />
       <ellipse cx="47" cy="76" rx="16" ry="22" fill="#8ba477" />
       <ellipse cx="265" cy="81" rx="17" ry="24" fill="#9cb88a" />
     </svg>
+  );
+}
+
+function ReportEvidenceArt({ report: r }: { report: Report }) {
+  const cat = (r.category || "").toLowerCase();
+  const themeColor = cat.includes("water")
+    ? "#38bdf8"
+    : cat.includes("waste")
+      ? "#f59e0b"
+      : cat.includes("energy")
+        ? "#eab308"
+        : cat.includes("green")
+          ? "#4ade80"
+          : cat.includes("transport")
+            ? "#60a5fa"
+            : cat.includes("carbon")
+              ? "#34d399"
+              : "#a3e635";
+
+  return (
+    <div className="report-evidence-container">
+      <svg
+        className="report-evidence-svg"
+        viewBox="0 0 500 240"
+        aria-label={`Evidence graphic for ${r.title}`}
+      >
+        <defs>
+          <linearGradient id={`grad-${r.id}`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#1e2d23" />
+            <stop offset="100%" stopColor="#121b15" />
+          </linearGradient>
+          <pattern
+            id={`grid-${r.id}`}
+            width="20"
+            height="20"
+            patternUnits="userSpaceOnUse"
+          >
+            <path
+              d="M 20 0 L 0 0 0 20"
+              fill="none"
+              stroke="#2a3d30"
+              strokeWidth="0.8"
+            />
+          </pattern>
+        </defs>
+        <rect width="500" height="240" fill={`url(#grad-${r.id})`} />
+        <rect
+          width="500"
+          height="240"
+          fill={`url(#grid-${r.id})`}
+          opacity="0.6"
+        />
+        {/* Radar Reticle Target */}
+        <circle
+          cx="250"
+          cy="115"
+          r="70"
+          fill="none"
+          stroke={themeColor}
+          strokeWidth="1.5"
+          strokeDasharray="4 4"
+          opacity="0.4"
+        />
+        <circle
+          cx="250"
+          cy="115"
+          r="50"
+          fill={themeColor}
+          fillOpacity="0.08"
+          stroke={themeColor}
+          strokeWidth="1.5"
+        />
+        <line
+          x1="250"
+          y1="35"
+          x2="250"
+          y2="195"
+          stroke={themeColor}
+          strokeWidth="1"
+          strokeDasharray="2 3"
+          opacity="0.3"
+        />
+        <line
+          x1="170"
+          y1="115"
+          x2="330"
+          y2="115"
+          stroke={themeColor}
+          strokeWidth="1"
+          strokeDasharray="2 3"
+          opacity="0.3"
+        />
+        {/* Center Target Box */}
+        <rect
+          x="220"
+          y="85"
+          width="60"
+          height="60"
+          rx="8"
+          fill="#1b2820"
+          stroke={themeColor}
+          strokeWidth="2"
+        />
+        <circle cx="250" cy="115" r="14" fill="none" stroke={themeColor} strokeWidth="2.5" />
+        <circle cx="250" cy="115" r="4" fill={themeColor} />
+        {/* HUD Top Bar */}
+        <rect
+          x="18"
+          y="14"
+          width="240"
+          height="28"
+          rx="4"
+          fill="#000000"
+          fillOpacity="0.55"
+          stroke={themeColor}
+          strokeWidth="1"
+        />
+        <circle cx="28" cy="28" r="4" fill={themeColor} />
+        <text
+          x="38"
+          y="32"
+          fill="#e2ece1"
+          fontFamily="system-ui, sans-serif"
+          fontSize="10"
+          fontWeight="bold"
+          letterSpacing="0.8"
+        >
+          OFFICIAL OBSERVATION EVIDENCE
+        </text>
+        {/* HUD Bottom Info */}
+        <rect
+          x="18"
+          y="196"
+          width="464"
+          height="32"
+          rx="5"
+          fill="#000000"
+          fillOpacity="0.65"
+          stroke="#344638"
+          strokeWidth="1"
+        />
+        <text
+          x="30"
+          y="216"
+          fill="#86efac"
+          fontFamily="system-ui, sans-serif"
+          fontSize="11"
+          fontWeight="bold"
+        >
+          {r.zone_name.toUpperCase()}
+        </text>
+        <text
+          x="180"
+          y="216"
+          fill="#a4b89e"
+          fontFamily="system-ui, sans-serif"
+          fontSize="10"
+        >
+          REPORT #{r.id} · {r.category}
+        </text>
+        <text
+          x="470"
+          y="216"
+          fill="#cbd5e1"
+          fontFamily="system-ui, sans-serif"
+          fontSize="10"
+          textAnchor="end"
+        >
+          {date(r.created_at)}
+        </text>
+      </svg>
+    </div>
   );
 }
 function GeographicMap({
@@ -1842,11 +2216,22 @@ function ReportRow({
   const Icon = categoryIcon(r.category);
   return (
     <button className="report-row" onClick={onClick}>
-      <span
-        className={`round-icon cat-${r.category.toLowerCase().replaceAll(" ", "-")}`}
-      >
-        <Icon size={20} />
-      </span>
+      {r.image ? (
+        <img
+          src={r.image}
+          alt=""
+          className="report-row-thumb"
+          width={44}
+          height={44}
+          loading="lazy"
+        />
+      ) : (
+        <span
+          className={`round-icon cat-${r.category.toLowerCase().replaceAll(" ", "-")}`}
+        >
+          <Icon size={20} />
+        </span>
+      )}
       <span className="report-row-copy">
         <strong>{r.title}</strong>
         <small>
@@ -2706,13 +3091,17 @@ function ReportModalDetail({
     >
       <div className="report-detail-grid">
         <div>
-          <img
-            className="report-photo"
-            src={r.image}
-            alt={`Evidence for ${r.title}`}
-            width={500}
-            height={330}
-          />
+          {r.image ? (
+            <img
+              className="report-photo"
+              src={r.image}
+              alt={`Evidence for ${r.title}`}
+              width={500}
+              height={330}
+            />
+          ) : (
+            <ReportEvidenceArt report={r} />
+          )}
           <div className="inline-between">
             <span className={`badge ${statusClass(r.status)}`}>{r.status}</span>
             <span className="muted small-text">{r.category}</span>

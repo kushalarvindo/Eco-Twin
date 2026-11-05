@@ -9,6 +9,7 @@ import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 import * as THREE from "three";
 import data from "./campus-geographic.json";
 import type { Report } from "./types";
+import { campusInfrastructure, type InfrastructureAsset } from "./campus-features";
 type Feature = (typeof data.buildings)[number];
 function Diagnostics() {
   const frames = useRef(0);
@@ -199,10 +200,15 @@ function Footprint({
     </group>
   );
 }
-function Roads() {
-  const geometry = useMemo(() => {
-    const chunks: THREE.BufferGeometry[] = [];
+function Roads({ layer }: { layer?: string }) {
+  const { walkwaysGeom, serviceGeom } = useMemo(() => {
+    const walkChunks: THREE.BufferGeometry[] = [];
+    const serviceChunks: THREE.BufferGeometry[] = [];
     for (const road of data.roads) {
+      const isWalkway = ["footway", "pedestrian", "path", "steps"].includes(
+        road.tags.highway || "",
+      );
+      const target = isWalkway ? walkChunks : serviceChunks;
       for (let i = 1; i < road.points.length; i++) {
         const [ax, az] = road.points[i - 1],
           [bx, bz] = road.points[i];
@@ -213,24 +219,131 @@ function Roads() {
         const g = new THREE.BoxGeometry(length, 0.025, road.width_units);
         g.rotateY(-Math.atan2(dz, dx));
         g.translate((ax + bx) / 2, 0.12, (az + bz) / 2);
-        chunks.push(g);
+        target.push(g);
       }
     }
-    const combined = mergeGeometries(chunks);
-    chunks.forEach((g) => g.dispose());
-    return combined;
+    const walkwaysGeom = walkChunks.length ? mergeGeometries(walkChunks) : null;
+    const serviceGeom = serviceChunks.length ? mergeGeometries(serviceChunks) : null;
+    walkChunks.forEach((g) => g.dispose());
+    serviceChunks.forEach((g) => g.dispose());
+    return { walkwaysGeom, serviceGeom };
   }, []);
+
   useEffect(
     () => () => {
-      geometry?.dispose();
+      walkwaysGeom?.dispose();
+      serviceGeom?.dispose();
     },
-    [geometry],
+    [walkwaysGeom, serviceGeom],
   );
-  return geometry ? (
-    <mesh geometry={geometry}>
-      <meshStandardMaterial color="#f5f0e1" />
-    </mesh>
-  ) : null;
+
+  return (
+    <>
+      {walkwaysGeom && (
+        <mesh geometry={walkwaysGeom}>
+          <meshStandardMaterial
+            color={layer === "walkways" ? "#528c5e" : "#f5f0e1"}
+          />
+        </mesh>
+      )}
+      {serviceGeom && (
+        <mesh geometry={serviceGeom}>
+          <meshStandardMaterial
+            color={layer === "walkways" ? "#ddd7c6" : "#f5f0e1"}
+          />
+        </mesh>
+      )}
+    </>
+  );
+}
+
+function WalkRouteLine({
+  route,
+}: {
+  route?: { from: { centroid: number[] }; to: { centroid: number[] } } | null;
+}) {
+  const lineObj = useMemo(() => {
+    if (!route) return null;
+    const p1 = new THREE.Vector3(
+      route.from.centroid[0],
+      0.35,
+      route.from.centroid[1],
+    );
+    const p2 = new THREE.Vector3(
+      route.to.centroid[0],
+      0.35,
+      route.to.centroid[1],
+    );
+    const geom = new THREE.BufferGeometry().setFromPoints([p1, p2]);
+    const mat = new THREE.LineBasicMaterial({
+      color: 0x2d7742,
+    });
+    return new THREE.Line(geom, mat);
+  }, [route]);
+
+  useEffect(
+    () => () => {
+      lineObj?.geometry.dispose();
+      (lineObj?.material as THREE.Material)?.dispose();
+    },
+    [lineObj],
+  );
+
+  if (!lineObj) return null;
+  return <primitive object={lineObj} />;
+}
+
+function InfrastructurePins({
+  onSelectAsset,
+}: {
+  onSelectAsset?: (asset: InfrastructureAsset) => void;
+}) {
+  return (
+    <group>
+      {campusInfrastructure.map((asset) => (
+        <group
+          key={asset.id}
+          position={asset.position}
+          onClick={(e) => {
+            e.stopPropagation();
+            onSelectAsset?.(asset);
+          }}
+          onPointerOver={(e) => {
+            e.stopPropagation();
+            document.body.style.cursor = "pointer";
+          }}
+          onPointerOut={() => {
+            document.body.style.cursor = "auto";
+          }}
+        >
+          <mesh position={[0, 0.75, 0]}>
+            <sphereGeometry args={[0.65, 14, 14]} />
+            <meshStandardMaterial
+              color={
+                asset.category === "Energy"
+                  ? "#d67c29"
+                  : asset.category === "Water"
+                    ? "#3577a3"
+                    : "#358a52"
+              }
+              emissive={
+                asset.category === "Energy"
+                  ? "#784210"
+                  : asset.category === "Water"
+                    ? "#144566"
+                    : "#154d2a"
+              }
+            />
+          </mesh>
+          <mesh position={[0, 0.2, 0]}>
+            <cylinderGeometry args={[0.07, 0.12, 0.4, 6]} />
+            <meshBasicMaterial color="#303830" />
+          </mesh>
+          <BuildingName name={asset.name} position={[0, 2.2, 0]} />
+        </group>
+      ))}
+    </group>
+  );
 }
 function Windows() {
   const windows = useMemo(() => {
@@ -319,7 +432,17 @@ function Ground() {
     </>
   );
 }
-function Camera({ command }: { command: { type: string; tick: number } }) {
+function Camera({
+  command,
+}: {
+  command: {
+    type: string;
+    tick: number;
+    position?: [number, number, number];
+    target?: [number, number, number];
+    zoom?: number;
+  };
+}) {
   const ref = useRef<Controls>(null);
   const { camera, size, invalidate, gl } = useThree();
   useEffect(() => {
@@ -330,19 +453,24 @@ function Camera({ command }: { command: { type: string; tick: number } }) {
   useEffect(() => {
     const c = ref.current;
     if (!c) return;
-    if (command.type === "reset") {
+    if (command.type === "viewpoint" && command.position && command.target) {
+      camera.position.set(...command.position);
+      c.target.set(...command.target);
+      if (command.zoom) camera.zoom = command.zoom;
+    } else if (command.type === "reset") {
       camera.position.set(65, 65, 80);
       camera.zoom = Math.max(2.6, Math.min(10, size.width / 95));
       c.target.set(0, 0, 0);
     } else if (command.type === "top") {
       camera.position.set(0, 110, 0.1);
       c.target.set(0, 0, 0);
-    } else
+    } else {
       camera.zoom = THREE.MathUtils.clamp(
         camera.zoom * (command.type === "in" ? 1.2 : 1 / 1.2),
         2,
         25,
       );
+    }
     camera.updateProjectionMatrix();
     c.update();
     invalidate();
@@ -373,15 +501,25 @@ export default function GeographicScene({
   reports,
   onReport,
   scenarioReduction,
+  walkRoute,
+  onSelectAsset,
 }: {
   selected: string;
   onSelect: (s: string) => void;
   layer: string;
-  command: { type: string; tick: number };
+  command: {
+    type: string;
+    tick: number;
+    position?: [number, number, number];
+    target?: [number, number, number];
+    zoom?: number;
+  };
   heat?: Hotspots;
   reports: Report[];
   onReport: (r: Report) => void;
   scenarioReduction?: number | null;
+  walkRoute?: { from: { centroid: number[] }; to: { centroid: number[] } } | null;
+  onSelectAsset?: (asset: InfrastructureAsset) => void;
 }) {
   const [lost, setLost] = useState(false);
   const display = usePreferences();
@@ -412,7 +550,11 @@ export default function GeographicScene({
       <directionalLight position={[-30, 65, 30]} intensity={2.2} />
       <Diagnostics />
       <Ground />
-      <Roads />
+      <Roads layer={layer} />
+      <WalkRouteLine route={walkRoute} />
+      {(layer === "infrastructure" || layer === "green") && (
+        <InfrastructurePins onSelectAsset={onSelectAsset} />
+      )}
       {data.buildings.map((p) => (
         <Footprint
           metric={heat?.byId.get(p.id)}

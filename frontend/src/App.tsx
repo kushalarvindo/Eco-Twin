@@ -68,6 +68,7 @@ import {
   Target,
   TreePine,
   Trophy,
+  Upload,
   Users,
   Waves as WaterWaves,
   X,
@@ -85,6 +86,17 @@ import type {
   User,
   Zone,
 } from "./types";
+import {
+  campusViewpoints,
+  campusInfrastructure,
+  buildingDirectory,
+  calculateWalkRoute,
+  getOfflineReports,
+  saveOfflineReport,
+  removeOfflineReport,
+  type InfrastructureAsset,
+  type OfflineReport,
+} from "./campus-features";
 const Campus = lazy(() => import("./Campus"));
 const GeographicScene = lazy(() => import("./GeographicScene"));
 import geographic from "./campus-geographic.json";
@@ -477,6 +489,7 @@ export default function App() {
                     user={user}
                     onCreate={reportAction}
                     onDetail={openReport}
+                    onRefresh={refresh}
                   />
                 }
               />
@@ -821,14 +834,34 @@ function Explorer({
     [layer, setLayer] = useState("buildings"),
     [query, setQuery] = useState(""),
     [source, setSource] = useState("geographic"),
-    [command, setCommand] = useState({ type: "reset", tick: 0 });
+    [command, setCommand] = useState<{
+      type: string;
+      tick: number;
+      position?: [number, number, number];
+      target?: [number, number, number];
+      zoom?: number;
+    }>({ type: "reset", tick: 0 });
+  const [walkTarget, setWalkTarget] = useState("");
+  const [activeAsset, setActiveAsset] =
+    useState<InfrastructureAsset | null>(null);
   const navigate = useNavigate();
   const commandTo = (type: string) =>
     setCommand((c) => ({ type, tick: c.tick + 1 }));
   const heat = useMemo(() => hotspotLayer(layer, reports), [layer, reports]);
+  const walkRoute = useMemo(
+    () => (walkTarget ? calculateWalkRoute(selected, walkTarget) : null),
+    [selected, walkTarget],
+  );
   const fallback =
     source === "geographic" ? (
-      <GeographicMap heat={heat} selected={selected} onSelect={onSelect} />
+      <GeographicMap
+        heat={heat}
+        selected={selected}
+        onSelect={onSelect}
+        layer={layer}
+        walkRoute={walkRoute}
+        onSelectAsset={(asset) => setActiveAsset(asset)}
+      />
     ) : (
       <FlatMap selected={selected} onSelect={onSelect} zones={zones} />
     );
@@ -909,6 +942,34 @@ function Explorer({
                   </div>
                 )}
               </label>
+              {view === "3d" && source === "geographic" && (
+                <select
+                  aria-label="Camera viewpoint"
+                  className="viewpoint-select"
+                  defaultValue=""
+                  onChange={(e) => {
+                    const vp = campusViewpoints.find(
+                      (v) => v.id === e.target.value,
+                    );
+                    if (vp) {
+                      setCommand({
+                        type: "viewpoint",
+                        position: vp.position,
+                        target: vp.target,
+                        zoom: vp.zoom,
+                        tick: command.tick + 1,
+                      });
+                    }
+                  }}
+                >
+                  <option value="">Camera viewpoint…</option>
+                  {campusViewpoints.map((vp) => (
+                    <option key={vp.id} value={vp.id}>
+                      {vp.label}
+                    </option>
+                  ))}
+                </select>
+              )}
               <span className="north-label">
                 <Navigation size={17} />{" "}
                 {source === "geographic"
@@ -934,6 +995,8 @@ function Explorer({
                         command={command}
                         reports={reports}
                         onReport={onDetail}
+                        walkRoute={walkRoute}
+                        onSelectAsset={(asset) => setActiveAsset(asset)}
                       />
                     ) : (
                       <Campus
@@ -971,13 +1034,19 @@ function Explorer({
                   <option value="buildings">Campus buildings</option>
                   <option value="green">Green spaces</option>
                   {source === "geographic" && (
-                    <optgroup label="Hotspot layers">
-                      {Object.entries(hotspotModes).map(([id, name]) => (
-                        <option key={id} value={id}>
-                          {name}
-                        </option>
-                      ))}
-                    </optgroup>
+                    <>
+                      <option value="infrastructure">
+                        Environmental infrastructure
+                      </option>
+                      <option value="walkways">Pedestrian walkways</option>
+                      <optgroup label="Hotspot layers">
+                        {Object.entries(hotspotModes).map(([id, name]) => (
+                          <option key={id} value={id}>
+                            {name}
+                          </option>
+                        ))}
+                      </optgroup>
+                    </>
                   )}
                 </select>
               </div>
@@ -1199,6 +1268,83 @@ function Explorer({
                 View mapped footprint <ExternalLink size={12} />
               </a>
             )}
+            {buildingDirectory[selected] && (
+              <div className="building-directory">
+                <div className="section-title-sm">Building directory</div>
+                <p className="directory-depts">
+                  {buildingDirectory[selected].departments.join(" · ")}
+                </p>
+                <ul className="floor-list">
+                  {buildingDirectory[selected].floors.map((fl, i) => (
+                    <li key={i} className="floor-item">
+                      {fl}
+                    </li>
+                  ))}
+                </ul>
+                {buildingDirectory[selected].facilities.length > 0 && (
+                  <div className="facility-tags">
+                    {buildingDirectory[selected].facilities.map((fac) => (
+                      <span key={fac} className="facility-tag">
+                        {fac}
+                      </span>
+                    ))}
+                  </div>
+                )}
+                <small className="muted">
+                  {buildingDirectory[selected].note}
+                </small>
+              </div>
+            )}
+            {geographic.buildings.some((p) => p.id === selected) && (
+              <div className="walking-route-calculator">
+                <div className="section-title-sm">
+                  Walking distance from here
+                </div>
+                <label className="walk-select-label">
+                  <span className="muted small-text">Destination</span>
+                  <select
+                    value={walkTarget}
+                    onChange={(e) => setWalkTarget(e.target.value)}
+                    aria-label="Walk destination"
+                  >
+                    <option value="">Select campus destination…</option>
+                    {geographic.buildings
+                      .filter(
+                        (b) => b.id !== selected && !b.id.startsWith("osm-"),
+                      )
+                      .map((b) => (
+                        <option key={b.id} value={b.id}>
+                          {b.name}
+                        </option>
+                      ))}
+                  </select>
+                </label>
+                {walkRoute && (
+                  <div className="walk-metrics">
+                    <div className="walk-metric-row">
+                      <span>Walking distance (paved paths)</span>
+                      <strong>{walkRoute.walkMeters} m</strong>
+                    </div>
+                    <div className="walk-metric-row">
+                      <span>Estimated walking time</span>
+                      <strong>{walkRoute.walkMinutes} min</strong>
+                    </div>
+                    <div className="walk-metric-row">
+                      <span>Activity calories</span>
+                      <strong>~{walkRoute.calories} kcal</strong>
+                    </div>
+                    <div className="walk-metric-row">
+                      <span>Avoided vehicle carbon</span>
+                      <strong>~{walkRoute.avoidedCarbonGrams} g CO₂e</strong>
+                    </div>
+                    <small className="muted">
+                      Direct distance {walkRoute.straightMeters} m × 1.25 walkway
+                      circuity factor @ 1.2 m/s.
+                    </small>
+                  </div>
+                )}
+              </div>
+            )}
             <div className="location-stats">
               <span>
                 <span className="muted">Open reports</span>
@@ -1327,6 +1473,28 @@ function Explorer({
           </div>
         </section>
       </div>
+      {activeAsset && (
+        <Modal
+          title={activeAsset.name}
+          description={`Campus environmental infrastructure · ${activeAsset.category}`}
+          onClose={() => setActiveAsset(null)}
+        >
+          <div className="asset-detail-card">
+            <div className="asset-stat">
+              <span className="muted">Published capacity</span>
+              <strong>{activeAsset.capacity}</strong>
+            </div>
+            <p>{activeAsset.description}</p>
+            <div className="notice subtle">
+              <strong>Source reference</strong>
+              <p>{activeAsset.source}</p>
+              <small className="muted">
+                Research fact ID: {activeAsset.fact_id}
+              </small>
+            </div>
+          </div>
+        </Modal>
+      )}
     </>
   );
 }
@@ -1356,10 +1524,16 @@ function GeographicMap({
   heat,
   selected,
   onSelect,
+  layer = "buildings",
+  walkRoute,
+  onSelectAsset,
 }: {
   heat?: Hotspots;
   selected: string;
   onSelect: (s: string) => void;
+  layer?: string;
+  walkRoute?: ReturnType<typeof calculateWalkRoute> | null;
+  onSelectAsset?: (asset: InfrastructureAsset) => void;
 }) {
   const boundary = geographic.boundary.map((p) => p.join(",")).join(" ");
   return (
@@ -1377,15 +1551,23 @@ function GeographicMap({
           fill="#b8cda1"
         />
       ))}
-      {geographic.roads.map((r) => (
-        <polyline
-          key={r.osm_id}
-          points={r.points.map((p) => p.join(",")).join(" ")}
-          fill="none"
-          stroke="#f8f3e7"
-          strokeWidth={r.width_units}
-        />
-      ))}
+      {geographic.roads.map((r) => {
+        const isWalkway =
+          r.tags?.highway &&
+          ["footway", "pedestrian", "path", "steps"].includes(r.tags.highway);
+        const highlightWalk = layer === "walkways" && isWalkway;
+        return (
+          <polyline
+            key={r.osm_id}
+            points={r.points.map((p) => p.join(",")).join(" ")}
+            fill="none"
+            stroke={highlightWalk ? "#387844" : "#f8f3e7"}
+            strokeWidth={
+              highlightWalk ? Math.max(r.width_units, 1.2) : r.width_units
+            }
+          />
+        );
+      })}
       {geographic.buildings.map((b) => (
         <polygon
           key={b.osm_id}
@@ -1412,6 +1594,49 @@ function GeographicMap({
           </title>
         </polygon>
       ))}
+      {walkRoute && (
+        <line
+          x1={walkRoute.from.centroid[0]}
+          y1={walkRoute.from.centroid[1]}
+          x2={walkRoute.to.centroid[0]}
+          y2={walkRoute.to.centroid[1]}
+          stroke="#1b5e20"
+          strokeWidth="1.5"
+          strokeDasharray="2,2"
+        />
+      )}
+      {(layer === "infrastructure" || layer === "green") &&
+        campusInfrastructure.map((asset) => (
+          <circle
+            key={asset.id}
+            cx={asset.centroid_2d[0]}
+            cy={asset.centroid_2d[1]}
+            r={2.2}
+            fill={
+              asset.category === "Energy"
+                ? "#c77700"
+                : asset.category === "Water"
+                  ? "#0284c7"
+                  : "#16a34a"
+            }
+            stroke="#ffffff"
+            strokeWidth={0.6}
+            tabIndex={0}
+            role="button"
+            aria-label={`${asset.name} (${asset.capacity})`}
+            onClick={() => onSelectAsset?.(asset)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onSelectAsset?.(asset);
+              }
+            }}
+          >
+            <title>
+              {asset.name} · {asset.capacity}
+            </title>
+          </circle>
+        ))}
     </svg>
   );
 }
@@ -1536,14 +1761,56 @@ function ReportsPage({
   user,
   onCreate,
   onDetail,
+  onRefresh,
 }: {
   reports: Report[];
   user: User | null;
   onCreate: () => void;
   onDetail: (r: Report) => void;
+  onRefresh?: () => Promise<void>;
 }) {
   const [filter, setFilter] = useState("All reports"),
     [query, setQuery] = useState("");
+  const [offlineReports, setOfflineReports] = useState<OfflineReport[]>(() =>
+    getOfflineReports(),
+  );
+  const [syncing, setSyncing] = useState(false);
+  const [syncError, setSyncError] = useState("");
+
+  async function syncAllOffline() {
+    if (!offlineReports.length) return;
+    setSyncing(true);
+    setSyncError("");
+    try {
+      for (const off of [...offlineReports]) {
+        const res = await fetch(off.image_data_url);
+        const blob = await res.blob();
+        const file = new File([blob], off.image_name, {
+          type: blob.type || "image/jpeg",
+        });
+        const form = new FormData();
+        form.set("title", off.title);
+        form.set("category", off.category);
+        form.set("description", off.description);
+        form.set("zone", off.zone);
+        if (off.latitude !== null && off.longitude !== null) {
+          form.set("latitude", String(off.latitude));
+          form.set("longitude", String(off.longitude));
+        }
+        form.set("image", file);
+        await api("reports/", { method: "POST", body: form });
+        removeOfflineReport(off.id);
+      }
+      setOfflineReports(getOfflineReports());
+      if (onRefresh) await onRefresh();
+    } catch (err) {
+      setSyncError((err as Error).message || "Failed syncing some reports.");
+      setOfflineReports(getOfflineReports());
+    } finally {
+      setSyncing(false);
+    }
+  }
+
   const filtered = reports.filter(
     (r) =>
       (filter === "All reports" ||
@@ -1588,6 +1855,32 @@ function ReportsPage({
         </p>
       </div>
       <section className="panel">
+        {offlineReports.length > 0 && (
+          <div className="notice warning offline-queue-banner">
+            <div>
+              <strong>
+                {offlineReports.length} queued offline report(s)
+              </strong>
+              <p className="small-text">
+                Stored in browser storage during campus fieldwork with low
+                connectivity.
+              </p>
+              {syncError && <p className="form-error">{syncError}</p>}
+            </div>
+            <button
+              className="button small"
+              onClick={syncAllOffline}
+              disabled={syncing}
+            >
+              {syncing ? (
+                <Loader2 size={15} className="spin" />
+              ) : (
+                <Upload size={15} />
+              )}
+              {syncing ? "Syncing…" : "Sync to server"}
+            </button>
+          </div>
+        )}
         <div className="list-toolbar">
           <div className="tabs">
             {[
@@ -1949,13 +2242,65 @@ function ReportModal({
       form.set("latitude", String(gps.latitude));
       form.set("longitude", String(gps.longitude));
     }
+    const fileInput = e.currentTarget.elements.namedItem(
+      "image",
+    ) as HTMLInputElement;
+    const file = fileInput?.files?.[0];
+
+    const saveOffline = () => {
+      if (!file) {
+        setError("A photograph is required to save an offline report.");
+        setBusy(false);
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        saveOfflineReport({
+          id: "offline-" + Date.now(),
+          title: String(form.get("title") || ""),
+          category: String(form.get("category") || "Waste"),
+          description: String(form.get("description") || ""),
+          zone: String(form.get("zone") || selected),
+          latitude: gps ? gps.latitude : null,
+          longitude: gps ? gps.longitude : null,
+          image_data_url: String(reader.result || ""),
+          image_name: file.name,
+          created_at: new Date().toISOString(),
+        });
+        setBusy(false);
+        onClose();
+        alert(
+          "Network connection unavailable. Your report was saved locally and can be synced from the Issue Reports page when you reconnect.",
+        );
+      };
+      reader.onerror = () => {
+        setError("Could not read photograph for offline storage.");
+        setBusy(false);
+      };
+      reader.readAsDataURL(file);
+    };
+
+    if (!navigator.onLine) {
+      saveOffline();
+      return;
+    }
+
     try {
       await api("reports/", { method: "POST", body: form });
       await onDone();
     } catch (e) {
-      setError((e as Error).message);
-    } finally {
-      setBusy(false);
+      const msg = (e as Error).message || "";
+      if (
+        !navigator.onLine ||
+        msg.includes("Failed to fetch") ||
+        msg.includes("NetworkError") ||
+        msg.includes("Load failed")
+      ) {
+        saveOffline();
+      } else {
+        setError(msg);
+        setBusy(false);
+      }
     }
   }
   function locate() {
@@ -2558,7 +2903,21 @@ function SimulationPage({
     [result, setResult] = useState<Result | null>(null),
     [error, setError] = useState(""),
     [busy, setBusy] = useState(false);
+  const [scope, setScope] = useState<"single" | "campus">("single");
   const [removeId, setRemoveId] = useState<number | null>(null);
+  const academicBlocks = useMemo(() => {
+    const blocks = geographic.buildings
+      .filter((b) => !b.id.startsWith("osm-"))
+      .map((b) => {
+        const area = Math.round(footprintArea(b.points));
+        return { id: b.id, name: b.name, area };
+      });
+    const totalArea = blocks.reduce((acc, b) => acc + b.area, 0);
+    return blocks.map((b) => ({
+      ...b,
+      share: totalArea > 0 ? b.area / totalArea : 0,
+    }));
+  }, []);
   const unit =
     kind === "waste" ? "kg/day" : kind === "energy" ? "kWh/day" : "L/day";
   const dirty = () => setResult(null);
@@ -2586,7 +2945,23 @@ function SimulationPage({
     }
   }
   function exportScenario(s: Saved) {
-    const blob = new Blob([JSON.stringify(s, null, 2)], {
+    const dataToExport =
+      scope === "campus" && result
+        ? {
+            ...s,
+            scope: "campus",
+            academic_blocks_breakdown: academicBlocks.map((b) => ({
+              building_id: b.id,
+              name: b.name,
+              area_m2: b.area,
+              area_share_percent: Math.round(b.share * 1000) / 10,
+              baseline_share: Math.round(result.baseline * b.share * 10) / 10,
+              savings_share: Math.round(result.saved * b.share * 10) / 10,
+              unit: result.unit,
+            })),
+          }
+        : s;
+    const blob = new Blob([JSON.stringify(dataToExport, null, 2)], {
       type: "application/json",
     });
     const url = URL.createObjectURL(blob);
@@ -2671,22 +3046,53 @@ function SimulationPage({
               run();
             }}
           >
-            <label>
-              Campus location
-              <select
-                value={zone}
-                onChange={(e) => {
-                  setZone(e.target.value);
-                  dirty();
-                }}
+            <div
+              className="segmented-scope"
+              role="group"
+              aria-label="Simulation scope"
+            >
+              <button
+                type="button"
+                className={scope === "single" ? "active" : ""}
+                onClick={() => setScope("single")}
               >
-                {zones.map((z) => (
-                  <option value={z.id} key={z.id}>
-                    {z.name}
-                  </option>
-                ))}
-              </select>
-            </label>
+                Single location
+              </button>
+              <button
+                type="button"
+                className={scope === "campus" ? "active" : ""}
+                onClick={() => setScope("campus")}
+              >
+                Campus-wide (All academic blocks)
+              </button>
+            </div>
+            {scope === "single" ? (
+              <label>
+                Campus location
+                <select
+                  value={zone}
+                  onChange={(e) => {
+                    setZone(e.target.value);
+                    dirty();
+                  }}
+                >
+                  {zones.map((z) => (
+                    <option value={z.id} key={z.id}>
+                      {z.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            ) : (
+              <div className="notice subtle">
+                <strong>Campus-wide calculation</strong>
+                <p>
+                  Your total hypothetical baseline is distributed across all{" "}
+                  {academicBlocks.length} mapped academic blocks pro-rata by
+                  footprint area.
+                </p>
+              </div>
+            )}
             <label>
               Hypothetical baseline <span className="input-unit">{unit}</span>
               <input
@@ -2863,6 +3269,53 @@ function SimulationPage({
                   </strong>
                 </div>
               </div>
+              {scope === "campus" && (
+                <div className="multi-zone-breakdown">
+                  <h3>Campus-wide pro-rata distribution</h3>
+                  <p className="small-text muted">
+                    Area-weighted breakdown across {academicBlocks.length}{" "}
+                    mapped academic blocks (Total footprint:{" "}
+                    {academicBlocks
+                      .reduce((a, b) => a + b.area, 0)
+                      .toLocaleString()}{" "}
+                    m²).
+                  </p>
+                  <div className="table-wrap">
+                    <table className="multi-zone-table">
+                      <thead>
+                        <tr>
+                          <th>Academic Block</th>
+                          <th>Footprint</th>
+                          <th>Share</th>
+                          <th>Baseline ({result.unit})</th>
+                          <th>Projected Savings ({result.unit})</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {academicBlocks.map((b) => {
+                          const blockBaseline =
+                            Math.round(result.baseline * b.share * 10) / 10;
+                          const blockSaved =
+                            Math.round(result.saved * b.share * 10) / 10;
+                          return (
+                            <tr key={b.id}>
+                              <td>
+                                <strong>{b.name}</strong>
+                              </td>
+                              <td>{b.area.toLocaleString()} m²</td>
+                              <td>{(b.share * 100).toFixed(1)}%</td>
+                              <td>{num(blockBaseline)}</td>
+                              <td className="highlight-save">
+                                −{num(blockSaved)}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
               <button
                 className="button secondary"
                 disabled={busy || !!result.id}

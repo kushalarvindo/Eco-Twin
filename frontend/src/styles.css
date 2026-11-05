@@ -2342,6 +2342,206 @@ td:last-child a {
 .skip-link:focus {
   top: 12px;
 }
+
+/* Viewpoint Navigation Select */
+.viewpoint-select {
+  background: #fffffff5;
+  border: 1px solid #e0e6d9;
+  border-radius: 7px;
+  padding: 6px 10px;
+  font-size: 12px;
+  color: var(--text);
+  box-shadow: 0 2px 4px #203c1305;
+}
+[data-theme="dark"] .viewpoint-select {
+  background: #1b2618;
+  border-color: #2b3a28;
+  color: #d6e2cf;
+}
+
+/* Building Directory & Floor Plan */
+.building-directory {
+  margin: 16px 0;
+  padding: 12px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.section-title-sm {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.directory-depts {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--green);
+  margin-bottom: 10px;
+}
+.floor-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 10px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.floor-item {
+  font-size: 12px;
+  line-height: 1.4;
+  padding: 4px 8px;
+  background: var(--background);
+  border-radius: 5px;
+  border-left: 3px solid var(--green);
+}
+.facility-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.facility-tag {
+  display: inline-block;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  background: #e7ede2;
+  color: #2b4528;
+}
+[data-theme="dark"] .facility-tag {
+  background: #233420;
+  color: #b5ceaf;
+}
+
+/* Walking Route Calculator */
+.walking-route-calculator {
+  margin: 16px 0;
+  padding: 12px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.walk-select-label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+.walk-select-label select {
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--background);
+  color: var(--text);
+  font-size: 12px;
+}
+.walk-metrics {
+  background: var(--background);
+  border-radius: 6px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.walk-metric-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+}
+.walk-metric-row strong {
+  color: var(--green);
+}
+
+/* Environmental Asset Detail Card */
+.asset-detail-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.asset-stat {
+  padding: 10px;
+  background: var(--background);
+  border-radius: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.asset-stat strong {
+  font-size: 15px;
+  color: var(--green);
+}
+
+/* Scope Selector in Simulation */
+.segmented-scope {
+  display: flex;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+.segmented-scope button {
+  flex: 1;
+  padding: 8px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  background: var(--surface);
+  border: none;
+  color: var(--muted);
+  transition: all 0.15s ease;
+}
+.segmented-scope button.active {
+  background: var(--green);
+  color: white;
+}
+
+/* Multi-Zone Pro-Rata Table */
+.multi-zone-breakdown {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+.multi-zone-breakdown h3 {
+  font-size: 14px;
+  margin: 0 0 4px 0;
+}
+.table-wrap {
+  overflow-x: auto;
+  margin-top: 10px;
+}
+.multi-zone-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  text-align: left;
+}
+.multi-zone-table th,
+.multi-zone-table td {
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--border);
+}
+.multi-zone-table th {
+  background: var(--background);
+  color: var(--muted);
+  font-weight: 500;
+}
+.multi-zone-table .highlight-save {
+  color: #1e6d2b;
+  font-weight: 600;
+}
+[data-theme="dark"] .multi-zone-table .highlight-save {
+  color: #5ec771;
+}
+
+/* Offline Queue Banner */
+.offline-queue-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
 @keyframes spin {
   to {
     transform: rotate(360deg);

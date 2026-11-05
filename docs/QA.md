@@ -36,8 +36,10 @@ The installation and backend tests were repeated in a clean checkout with fresh 
 | Rewards | Verified report awarded 10 points |
 | Challenges | Participation, evidence submission and approval |
 | Community | Post creation and support voting |
-| Scenarios | Calculation, save and reload |
-| Campus explorer | Geographic/historical selection, 2D/3D switching and camera controls |
+| Scenarios | Calculation, save, reload and campus-wide area-weighted pro-rata breakdown |
+| Campus explorer | Geographic/historical selection, 2D/3D switching, camera presets, walking route calculator, department directory and infrastructure markers |
+| Environmental modes | Solar rooftop potential hotspot layer, pedestrian walkway highlighting, environmental infrastructure pins |
+| Offline queue | LocalStorage queuing of photo reports on network disconnection and batch server synchronization |
 | Appearance | Light/dark toggle, accents, density, text size and saved preferences |
 | Dialogs | Keyboard focus, Escape dismissal and mobile scrolling |
 | Responsive layout | 375, 768, 1024 and 1440 px widths |

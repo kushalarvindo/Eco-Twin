@@ -14,7 +14,7 @@ def git(*args):
 
 
 staged = '--staged' in sys.argv
-names = git('diff', '--cached', '--name-only', '--diff-filter=ACMR', '-z') if staged else git('ls-files', '-z')
+names = git('diff', '--cached', '--name-only', '--diff-filter=ACMR', '-z') if staged else git('ls-tree', '-r', '--name-only', '-z', 'HEAD')
 paths = [p.decode('utf-8') for p in names.split(b'\0') if p]
 rules = {
     'key material': r'-----BEGIN (?:[A-Z ]*PRIVATE KEY|PUBLIC KEY|CERTIFICATE)-----|ssh-(?:rsa|ed25519)\s+[A-Za-z0-9+/]{30,}',

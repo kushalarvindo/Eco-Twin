@@ -71,24 +71,178 @@ function BuildingName({
     </sprite>
   );
 }
+
+function IssuePinBadge({
+  count,
+  position,
+  onClick,
+}: {
+  count: number;
+  position: [number, number, number];
+  onClick: (e: any) => void;
+}) {
+  const [hovered, setHovered] = useState(false);
+
+  // Gradient colors based on count:
+  // 1-2: Warning amber / gold
+  // 3-5: High activity vivid orange
+  // 6+: Critical crimson red
+  const { bgGradient, ringColor, emissiveColor } = useMemo(() => {
+    if (count >= 6) {
+      return {
+        bgGradient: ["#dc2626", "#991b1b"],
+        ringColor: "#ef4444",
+        emissiveColor: "#b91c1c",
+      };
+    } else if (count >= 3) {
+      return {
+        bgGradient: ["#ea580c", "#c2410c"],
+        ringColor: "#f97316",
+        emissiveColor: "#c2410c",
+      };
+    } else {
+      return {
+        bgGradient: ["#eab308", "#ca8a04"],
+        ringColor: "#fde047",
+        emissiveColor: "#ca8a04",
+      };
+    }
+  }, [count]);
+
+  const texture = useMemo(() => {
+    const canvas = document.createElement("canvas");
+    canvas.width = 256;
+    canvas.height = 256;
+    const ctx = canvas.getContext("2d")!;
+
+    ctx.clearRect(0, 0, 256, 256);
+
+    // Drop shadow for high-contrast visibility against any roof
+    ctx.shadowColor = "rgba(0, 0, 0, 0.45)";
+    ctx.shadowBlur = 16;
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 6;
+
+    // Outer white halo / ring
+    ctx.beginPath();
+    ctx.arc(128, 128, 98, 0, Math.PI * 2);
+    ctx.fillStyle = "#ffffff";
+    ctx.fill();
+
+    // Reset shadow
+    ctx.shadowColor = "transparent";
+    ctx.shadowBlur = 0;
+
+    // Gradient circle
+    const grad = ctx.createLinearGradient(128, 30, 128, 226);
+    grad.addColorStop(0, bgGradient[0]);
+    grad.addColorStop(1, bgGradient[1]);
+    ctx.beginPath();
+    ctx.arc(128, 128, 86, 0, Math.PI * 2);
+    ctx.fillStyle = grad;
+    ctx.fill();
+
+    // Subtle inner stroke
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.45)";
+    ctx.stroke();
+
+    // Center bold number
+    ctx.fillStyle = "#ffffff";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    const fontSize = count > 99 ? 80 : count > 9 ? 94 : 110;
+    ctx.font = `bold ${fontSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
+    ctx.fillText(String(count), 128, 134);
+
+    const map = new THREE.CanvasTexture(canvas);
+    map.colorSpace = THREE.SRGBColorSpace;
+    return map;
+  }, [count, bgGradient]);
+
+  useEffect(() => () => texture.dispose(), [texture]);
+
+  const [x, y, z] = position;
+
+  return (
+    <group
+      position={[x, y, z]}
+      onClick={onClick}
+      onPointerOver={(e) => {
+        e.stopPropagation();
+        setHovered(true);
+        document.body.style.cursor = "pointer";
+      }}
+      onPointerOut={() => {
+        setHovered(false);
+        document.body.style.cursor = "auto";
+      }}
+    >
+      {/* Roof surface contact ring */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.02, 0]}>
+        <ringGeometry args={[0.35, 0.65, 24]} />
+        <meshBasicMaterial
+          color={ringColor}
+          transparent
+          opacity={hovered ? 0.95 : 0.7}
+          side={THREE.DoubleSide}
+        />
+      </mesh>
+
+      {/* Sleek metallic pin stalk */}
+      <mesh position={[0, 0.9, 0]} castShadow>
+        <cylinderGeometry args={[0.07, 0.03, 1.8, 12]} />
+        <meshStandardMaterial
+          color="#334155"
+          metalness={0.85}
+          roughness={0.2}
+        />
+      </mesh>
+
+      {/* Base collar bead */}
+      <mesh position={[0, 1.8, 0]} castShadow>
+        <sphereGeometry args={[0.22, 16, 16]} />
+        <meshStandardMaterial
+          color={ringColor}
+          emissive={emissiveColor}
+          emissiveIntensity={0.6}
+          roughness={0.3}
+          metalness={0.2}
+        />
+      </mesh>
+
+      {/* 3D Billboard Number Badge */}
+      <sprite
+        position={[0, 2.7, 0]}
+        scale={hovered ? [4.6, 4.6, 1] : [3.8, 3.8, 1]}
+        renderOrder={250}
+      >
+        <spriteMaterial map={texture} depthTest={false} depthWrite={false} />
+      </sprite>
+    </group>
+  );
+}
+
 function Footprint({
   metric,
   p,
   selected,
   onSelect,
   green,
-  report,
+  reportsForZone = [],
   onReport,
   scenarioReduction,
+  isHeatmap = false,
 }: {
   metric?: { color: string; label: string };
   p: Feature;
   selected: string;
   onSelect: (s: string) => void;
   green: boolean;
-  report?: Report;
+  reportsForZone?: Report[];
   onReport: (r: Report) => void;
   scenarioReduction?: number | null;
+  isHeatmap?: boolean;
 }) {
   const [hover, setHover] = useState(false);
   const active = p.id === selected;
@@ -127,6 +281,27 @@ function Footprint({
           position={[p.centroid[0], p.height_units + 3, p.centroid[1]]}
         />
       )}
+      {/* Heatmap ground thermal halo */}
+      {isHeatmap && reportsForZone.length > 0 && (
+        <mesh
+          rotation={[-Math.PI / 2, 0, 0]}
+          position={[p.centroid[0], 0.04, p.centroid[1]]}
+        >
+          <circleGeometry args={[4 + Math.min(reportsForZone.length * 1.5, 14), 32]} />
+          <meshBasicMaterial
+            color={
+              reportsForZone.length >= 6
+                ? "#dc2626"
+                : reportsForZone.length >= 3
+                  ? "#ea580c"
+                  : "#eab308"
+            }
+            transparent
+            opacity={0.32}
+            depthWrite={false}
+          />
+        </mesh>
+      )}
       {/* Ground contact shadow plinth */}
       <mesh
         geometry={roof}
@@ -164,7 +339,21 @@ function Footprint({
         }}
       >
         {metric ? (
-          <meshBasicMaterial color={metric.color} />
+          <meshStandardMaterial
+            color={metric.color}
+            emissive={
+              isHeatmap && reportsForZone.length > 0
+                ? reportsForZone.length >= 6
+                  ? "#991b1b"
+                  : reportsForZone.length >= 3
+                    ? "#c2410c"
+                    : "#ca8a04"
+                : "#000000"
+            }
+            emissiveIntensity={isHeatmap && reportsForZone.length > 0 ? 0.35 : 0}
+            roughness={0.65}
+            metalness={0.08}
+          />
         ) : (
           <meshStandardMaterial
             color={
@@ -202,7 +391,22 @@ function Footprint({
         receiveShadow
       >
         {metric ? (
-          <meshBasicMaterial color={metric.color} side={THREE.DoubleSide} />
+          <meshStandardMaterial
+            color={metric.color}
+            emissive={
+              isHeatmap && reportsForZone.length > 0
+                ? reportsForZone.length >= 6
+                  ? "#dc2626"
+                  : reportsForZone.length >= 3
+                    ? "#ea580c"
+                    : "#eab308"
+                : "#000000"
+            }
+            emissiveIntensity={isHeatmap && reportsForZone.length > 0 ? 0.25 : 0}
+            roughness={0.52}
+            metalness={0.12}
+            side={THREE.DoubleSide}
+          />
         ) : (
           <meshStandardMaterial
             color={active ? "#cde0bc" : construction ? "#b0a58e" : "#ece9de"}
@@ -226,22 +430,16 @@ function Footprint({
           <lineBasicMaterial color="#355e2f" />
         </lineSegments>
       )}
-      {report && (
-        <mesh
-          position={[p.centroid[0], p.height_units + 1, p.centroid[1]]}
+      {reportsForZone.length > 0 && (
+        <IssuePinBadge
+          count={reportsForZone.length}
+          position={[p.centroid[0], p.height_units + 0.16, p.centroid[1]]}
           onClick={(e) => {
             e.stopPropagation();
-            onReport(report);
+            onSelect(p.id);
+            onReport(reportsForZone[0]);
           }}
-          castShadow
-        >
-          <sphereGeometry args={[0.55, 16, 12]} />
-          <meshStandardMaterial
-            color="#c27329"
-            roughness={0.3}
-            metalness={0.4}
-          />
-        </mesh>
+        />
       )}
     </group>
   );
@@ -689,6 +887,17 @@ export default function GeographicScene({
 }) {
   const [lost, setLost] = useState(false);
   const display = usePreferences();
+  const reportsByZone = useMemo(() => {
+    const map = new Map<string, Report[]>();
+    for (const r of reports) {
+      if (r.status !== 'Rejected' && r.status !== 'Resolved') {
+        const list = map.get(r.zone) || [];
+        list.push(r);
+        map.set(r.zone, list);
+      }
+    }
+    return map;
+  }, [reports]);
   if (lost)
     return (
       <div className="loading">
@@ -764,13 +973,9 @@ export default function GeographicScene({
           selected={selected}
           onSelect={onSelect}
           green={layer === "green"}
+          isHeatmap={layer === "heatmap"}
           scenarioReduction={scenarioReduction}
-          report={reports.find(
-            (r) =>
-              r.zone === p.id &&
-              r.status !== "Rejected" &&
-              r.status !== "Resolved",
-          )}
+          reportsForZone={reportsByZone.get(p.id) || []}
           onReport={onReport}
         />
       ))}

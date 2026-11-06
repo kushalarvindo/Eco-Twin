@@ -1,13 +1,14 @@
 import data from "./campus-geographic.json";
 
 export const hotspotModes = {
-  footprint: "Building footprint",
-  height: "Building height",
-  solar: "Solar rooftop potential",
+  heatmap: "Campus issue heatmap",
   issues: "All open issues",
   waste: "Waste reports",
   water: "Water reports",
   energy: "Energy reports",
+  footprint: "Building footprint",
+  height: "Building height",
+  solar: "Solar rooftop potential",
 } as const;
 
 export function footprintArea(points: number[][]) {
@@ -37,7 +38,10 @@ export function hotspotLayer(mode: string, counts: Record<string, number>) {
       : solar
         ? ["<25", "25–<55", "55–<100", "≥100"]
         : ["0", "1–2", "3–5", "6+"];
-  const colors = ["#e4e8df", "#ffc66b", "#e96536", "#952445"];
+  const colors =
+    mode === "heatmap"
+      ? ["#387747", "#eab308", "#ea580c", "#dc2626"]
+      : ["#e4e8df", "#ffc66b", "#e96536", "#952445"];
   const bins = labels.map((label, i) => ({
     label,
     color: colors[i],

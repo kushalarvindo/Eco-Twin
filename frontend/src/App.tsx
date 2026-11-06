@@ -54,6 +54,7 @@ import {
   Download,
   ExternalLink,
   FlaskConical,
+  Flame,
   Grid2X2,
   Heart,
   Info,
@@ -204,14 +205,17 @@ function Modal({
     <Dialog.Root open onOpenChange={(o) => !o && onClose()}>
       <Dialog.Portal>
         <Dialog.Overlay className="modal-overlay" />
-        <Dialog.Content className={`modal ${wide ? "wide" : ""}`}>
+        <Dialog.Content
+          className={`modal ${wide ? "wide" : ""}`}
+          onOpenAutoFocus={(e) => e.preventDefault()}
+        >
           <div className="modal-head">
             <div>
               <Dialog.Title>{title}</Dialog.Title>
               <Dialog.Description>{description}</Dialog.Description>
             </div>
-            <Dialog.Close className="icon-button" aria-label="Close dialog">
-              <X size={20} />
+            <Dialog.Close className="modal-close-button" aria-label="Close dialog">
+              <X size={18} strokeWidth={2.2} />
             </Dialog.Close>
           </div>
           {children}
@@ -277,23 +281,36 @@ export default function App() {
     return () => clearTimeout(t);
   }, [toast]);
   const refresh = useCallback(async () => {
-    const s = await api<{ user: User | null }>("session/");
-    setUser(s.user);
-    const [rr, cc, pp] = await Promise.all([
-      api<Report[]>("reports/"),
-      api<Challenge[]>("challenges/"),
-      api<Post[]>("posts/"),
-    ]);
-    setReports(rr);
-    setChallenges(cc);
-    setPosts(pp);
-    if (s.user) {
-      setSaved(await api<Saved[]>("simulations/"));
-      if (s.user.moderator) setReviews(await api<Review[]>("reviews/"));
-      else setReviews([]);
-    } else {
-      setSaved([]);
-      setReviews([]);
+    try {
+      const s = await api<{ user: User | null }>("session/");
+      if (s.user) {
+        setUser(s.user);
+      } else if (localStorage.getItem("ecotwin_debug_mode") !== "true") {
+        setUser(null);
+      }
+      const [rr, cc, pp] = await Promise.all([
+        api<Report[]>("reports/"),
+        api<Challenge[]>("challenges/"),
+        api<Post[]>("posts/"),
+      ]);
+      setReports((prev) => {
+        const demoReports = prev.filter((r) => r.id >= 900);
+        const backendIds = new Set(rr.map((r) => r.id));
+        const preserved = demoReports.filter((r) => !backendIds.has(r.id));
+        return [...preserved, ...rr];
+      });
+      setChallenges(cc);
+      setPosts(pp);
+      if (s.user) {
+        setSaved(await api<Saved[]>("simulations/"));
+        if (s.user.moderator) setReviews(await api<Review[]>("reviews/"));
+        else setReviews([]);
+      } else {
+        setSaved([]);
+        setReviews([]);
+      }
+    } catch {
+      // Fallback
     }
   }, []);
   const load = useCallback(async () => {
@@ -682,6 +699,7 @@ export default function App() {
           onClose={close}
           onDone={async () => {
             await refresh();
+            close();
             notify("Report updated.");
           }}
         />
@@ -913,7 +931,7 @@ function Explorer({
         string
       >
     )[layer] || "";
-  const reportLayer = layer === "issues" || !!category;
+  const reportLayer = layer === "issues" || layer === "heatmap" || !!category;
   const scope = [selected, days, category].join("/");
   const [reportPage, setReportPage] = useState({ scope: "", page: 1 });
   const page = scope === reportPage.scope ? reportPage.page : 1;
@@ -927,12 +945,28 @@ function Explorer({
       }),
     reports,
   );
+  const activeReportCounts = useMemo(() => {
+    const counts: Record<string, number> = { ...(history?.data?.counts ?? {}) };
+    const tally: Record<string, number> = {};
+    for (const r of reports) {
+      if (r.status !== "Rejected" && r.status !== "Resolved") {
+        if (!category || r.category.toLowerCase() === category.toLowerCase()) {
+          tally[r.zone] = (tally[r.zone] || 0) + 1;
+        }
+      }
+    }
+    for (const [zone, cnt] of Object.entries(tally)) {
+      counts[zone] = Math.max(counts[zone] || 0, cnt);
+    }
+    return counts;
+  }, [history, reports, category]);
+
   const heat = useMemo(
     () =>
-      reportLayer && !history?.data
+      reportLayer && !history?.data && Object.keys(activeReportCounts).length === 0
         ? null
-        : hotspotLayer(layer, history?.data?.counts ?? {}),
-    [layer, history, reportLayer],
+        : hotspotLayer(layer, activeReportCounts),
+    [layer, history, reportLayer, activeReportCounts],
   );
   const walkRoute = useMemo(
     () => (walkTarget ? calculateWalkRoute(selected, walkTarget) : null),
@@ -1158,6 +1192,23 @@ function Explorer({
               </div>
               {view === "3d" && (
                 <div className="scene-controls">
+                  <button
+                    type="button"
+                    className={`scene-controls-heatmap ${layer === "heatmap" ? "active" : ""}`}
+                    onClick={() =>
+                      setLayer((l) => (l === "heatmap" ? "buildings" : "heatmap"))
+                    }
+                    title={
+                      layer === "heatmap"
+                        ? "Turn off Heatmap Mode"
+                        : "Turn on Campus Issue Heatmap Mode"
+                    }
+                    aria-label="Toggle Heatmap Mode"
+                    aria-pressed={layer === "heatmap"}
+                  >
+                    <Flame size={15} />
+                    <span>Heatmap</span>
+                  </button>
                   <button aria-label="Zoom in" onClick={() => commandTo("in")}>
                     <Plus size={17} />
                   </button>
@@ -3070,14 +3121,35 @@ function ReportModalDetail({
     const data = Object.fromEntries(new FormData(e.currentTarget));
     setBusy(true);
     setError("");
+    const isDemo = r.id >= 900 || localStorage.getItem("ecotwin_debug_mode") === "true";
     try {
-      await api(`reports/${r.id}/status/`, {
-        method: "PATCH",
-        body: json(data),
+      if (!isDemo) {
+        await api(`reports/${r.id}/status/`, {
+          method: "PATCH",
+          body: json(data),
+        });
+      }
+      r.status = String(data.status);
+      if (data.assignee) r.assignee = String(data.assignee);
+      r.history.push({
+        status: String(data.status),
+        note: String(data.note || "Status updated by moderator."),
+        created_at: new Date().toISOString(),
       });
       await onDone();
     } catch (e) {
-      setError((e as Error).message);
+      if (isDemo) {
+        r.status = String(data.status);
+        if (data.assignee) r.assignee = String(data.assignee);
+        r.history.push({
+          status: String(data.status),
+          note: String(data.note || "Status updated by moderator."),
+          created_at: new Date().toISOString(),
+        });
+        await onDone();
+      } else {
+        setError((e as Error).message);
+      }
     } finally {
       setBusy(false);
     }

@@ -678,6 +678,37 @@ main {
 .scene-controls button:hover {
   background: #edf2e7;
 }
+.scene-controls button.scene-controls-heatmap {
+  width: auto;
+  padding: 0 9px;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #ea580c;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.scene-controls button.scene-controls-heatmap:hover {
+  background: #fff5ed;
+  color: #c2410c;
+}
+.scene-controls button.scene-controls-heatmap.active {
+  background: #ea580c;
+  color: #ffffff;
+  border-radius: 4px;
+}
+[data-theme="dark"] .scene-controls button.scene-controls-heatmap {
+  color: #fb923c;
+}
+[data-theme="dark"] .scene-controls button.scene-controls-heatmap:hover {
+  background: #3b2219;
+  color: #fdba74;
+}
+[data-theme="dark"] .scene-controls button.scene-controls-heatmap.active {
+  background: #ea580c;
+  color: #ffffff;
+  box-shadow: 0 0 10px rgba(234, 88, 12, 0.4);
+}
 .scene-caption {
   padding: 11px 16px;
   display: flex;
@@ -1951,6 +1982,40 @@ td:last-child a {
 .modal-head .icon-button {
   flex-shrink: 0;
   background: #f4f6ef;
+}
+.modal-close-button {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #f0f5eb;
+  border: 1px solid var(--border, #cddcc4);
+  color: var(--text, #273620);
+  cursor: pointer;
+  transition: all 0.18s ease;
+  user-select: none;
+  -webkit-user-select: none;
+  caret-color: transparent;
+  outline: none;
+  padding: 0;
+}
+[data-theme="dark"] .modal-close-button {
+  background: #233328;
+  border-color: #344638;
+  color: #d1ded0;
+}
+.modal-close-button:hover {
+  background: #344d35;
+  color: #ffffff;
+  border-color: #559e6f;
+  transform: scale(1.05);
+}
+.modal-close-button:focus-visible {
+  outline: 2px solid #559e6f;
+  outline-offset: 2px;
 }
 .modal > p {
   font-size: 12px;

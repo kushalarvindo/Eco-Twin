@@ -456,3 +456,219 @@
   max-height: calc(100dvh - 100px);
   overflow-y: auto;
 }
+
+.studio-tools {
+  padding: 1rem 1.25rem;
+  border-block: 1px solid var(--border);
+  display: grid;
+  gap: 0.7rem;
+  background: var(--surface);
+  color: var(--text);
+}
+.report-controls select {
+  min-height: 44px;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: 0.4rem;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+}
+.report-controls label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+.studio-tools :is(p, small) {
+  margin: 0;
+  line-height: 1.6;
+}
+.studio-tools label {
+  display: grid;
+  gap: 0.4rem;
+  min-width: 0;
+}
+.studio-tools :is(input, select, button) {
+  max-width: 100%;
+  min-width: 0;
+  font: inherit;
+}
+.studio-tools :is(input:not([type="checkbox"]), select),
+.studio-tools button {
+  padding: 0.65rem;
+  border: 1px solid var(--border);
+  border-radius: 0.4rem;
+  background: var(--surface);
+  color: var(--text);
+}
+.studio-tools :is(input[type="range"], input[type="file"]) {
+  width: 100%;
+}
+.studio-tools .field-grid {
+  margin: 0;
+}
+.studio-tools summary,
+.model-details summary {
+  cursor: pointer;
+  color: var(--text);
+  padding-block: 0.45rem;
+  min-height: 44px;
+  display: list-item;
+}
+.studio-advanced[open] > :not(summary) {
+  margin-top: 0.75rem;
+}
+.model-details {
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+.model-details p {
+  margin-block: 0.4rem 0.75rem;
+}
+.studio-tools details p {
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+.studio-actions,
+.walk-buttons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.walk-buttons button {
+  touch-action: none;
+  min-height: 44px;
+}
+.studio-tools button:hover {
+  background: var(--background);
+}
+.walk-minimap {
+  position: absolute;
+  bottom: 75px;
+  right: 12px;
+  width: 145px;
+  padding: 0.35rem;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: 0.5rem;
+  pointer-events: none;
+}
+.walk-minimap svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.walk-minimap small {
+  display: block;
+  text-align: center;
+  font-size: 0.65rem;
+}
+.campus-photos .photo-thumbs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+  gap: 0.8rem;
+}
+.photo-thumbs button {
+  display: grid;
+  text-align: left;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  color: var(--text);
+}
+.photo-thumbs button[aria-pressed="true"] {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+}
+.photo-thumbs img {
+  width: 100%;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+}
+.campus-photos figure {
+  margin: 1rem 0;
+}
+.campus-reference {
+  display: block;
+  max-height: 560px;
+  width: 100%;
+  object-fit: contain;
+  background: var(--background);
+}
+.campus-photos figcaption {
+  font-size: 0.8rem;
+  line-height: 1.7;
+  margin-top: 0.5rem;
+}
+:where(.studio-tools, .campus-photos)
+  :is(button, input, select, a):focus-visible {
+  outline: 3px solid var(--green);
+  outline-offset: 3px;
+}
+
+.comparison-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.comparison-overlay i {
+  position: absolute;
+  inset-block: 0;
+  border-left: 2px solid white;
+  box-shadow: 0 0 2px #172b22;
+}
+.comparison-overlay span {
+  position: absolute;
+  top: 60px;
+  padding: 0.3rem 0.55rem;
+  background: #172b22;
+  color: white;
+  border-radius: 0.3rem;
+  font-size: 0.75rem;
+}
+.comparison-existing {
+  left: 12px;
+}
+.comparison-proposed {
+  right: 12px;
+}
+@media (max-width: 600px) {
+  .comparison-overlay span {
+    top: 90px;
+    font-size: 0.65rem;
+  }
+  .walk-minimap {
+    width: 115px;
+    bottom: 70px;
+  }
+}
+
+.comparison-overlay span {
+  pointer-events: none;
+}
+.comparison-handle {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: auto;
+  touch-action: none;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0.3rem;
+  border: 1px solid var(--border);
+  border-radius: 0.4rem;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 1.25rem;
+  cursor: ew-resize;
+}
+
+.location-chip {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+}

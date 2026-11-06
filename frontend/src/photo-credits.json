@@ -7,5 +7,27 @@
     "license_url": "https://creativecommons.org/licenses/by-sa/3.0/",
     "year": 2009,
     "changes": "Original image; displayed with CSS cropping."
+  },
+  {
+    "key": "mechanical",
+    "title": "Campus near Mechanical Engineering",
+    "src": "/campus/mechanical.jpg",
+    "author": "Rvian00",
+    "source_url": "https://commons.wikimedia.org/wiki/File:RV_College_Campus.JPG",
+    "license": "CC BY-SA 3.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/3.0/",
+    "year": 2009,
+    "changes": "Re-encoded as JPEG without metadata; displayed with cropping."
+  },
+  {
+    "key": "osm-133117221",
+    "title": "Sir M Visvesvaraya Hostel",
+    "src": "/campus/sir-m-v-hostel.jpg",
+    "author": "Murughendra",
+    "source_url": "https://commons.wikimedia.org/wiki/File:RV_college_hostel.JPG",
+    "license": "CC BY-SA 3.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/3.0/",
+    "year": 2012,
+    "changes": "Re-encoded as JPEG without metadata; displayed with cropping."
   }
 ]

@@ -88,7 +88,7 @@ def text(data,key,minimum=1,maximum=2000):
     return val
 def report_dict(r,request):
     owner=request.user.is_authenticated and (request.user==r.user or request.user.is_staff)
-    return {'repair_image':f'/api/reports/{r.pk}/repair-image/' if r.repair_image else None,'confirmation':r.confirmation,'confirmation_note':r.confirmation_note,'id':r.pk,'title':r.title,'category':r.category,'description':r.description,'zone':r.zone_id,'zone_name':r.zone.name,'status':r.status,'assignee':r.assignee,'mine':request.user==r.user,'author':r.user.first_name or r.user.username,'created_at':r.created_at.isoformat(),'image':f'/api/reports/{r.pk}/image/','coordinates':{'latitude':r.latitude,'longitude':r.longitude} if owner and r.latitude is not None else None,'history':[{'status':h.status,'note':h.note,'created_at':h.created_at.isoformat()} for h in r.history.all().order_by('created_at')]}
+    return {'repair_image':f'/api/reports/{r.pk}/repair-image/' if r.repair_image else None,'confirmation':r.confirmation,'confirmation_note':r.confirmation_note,'id':r.pk,'title':r.title,'category':r.category,'description':r.description,'zone':r.zone_id,'zone_name':r.zone.name,'status':r.status,'assignee':r.assignee,'mine':request.user==r.user,'author':r.user.first_name or r.user.username,'created_at':r.created_at.isoformat(),'image':f'/api/reports/{r.pk}/image/','location_public':r.location_public,'coordinates':{'latitude':r.latitude,'longitude':r.longitude} if (owner or r.location_public) and r.latitude is not None else None,'history':[{'status':h.status,'note':h.note,'created_at':h.created_at.isoformat()} for h in r.history.all().order_by('created_at')]}
 def visible_reports(request):
     qs=Report.objects.select_related('zone','user').prefetch_related('history').order_by('-created_at')
     if request.user.is_authenticated and request.user.is_staff:return qs
@@ -114,10 +114,24 @@ def reports(request):
         try:lat=float(request.data['latitude']);lon=float(request.data['longitude'])
         except (KeyError,ValueError,TypeError):raise ValidationError('Location coordinates are invalid.')
         if not math.isfinite(lat) or not math.isfinite(lon) or not (-90<=lat<=90 and -180<=lon<=180):raise ValidationError('Coordinates out of range.')
+    public_location=str(request.data.get('location_public','')).lower() in ('true','1','on')
+    if public_location and lat is None:raise ValidationError('Choose a map point before sharing its location.')
+    if public_location or str(request.data.get('map_pin','')).lower() in ('true','1','on'):
+        if lat is None:raise ValidationError('Choose a campus map point.')
+        campus=json.loads((settings.BASE_DIR.parent/'frontend/src/campus-geographic.json').read_text(encoding='utf-8'))
+        origin_lon,origin_lat=campus['origin_lon_lat']
+        x=(lon-origin_lon)*111320*math.cos(math.radians(origin_lat))/6
+        z=(origin_lat-lat)*111320/6
+        points=campus['boundary']
+        inside=False
+        for i,a in enumerate(points):
+            b=points[i-1]
+            if (a[1]>z)!=(b[1]>z) and x<(b[0]-a[0])*(z-a[1])/(b[1]-a[1])+a[0]:inside=not inside
+        if not inside:raise ValidationError('Choose a point inside the mapped campus.')
     zone=zone_for(request.data.get('zone'));title=text(request.data,'title',5,120);description=text(request.data,'description',10,2000)
     photo=image_file(request.FILES.get('image'))
     with transaction.atomic():
-        r=Report.objects.create(user=request.user,zone=zone,title=title,description=description,category=category,image=photo,latitude=lat,longitude=lon)
+        r=Report.objects.create(user=request.user,zone=zone,title=title,description=description,category=category,image=photo,latitude=lat,longitude=lon,location_public=public_location)
         ReportUpdate.objects.create(report=r,actor=request.user,status='Pending',note='Submitted for review.')
     return Response(report_dict(r,request),status=201)
 

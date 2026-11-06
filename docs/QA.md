@@ -92,3 +92,15 @@ npm test
 - Fixed profile statistic surfaces in dark mode and contrast in badges, reward labels and selected controls.
 - UI checks covered seven main pages in light and dark modes at 375, 767 and 1440 px (42 route/viewport checks), with no horizontal overflow. Automated WCAG A/AA checks on those pages found no violations in the final reviewed run. This is bounded automated coverage, not a complete manual accessibility certification.
 - Browser tests using temporary real accounts completed survey submission/approval, after-repair upload and reporter confirmation. Temporary accounts, reports, survey records and images were removed after verification. Sample-mode tests covered scenario save/reload, zero rainfall, route switching and returning to campus records.
+
+## 6 November 2026 — 3D tools and copy review
+
+- Production build and all 20 backend tests passed. The new map-pin test covers private/public coordinates, pending-report visibility, staff access and campus bounds.
+- `npm run test:studio` passed coordinate round trips, model distance/area, walking collision/start points, proposal import validation and sun positions. `npm run test:routes` passed.
+- Browser interaction checks passed proposal placement/save, two-point distance, three-point area, date/time shadow controls, floor clipping, WASD movement, map-pin report selection and local panorama validation/viewpoint linking. Leaving panorama mode restored the overview camera. Temporary real-account tests completed pin submission, moderation and opt-in public visibility; test records and uploads were removed.
+- All eight tools fit light/dark layouts at 375, 767 and 1440 px (48 combinations). Automated WCAG A/AA checks in edit, measure and panorama modes at 767 px found no violations after correcting the scene group's ARIA role and the light-theme location label contrast.
+- The seven main pages also fit both themes at those three widths (42 combinations). Profile checks found no automated WCAG A/AA violations. No browser exceptions occurred in these reviewed flows.
+- The three bundled campus photographs loaded and retained visible source/year/license credits. Synthetic flat-color panorama fixtures were used only for local interaction tests and are not bundled as campus imagery.
+- Removed repeated slogans and page eyebrows. Source notes, height assumptions and advanced object controls are expandable. The existing debug drawer and persona buttons are unchanged.
+
+Physical-device walking controls, a genuine campus panorama, surveyed floor plans, current facade accuracy and a complete manual accessibility review remain outside this verification.

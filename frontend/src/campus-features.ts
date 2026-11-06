@@ -283,6 +283,8 @@ export const buildingDirectory: Record<
 export { networkRoute as calculateWalkRoute } from "./routing";
 
 export type OfflineReport = {
+  map_pin?: boolean;
+  location_public?: boolean;
   id: string;
   title: string;
   category: string;

@@ -34,6 +34,8 @@ export type Fact = {
 };
 export type Report = {
   sample?: boolean;
+  coordinates?: { latitude: number; longitude: number } | null;
+  location_public?: boolean;
   repair_image?: string | null;
   confirmation?: string;
   id: number;

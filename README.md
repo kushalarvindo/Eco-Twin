@@ -11,6 +11,7 @@ ECO-TWIN provides an interactive campus map, photo-based issue reporting, modera
 | Module | Functionality |
 | --- | --- |
 | Campus explorer | Geographic 3D model, keyboard-accessible 2D map, location search, layers and camera controls |
+| 3D tools | Ground-level walking, proposal comparison, sun/shade, report pins, floor cutaway, measurements and local panoramas |
 | Issue reporting | Photo uploads, campus zones, optional GPS coordinates and status history |
 | Moderation | Verification, assignment, progress tracking, resolution and rejection |
 | Scenario analysis | Waste, electricity and water reductions, chart comparisons, saved scenarios and JSON export |
@@ -196,4 +197,28 @@ Run the routing and sample-filter regression checks with:
 
 ```sh
 npm run test:routes
+```
+
+## 3D tools
+
+Select a mode from **Campus explorer → 3D tools**. These modes use the geographic model.
+
+| Mode | Controls |
+| --- | --- |
+| Walk at ground level | WASD or on-screen buttons to move, drag to look, Esc to return. The small map shows your position and selected route. Building outlines and the campus boundary stop movement. |
+| Before and after editor | Choose a tree, bin, solar array or tank, then click the map. Drag the comparison divider. Save locally or export/import a proposal as JSON. Expand object controls to move, rotate or remove items. |
+| Sun and shade | Choose a date and Bengaluru time. SunCalc calculates sun position; shadows use the model's estimated heights. |
+| Place a report pin | Click the map, then open the report form. Coordinates are private to the author and moderators unless the author opts into sharing. Public visibility also requires report verification. |
+| Measure distance or area | Click points for a path length or horizontal area. Undo and clear controls are available. Values use the approximate 6 m model scale. |
+| Building cutaway | Select a building and floor level. The view clips the roof and walls and shows estimated floor plates at 3.2 m spacing. Rooms and stairs need verified plans. |
+| 360° viewpoints | Open nearby Google Street View or load a local 2:1 JPEG/PNG panorama. Link loaded viewpoints with clickable hotspots. Local images stay in the browser and clear when the explorer closes. |
+
+Proposals support 40 objects each and 20 local saves. They do not calculate structural suitability or environmental savings. Measurements are approximate; area is projected onto the horizontal plane. Sun/shade excludes weather and tree-canopy effects.
+
+The photo gallery contains credited photographs of Admin (2009), the campus near Mechanical Engineering (2009), and Sir M Visvesvaraya Hostel (2012). All are licensed under [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/); individual sources and changes are recorded in `frontend/src/photo-credits.json`. Admin fins/canopy and hostel balcony details are approximate visual references. Current CSE/library facades, surveyed interiors and a reusable RVCE panorama are still needed for a closer replica. Street View opens on Google Maps and depends on its coverage.
+
+Run the 3D calculation and import checks with:
+
+```sh
+npm run test:studio
 ```

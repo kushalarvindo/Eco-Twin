@@ -1,3 +1,15 @@
+import { useStudio } from "./CampusStudio";
+import {
+  SurfacePicker,
+  ProposalObjects,
+  ComparisonRender,
+  MeasurementObjects,
+  SunLight,
+  WalkCamera,
+  ExactReportPins,
+  PanoramaScene,
+  LandmarkDetails,
+} from "./StudioScene";
 import type { Hotspots } from "./hotspots";
 import { usePreferences } from "./preferences";
 import ScenePalette from "./ScenePalette";
@@ -16,7 +28,9 @@ import {
 type Feature = (typeof data.buildings)[number];
 function Diagnostics() {
   const frames = useRef(0);
-  useFrame(({ gl }) => {
+  useFrame(({ gl,camera }) => {
+    gl.domElement.dataset.cameraPosition=JSON.stringify(camera.position.toArray());
+    gl.domElement.dataset.cameraType=camera.type;
     gl.domElement.dataset.renderFrames = String(++frames.current);
     gl.domElement.dataset.drawCalls = String(gl.info.render.calls);
     gl.domElement.dataset.triangles = String(gl.info.render.triangles);
@@ -247,6 +261,33 @@ function Footprint({
   scenarioReduction?: number | null;
   isHeatmap?: boolean;
 }) {
+  const studio = useStudio();
+  const cut = studio?.mode === "cutaway" && p.id === selected;
+  const level = Math.max(
+    1,
+    Math.min(studio?.floor ?? 1, Math.ceil((p.height_m - 0.01) / 3.2)),
+  );
+  const clip = useMemo(
+    () =>
+      cut
+        ? [
+            new THREE.Plane(
+              new THREE.Vector3(0, -1, 0),
+              (level * 3.2) / 6 + 0.15,
+            ),
+          ]
+        : [],
+    [cut, level],
+  );
+  const slab = useMemo(
+    () =>
+      new THREE.ExtrudeGeometry(shape(p.points), {
+        depth: 0.035,
+        bevelEnabled: false,
+      }),
+    [p],
+  );
+  useEffect(() => () => slab.dispose(), [slab]);
   const [hover, setHover] = useState(false);
   const active = p.id === selected;
   const geometry = useMemo(
@@ -281,7 +322,11 @@ function Footprint({
       {(hover || active) && (
         <BuildingName
           name={metric ? p.name + " · " + metric.label : p.name}
-          position={[p.centroid[0], p.height_units + 3, p.centroid[1]]}
+          position={[
+            p.centroid[0],
+            cut ? (level * 3.2) / 6 + 1 : p.height_units + 3,
+            p.centroid[1],
+          ]}
         />
       )}
       {/* Heatmap ground thermal halo */}
@@ -323,6 +368,7 @@ function Footprint({
       </mesh>
       {/* Extruded building structure */}
       <mesh
+        userData={{ campusSurface: true }}
         geometry={geometry}
         rotation={[-Math.PI / 2, 0, 0]}
         position={[0, 0.15, 0]}
@@ -331,7 +377,7 @@ function Footprint({
         onClick={(e) => {
           if (e.delta > 5) return;
           e.stopPropagation();
-          onSelect(p.id);
+          if (studio?.mode !== "walk") onSelect(p.id);
         }}
         onPointerOver={(e) => {
           e.stopPropagation();
@@ -345,6 +391,7 @@ function Footprint({
       >
         {metric ? (
           <meshStandardMaterial
+            clippingPlanes={clip}
             color={metric.color}
             emissive={
               isHeatmap && reportsForZone.length > 0
@@ -363,6 +410,7 @@ function Footprint({
           />
         ) : (
           <meshStandardMaterial
+            clippingPlanes={clip}
             color={
               active
                 ? scenarioReduction
@@ -392,6 +440,8 @@ function Footprint({
       </mesh>
       {/* Building roof */}
       <mesh
+        visible={!cut}
+        userData={{ campusSurface: true }}
         geometry={roof}
         rotation={[-Math.PI / 2, 0, 0]}
         position={[0, p.height_units + 0.16, 0]}
@@ -427,12 +477,27 @@ function Footprint({
       </mesh>
       {/* Architectural roof coping trim */}
       <lineSegments
+        visible={!cut}
         rotation={[-Math.PI / 2, 0, 0]}
         position={[0, p.height_units + 0.17, 0]}
       >
         <edgesGeometry args={[roof]} />
         <lineBasicMaterial color={active ? "#3e6d38" : "#bac4b2"} />
       </lineSegments>
+      {cut &&
+        Array.from({ length: level }, (_, i) => (
+          <mesh
+            key={i}
+            geometry={slab}
+            rotation={[-Math.PI / 2, 0, 0]}
+            position={[0, 0.18 + (i * 3.2) / 6, 0]}
+          >
+            <meshStandardMaterial
+              color={i === level - 1 ? "#e1bb78" : "#b2c7c2"}
+              side={THREE.DoubleSide}
+            />
+          </mesh>
+        ))}
       {active && (
         <lineSegments rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.15, 0]}>
           <edgesGeometry args={[geometry]} />
@@ -608,12 +673,12 @@ function InfrastructurePins({
     </group>
   );
 }
-function Windows() {
+function Windows({ exclude }: { exclude?: string }) {
   const windows = useMemo(() => {
     const transforms: THREE.Matrix4[] = [];
     const obj = new THREE.Object3D();
     for (const p of data.buildings) {
-      if (p.tags.building === "construction") continue;
+      if (p.tags.building === "construction" || p.id === exclude) continue;
       const floors = Math.max(1, Math.min(6, Math.round(p.height_m / 3.2)));
       for (let e = 1; e < p.points.length; e++) {
         const [ax, az] = p.points[e - 1],
@@ -635,7 +700,7 @@ function Windows() {
       }
     }
     return transforms;
-  }, []);
+  }, [exclude]);
   const ref = useRef<THREE.InstancedMesh>(null);
   useLayoutEffect(() => {
     windows.forEach((m, i) => ref.current!.setMatrixAt(i, m));
@@ -708,7 +773,12 @@ function Ground() {
         />
       </mesh>
       {/* Campus Boundary Terrain */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} geometry={geom} receiveShadow>
+      <mesh
+        userData={{ campusSurface: true }}
+        rotation={[-Math.PI / 2, 0, 0]}
+        geometry={geom}
+        receiveShadow
+      >
         <meshStandardMaterial
           color={display.dark ? "#81947e" : "#dde6cf"}
           roughness={0.9}
@@ -872,6 +942,7 @@ export default function GeographicScene({
   walkRoute?: { points: number[][] } | null;
   onSelectAsset?: (asset: InfrastructureAsset) => void;
 }) {
+  const studio = useStudio();
   const [lost, setLost] = useState(false);
   const display = usePreferences();
   const reportsByZone = useMemo(() => {
@@ -891,8 +962,17 @@ export default function GeographicScene({
         3D graphics are unavailable. Select “2D map” to keep exploring.
       </div>
     );
+  if (
+    studio?.mode === "panorama" &&
+    studio.panoramas.some((p) => p.id === studio.panorama)
+  )
+    return (
+      <Canvas key="panorama" frameloop="demand" dpr={[1, 1.5]}>
+        <PanoramaScene />
+      </Canvas>
+    );
   return (
-    <Canvas
+    <Canvas key="campus"
       shadows="soft"
       orthographic
       camera={{ position: [65, 65, 80], zoom: 8, near: 0.1, far: 450 }}
@@ -905,6 +985,7 @@ export default function GeographicScene({
         toneMappingExposure: display.dark ? 1.06 : 1.08,
       }}
       onCreated={({ gl }) => {
+        gl.localClippingEnabled = true;
         gl.setClearColor(display.dark ? "#879d9d" : "#eaf0e9");
         gl.shadowMap.enabled = true;
         gl.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -923,11 +1004,11 @@ export default function GeographicScene({
       <hemisphereLight
         color={display.dark ? "#dce8fb" : "#f0f5ff"}
         groundColor={display.dark ? "#a6ae92" : "#cbd8c0"}
-        intensity={display.dark ? 1.5 : 1.25}
+        intensity={studio?.mode === "sun" ? 0.22 : display.dark ? 1.5 : 1.25}
       />
       <directionalLight
         position={[-42, 68, 38]}
-        intensity={display.dark ? 1.8 : 2.3}
+        intensity={studio?.mode === "sun" ? 0 : display.dark ? 1.8 : 2.3}
         color={display.dark ? "#d6e5d3" : "#fffcf2"}
         castShadow
         shadow-mapSize={[2048, 2048]}
@@ -942,7 +1023,7 @@ export default function GeographicScene({
       />
       <directionalLight
         position={[45, 30, -35]}
-        intensity={display.dark ? 0.35 : 0.55}
+        intensity={studio?.mode === "sun" ? 0 : display.dark ? 0.35 : 0.55}
         color="#c2d5e5"
       />
       <Diagnostics />
@@ -966,8 +1047,19 @@ export default function GeographicScene({
           onReport={onReport}
         />
       ))}
-      <Windows />
-      <Camera command={command} />
+      <Windows exclude={studio?.mode === "cutaway" ? selected : undefined} />
+      {studio?.mode !== "cutaway" && <LandmarkDetails />}
+      <SurfacePicker />
+      <ProposalObjects />
+      <MeasurementObjects />
+      <ExactReportPins reports={reports} onReport={onReport} />
+      {studio?.mode === "edit" && studio.compare && <ComparisonRender />}
+      {studio?.mode === "sun" && <SunLight />}
+      {studio?.mode === "walk" ? (
+        <WalkCamera selected={selected} />
+      ) : (
+        <Camera command={command} />
+      )}
     </Canvas>
   );
 }

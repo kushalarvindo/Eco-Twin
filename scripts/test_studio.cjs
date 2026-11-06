@@ -1,0 +1,17 @@
+const fs=require('node:fs'),ts=require('typescript'),assert=require('node:assert/strict');
+require.extensions['.ts']=(m,f)=>m._compile(ts.transpileModule(fs.readFileSync(f,'utf8'),{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.CommonJS,esModuleInterop:true}}).outputText,f);
+const m=require('../frontend/src/studio-math.ts');
+const d=require('../frontend/src/campus-geographic.json');
+assert.equal(m.polygonArea([[0,0,0],[1,0,0],[1,0,1],[0,0,1]]),36);
+assert.equal(m.pathDistance([[0,0,0],[3,0,4]]),30);
+const pin=[2,0,-5],latlon=m.mapCoordinates(pin),round=m.sceneCoordinates(latlon.latitude,latlon.longitude);
+assert(Math.abs(round[0]-2)<1e-7&&Math.abs(round[2]+5)<1e-7);
+const start=m.walkStart('cse');assert(m.walkable(start[0],start[2]));
+const building=d.buildings.find(b=>b.id==='cse');assert.equal(m.walkable(...building.centroid),false);assert.equal(m.walkable(1000,1000),false);
+const noon=m.sunPosition('2026-11-06',12),night=m.sunPosition('2026-11-06',0);
+assert(noon.altitude>60&&noon.altitude<63);assert(night.altitude<0);assert(Math.abs(Math.hypot(...noon.vector)-100)<1e-6);
+const proposal={id:'test',name:'Test proposal',objects:[{id:'tree1',kind:'tree',point:[start[0],.1,start[2]],rotation:0}]};
+assert(m.validProposal(proposal));assert(!m.validProposal({...proposal,objects:[null]}));assert(!m.validProposal({...proposal,objects:[...proposal.objects,...proposal.objects]}));
+assert(!m.validProposal({...proposal,objects:[{...proposal.objects[0],point:[Infinity,0,0]}]}));
+assert(!m.validProposal({...proposal,objects:[{...proposal.objects[0],point:[1000,0,1000]}]}));
+console.log('Studio measurements, campus coordinates, collision, proposal validation and sun positions passed.');

@@ -1,3 +1,11 @@
+import {
+  StudioProvider,
+  StudioToolbar,
+  CampusPhotos,
+  useStudio,
+  WalkMiniMap,
+} from "./CampusStudio";
+import { mapCoordinates, type MapPoint } from "./studio-math";
 import { Rainwater, Surveys, RepairEvidence } from "./FieldTools";
 import {
   useSample,
@@ -126,13 +134,7 @@ const GeographicScene = lazy(() => import("./GeographicScene"));
 import geographic from "./campus-geographic.json";
 import layout from "./campus-layout.json";
 import photoData from "./photo-credits.json";
-const photos = photoData as {
-  key: string;
-  source_url: string;
-  author: string;
-  license: string;
-  license_url: string;
-}[];
+const photos = photoData;
 const Comparison = lazy(() => import("./Comparison"));
 const navigation = [
   { to: "/", label: "Campus explorer", icon: Compass },
@@ -188,7 +190,7 @@ function Empty({
 function Loading() {
   return (
     <div className="loading">
-      <Loader2 className="spin" size={22} /> Getting things ready…
+      <Loader2 className="spin" size={22} /> Loading…
     </div>
   );
 }
@@ -249,7 +251,7 @@ function PageHead({
   description,
   action,
 }: {
-  eyebrow: string;
+  eyebrow?: string;
   title: string;
   description: string;
   action?: ReactNode;
@@ -257,7 +259,7 @@ function PageHead({
   return (
     <div className="page-head">
       <div>
-        <p className="eyebrow">{eyebrow}</p>
+        {eyebrow && <p className="eyebrow">{eyebrow}</p>}
         <h1>{title}</h1>
         <p className="page-description">{description}</p>
       </div>
@@ -287,6 +289,7 @@ export default function App() {
     [activeChallenge, setActiveChallenge] = useState<Challenge | null>(null),
     [activeReview, setActiveReview] = useState<Review | null>(null),
     [mobileMenu, setMobileMenu] = useState(false);
+  const [mapPin, setMapPin] = useState<MapPoint | null>(null);
   const [prefillReport, setPrefillReport] = useState<{
     title: string;
     category: string;
@@ -394,7 +397,7 @@ export default function App() {
           <span>
             eco<span className="brand-light">twin</span>
             <span className="brand-dot">.</span>
-            <small>A better campus, together</small>
+            <small>RVCE campus map</small>
           </span>
         </NavLink>
         <div className="workspace-label">Your workspace</div>
@@ -428,8 +431,8 @@ export default function App() {
             <span className="grow-symbol">
               <Sprout size={28} />
             </span>
-            <h3>A little goes a long way.</h3>
-            <p>Your next small action could make a big difference.</p>
+            <h3>Campus challenges</h3>
+
             <NavLink to="/challenges">
               Find a challenge <ArrowUpRight size={15} />
             </NavLink>
@@ -498,7 +501,7 @@ export default function App() {
               </button>
             ) : (
               <button className="button small" onClick={() => setModal("auth")}>
-                <LogIn size={16} /> Join the campus
+                <LogIn size={16} /> Sign in
               </button>
             )}
           </div>
@@ -506,8 +509,7 @@ export default function App() {
         <main id="main">
           {sample.active && (
             <div className="sample-label" role="status">
-              <strong>Sample data</strong> · reports, points and reviewer roles
-              are examples in this browser.{" "}
+              <strong>Sample data</strong> · Browser-only examples{" "}
               <button
                 className="text-button"
                 onClick={() => setSample({ active: false })}
@@ -547,6 +549,23 @@ export default function App() {
                     onReport={reportAction}
                     onSources={() => setModal("sources")}
                     onDetail={openReport}
+
+                    onPin={(point) => {
+                      setMapPin(point);
+                      const nearest = [...geographic.buildings].sort(
+                        (a, b) =>
+                          Math.hypot(
+                            a.centroid[0] - point[0],
+                            a.centroid[1] - point[2],
+                          ) -
+                          Math.hypot(
+                            b.centroid[0] - point[0],
+                            b.centroid[1] - point[2],
+                          ),
+                      )[0];
+                      selectZone(nearest.id);
+                      reportAction();
+                    }}
                   />
                 }
               />
@@ -665,7 +684,7 @@ export default function App() {
               <Route
                 path="*"
                 element={
-                  <Empty icon={Compass} title="That path isn’t on our map.">
+                  <Empty icon={Compass} title="Page not found">
                     Choose a destination in the navigation to get back to
                     campus.
                   </Empty>
@@ -675,7 +694,7 @@ export default function App() {
           )}
           <footer className="main-footer">
             <span>
-              <Leaf size={13} /> Made for a campus that cares.
+              <Leaf size={13} /> ECO-TWIN · RVCE
             </span>
             <button onClick={() => setModal("sources")}>
               Data sources & limitations <ArrowUpRight size={12} />
@@ -709,13 +728,16 @@ export default function App() {
         <ReportModal
           zones={zones}
           selected={selected}
+          pin={mapPin}
           prefill={prefillReport}
           onClose={() => {
             setPrefillReport(null);
+            setMapPin(null);
             close();
           }}
           onDone={async () => {
             setPrefillReport(null);
+            setMapPin(null);
             await refresh();
             close();
             navigate("/reports");
@@ -761,7 +783,7 @@ export default function App() {
       )}
       {modal === "sources" && (
         <Modal
-          title="A clearer picture starts with honest data."
+          title="About the data"
           description="RVCE research · Collected 4 November 2026"
           onClose={close}
           wide
@@ -775,7 +797,7 @@ export default function App() {
               environmental feed is connected.
             </p>
           </div>
-          <h3>Geometry you can trace</h3>
+          <h3>Campus model</h3>
           <p>
             Mapped campus extent: approximately{" "}
             {Math.round(
@@ -914,7 +936,15 @@ function calendarAge(timestamp: string) {
     86400000
   );
 }
-function Explorer({
+function Explorer(props: Parameters<typeof ExplorerContent>[0]) {
+  return (
+    <StudioProvider>
+      <ExplorerContent {...props} />
+    </StudioProvider>
+  );
+}
+function ExplorerContent({
+  onPin,
   factCount,
   zones,
   zone,
@@ -925,6 +955,7 @@ function Explorer({
   onSources,
   onDetail,
 }: {
+  onPin: (point: MapPoint) => void;
   factCount: number;
   zones: Zone[];
   zone: Zone;
@@ -935,6 +966,7 @@ function Explorer({
   onSources: () => void;
   onDetail: (r: Report) => void;
 }) {
+  const studio = useStudio()!;
   const display = usePreferences();
   const [view, setView] = useState(display.view),
     [layer, setLayer] = useState("buildings"),
@@ -951,6 +983,10 @@ function Explorer({
   const [activeAsset, setActiveAsset] = useState<InfrastructureAsset | null>(
     null,
   );
+  useEffect(() => {
+    if (view !== "3d" || source !== "geographic") studio.setMode("explore");
+  }, [view, source]);
+  const referencePhoto = photos.find((p) => p.key === selected);
   const navigate = useNavigate();
   const commandTo = (type: string) =>
     setCommand((c) => ({ type, tick: c.tick + 1 }));
@@ -1016,9 +1052,8 @@ function Explorer({
   return (
     <>
       <PageHead
-        eyebrow="Explore. Understand. Make a difference."
-        title="Your campus. A greener possibility."
-        description="See the bigger picture. Start with the place right around you."
+        title="Campus explorer"
+        description="Find a building, explore the map, or report an issue."
         action={
           <button className="button" onClick={onReport}>
             <Plus size={17} /> Report an issue
@@ -1030,11 +1065,9 @@ function Explorer({
           <div className="panel-heading">
             <div>
               <h2>
-                <span className="green-dot" /> Campus explorer
+                <span className="green-dot" /> Campus map
               </h2>
-              <span className="muted small-text">
-                55 mapped footprints. One shared campus.
-              </span>
+              <span className="muted small-text">55 mapped buildings</span>
             </div>
             <div className="segmented" aria-label="Campus view">
               <button
@@ -1068,6 +1101,14 @@ function Explorer({
               </small>
             )}
           </div>
+          <StudioToolbar
+            selected={selected}
+            activate={() => {
+              setView("3d");
+              setSource("geographic");
+            }}
+            onPin={onPin}
+          />
           <div className="scene-wrap">
             <div className="scene-toolbar">
               <label className="scene-search">
@@ -1105,34 +1146,36 @@ function Explorer({
                   </div>
                 )}
               </label>
-              {view === "3d" && source === "geographic" && (
-                <select
-                  aria-label="Camera viewpoint"
-                  className="viewpoint-select"
-                  defaultValue=""
-                  onChange={(e) => {
-                    const vp = campusViewpoints.find(
-                      (v) => v.id === e.target.value,
-                    );
-                    if (vp) {
-                      setCommand({
-                        type: "viewpoint",
-                        position: vp.position,
-                        target: vp.target,
-                        zoom: vp.zoom,
-                        tick: command.tick + 1,
-                      });
-                    }
-                  }}
-                >
-                  <option value="">Camera viewpoint…</option>
-                  {campusViewpoints.map((vp) => (
-                    <option key={vp.id} value={vp.id}>
-                      {vp.label}
-                    </option>
-                  ))}
-                </select>
-              )}
+              {view === "3d" &&
+                source === "geographic" &&
+                !["walk", "panorama"].includes(studio.mode) && (
+                  <select
+                    aria-label="Camera viewpoint"
+                    className="viewpoint-select"
+                    defaultValue=""
+                    onChange={(e) => {
+                      const vp = campusViewpoints.find(
+                        (v) => v.id === e.target.value,
+                      );
+                      if (vp) {
+                        setCommand({
+                          type: "viewpoint",
+                          position: vp.position,
+                          target: vp.target,
+                          zoom: vp.zoom,
+                          tick: command.tick + 1,
+                        });
+                      }
+                    }}
+                  >
+                    <option value="">Camera viewpoint…</option>
+                    {campusViewpoints.map((vp) => (
+                      <option key={vp.id} value={vp.id}>
+                        {vp.label}
+                      </option>
+                    ))}
+                  </select>
+                )}
               <span className="north-label">
                 <Navigation size={17} />{" "}
                 {source === "geographic"
@@ -1144,7 +1187,14 @@ function Explorer({
             </div>
             <div
               className="campus-canvas"
-              aria-label="Interactive schematic campus model"
+              role="group"
+              aria-label={
+                studio.mode === "panorama" && studio.panorama
+                  ? "Local panoramic viewpoint"
+                  : studio.mode === "walk"
+                    ? "Ground-level campus model"
+                    : "Interactive schematic campus model"
+              }
             >
               {view === "3d" ? (
                 <SceneBoundary fallback={fallback}>
@@ -1180,6 +1230,74 @@ function Explorer({
                 fallback
               )}
             </div>
+            {studio.mode === "edit" && studio.compare && (
+              <div className="comparison-overlay">
+                {studio.split > 5 && (
+                  <span className="comparison-existing">Existing campus</span>
+                )}
+                {studio.split < 95 && (
+                  <span className="comparison-proposed">Proposed changes</span>
+                )}
+                <i style={{ left: studio.split + "%" }} />
+                <button
+                  role="slider"
+                  aria-label="Drag comparison divider"
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-valuenow={studio.split}
+                  aria-orientation="horizontal"
+                  className="comparison-handle"
+                  style={{
+                    left:
+                      "clamp(22px, " + studio.split + "%, calc(100% - 22px))",
+                  }}
+                  onPointerDown={(e) => {
+                    e.currentTarget.setPointerCapture(e.pointerId);
+                    e.preventDefault();
+                  }}
+                  onPointerMove={(e) => {
+                    if (e.buttons !== 1) return;
+                    const rect = e.currentTarget
+                      .closest(".scene-wrap")!
+                      .getBoundingClientRect();
+                    studio.setSplit(
+                      Math.max(
+                        0,
+                        Math.min(
+                          100,
+                          Math.round(
+                            ((e.clientX - rect.left) / rect.width) * 100,
+                          ),
+                        ),
+                      ),
+                    );
+                  }}
+                  onKeyDown={(e) => {
+                    if (
+                      ["ArrowLeft", "ArrowRight", "Home", "End"].includes(e.key)
+                    ) {
+                      e.preventDefault();
+                      studio.setSplit((v) =>
+                        e.key === "Home"
+                          ? 0
+                          : e.key === "End"
+                            ? 100
+                            : Math.max(
+                                0,
+                                Math.min(
+                                  100,
+                                  v + (e.key === "ArrowRight" ? 5 : -5),
+                                ),
+                              ),
+                      );
+                    }
+                  }}
+                >
+                  ↔
+                </button>
+              </div>
+            )}
+            <WalkMiniMap route={walkRoute} />
             <div className="scene-bottom">
               <div className="layer-select">
                 <Layers size={15} />
@@ -1218,7 +1336,7 @@ function Explorer({
                   )}
                 </select>
               </div>
-              {view === "3d" && (
+              {view === "3d" && !["walk", "panorama"].includes(studio.mode) && (
                 <div className="scene-controls">
                   <button
                     type="button"
@@ -1363,11 +1481,15 @@ function Explorer({
             <span className="location-chip">
               <MapPin size={13} /> Selected location
             </span>
-            {selected === "admin" && photos.some((p) => p.key === "admin") ? (
+            {referencePhoto ? (
               <img
                 className="location-photo"
-                src="/campus/admin.jpg"
-                alt="Historical photograph of RVCE Administrative Block"
+                src={
+                  "src" in referencePhoto
+                    ? String(referencePhoto.src)
+                    : "/campus/admin.jpg"
+                }
+                alt={"Historical photograph of " + zone.name}
               />
             ) : (
               <BuildingArt zone={zone} selected={selected} />
@@ -1383,28 +1505,33 @@ function Explorer({
               </span>
             </div>
             <h2>{zone?.name}</h2>
-            {selected === "admin" && (
+            {referencePhoto && (
               <p className="small-text">
-                Photo:{" "}
+                Photo by{" "}
                 <a
-                  href="https://commons.wikimedia.org/wiki/File:RV_College_Admin_block.JPG"
+                  href={referencePhoto.source_url}
                   target="_blank"
                   rel="noreferrer"
                 >
-                  Rvian00, 2009
+                  {referencePhoto.author}, {referencePhoto.year}
                 </a>{" "}
                 ·{" "}
                 <a
-                  href="https://creativecommons.org/licenses/by-sa/3.0/"
+                  href={referencePhoto.license_url}
                   target="_blank"
                   rel="noreferrer"
                 >
-                  CC BY-SA 3.0
+                  {referencePhoto.license}
                 </a>
                 . Historical appearance.
               </p>
             )}
-            <p>{zone?.description}</p>
+            {zone?.description && (
+              <details className="model-details">
+                <summary>About this location</summary>
+                <p>{zone.description}</p>
+              </details>
+            )}
             {(() => {
               const building = geographic.buildings.find(
                 (p) => p.id === selected,
@@ -1427,32 +1554,33 @@ function Explorer({
                       <dd>{building.height_m.toFixed(1)} m</dd>
                     </div>
                   </dl>
-                  <p>{building.height_basis}</p>
-                  <p>
-                    OpenStreetMap extract · {geographic.retrieved_date}.
-                    Building name:{" "}
-                    {building.tags.name ? "mapped" : "project label"}.{" "}
-                    {selected === "admin"
-                      ? "Reference photo: 2009."
-                      : "No reference photo on file."}
-                  </p>
-                  <p>Scale: 1 model unit ≈ 6 metres.</p>
+                  <details className="model-details">
+                    <summary>Scale and sources</summary>
+                    <p>{building.height_basis}</p>
+                    <p>
+                      OpenStreetMap extract · {geographic.retrieved_date}.
+                      Building name:{" "}
+                      {building.tags.name ? "mapped" : "project label"}.{" "}
+                      {referencePhoto
+                        ? "Reference photo: " + referencePhoto.year + "."
+                        : "No reference photo on file."}
+                    </p>
+                    <p>Scale: 1 model unit ≈ 6 metres.</p>
+                    <a
+                      href="https://commons.wikimedia.org/wiki/Category:R.V._College_of_Engineering"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Campus photo sources
+                    </a>
+                  </details>
                   <a
                     className="text-button"
                     target="_blank"
                     rel="noreferrer"
                     href={`https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${geographic.origin_lon_lat[1] - (building.centroid[1] * 6) / 111320},${geographic.origin_lon_lat[0] + (building.centroid[0] * 6) / (111320 * Math.cos((geographic.origin_lon_lat[1] * Math.PI) / 180))}`}
                   >
-                    Open nearby Street View
-                  </a>
-                  <p>Coverage and capture date are provided by Google Maps.</p>
-                  <a
-                    className="text-button"
-                    target="_blank"
-                    rel="noreferrer"
-                    href="https://commons.wikimedia.org/wiki/Category:R.V._College_of_Engineering"
-                  >
-                    Campus photograph references
+                    Street View
                   </a>
                 </section>
               );
@@ -1605,6 +1733,7 @@ function Explorer({
           </div>
         </section>
       </div>
+      <CampusPhotos selected={selected} onSelect={onSelect} />
       <Rainwater selected={selected} />
       <Surveys zone={selected} zones={zones} />
       <HistoryPanel
@@ -1616,7 +1745,7 @@ function Explorer({
       />
       <div className="section-heading">
         <div>
-          <h2>A little context, a better perspective.</h2>
+          <h2>Campus infrastructure</h2>
           <p>
             Published campus infrastructure. Capacity figures, not live
             consumption.
@@ -1650,7 +1779,7 @@ function Explorer({
         />
         <Metric
           icon={BookOpen}
-          label="Research, with a source"
+          label="Campus research"
           value={String(factCount)}
           unit="facts"
           caption="Curated public facts · Nov 2026"
@@ -1659,7 +1788,7 @@ function Explorer({
       <div className="bottom-grid">
         <section className="panel activity-panel">
           <div className="section-heading">
-            <h2>From observation to action</h2>
+            <h2>Recent reports</h2>
             <NavLink to="/reports" className="text-button">
               All reports <ArrowRight size={15} />
             </NavLink>
@@ -1676,23 +1805,18 @@ function Explorer({
                 <MapPin size={23} />
               </span>
               <div>
-                <h3>Notice something that needs care?</h3>
-                <p>A photo and a location are a good place to start.</p>
+                <h3>No reports yet</h3>
+                <p>Add a photo and the location of an issue.</p>
               </div>
               <button className="text-button" onClick={onReport}>
-                Make the first report <ArrowRight size={16} />
+                Report an issue <ArrowRight size={16} />
               </button>
             </div>
           )}
         </section>
         <section className="possibility-card">
           <div>
-            <span className="eyebrow">Small changes. Thoughtful choices.</span>
-            <h2>
-              What could a greener
-              <br />
-              campus look like?
-            </h2>
+            <h2>Test a campus change</h2>
             <NavLink to="/simulations">
               Try the what-if studio <ArrowUpRight size={17} />
             </NavLink>
@@ -2493,6 +2617,8 @@ function ReportsPage({
         form.set("category", off.category);
         form.set("description", off.description);
         form.set("zone", off.zone);
+        if (off.map_pin) form.set("map_pin", "true");
+        if (off.location_public) form.set("location_public", "true");
         if (off.latitude !== null && off.longitude !== null) {
           form.set("latitude", String(off.latitude));
           form.set("longitude", String(off.longitude));
@@ -2523,9 +2649,8 @@ function ReportsPage({
   return (
     <>
       <PageHead
-        eyebrow="A shared space deserves shared care"
-        title="Notice it. Report it. Follow it through."
-        description="Turn everyday observations into a better campus for everyone."
+        title="Issue reports"
+        description="Report a problem and track its progress."
         action={
           <button className="button" onClick={onCreate}>
             <Plus size={17} /> Report an issue
@@ -2547,7 +2672,7 @@ function ReportsPage({
           <strong>
             {reports.filter((r) => r.status === "Resolved").length}
           </strong>
-          <span>Resolved with care</span>
+          <span>Resolved</span>
         </div>
         <p>
           <ShieldCheck size={20} /> Reports are checked by a moderator before
@@ -2616,9 +2741,7 @@ function ReportsPage({
         ) : (
           <Empty
             icon={MapPin}
-            title={
-              query ? "No matching reports" : "A fresh start for campus care."
-            }
+            title={query ? "No matching reports" : "No reports yet"}
           >
             {query
               ? "Try another keyword or status."
@@ -2641,9 +2764,8 @@ function Dashboard({
   return (
     <>
       <PageHead
-        eyebrow="Environment, with context"
-        title="Understand what’s here. See what’s missing."
-        description="A transparent view of campus infrastructure and the data behind it."
+        title="Environment"
+        description="Campus facilities, report trends, and electricity records."
         action={
           <button className="button secondary" onClick={onSources}>
             <BookOpen size={17} /> Data sources
@@ -2743,14 +2865,7 @@ function Dashboard({
           <span className="round-icon">
             <Settings2 size={23} />
           </span>
-          <h2>
-            Good data makes
-            <br />
-            better decisions.
-          </h2>
-          <p>
-            The next step is connecting authorised records and campus surveys.
-          </p>
+          <h2>Records still needed</h2>
           {[
             "Building-wise meter readings",
             "Waste quantities and categories",
@@ -2848,10 +2963,8 @@ function AuthModal({
   }
   return (
     <Modal
-      title={
-        register ? "Make your first positive step." : "Welcome back to campus."
-      }
-      description="Your contributions, all in one place."
+      title={register ? "Create an account" : "Sign in"}
+      description="Save reports, join challenges, and keep your scenarios."
       onClose={onClose}
     >
       <form onSubmit={submit} className="form-stack">
@@ -2937,12 +3050,14 @@ function AuthModal({
   );
 }
 function ReportModal({
+  pin,
   zones,
   selected,
   prefill,
   onClose,
   onDone,
 }: {
+  pin?: MapPoint | null;
   zones: Zone[];
   selected: string;
   prefill?: {
@@ -2957,10 +3072,14 @@ function ReportModal({
   const [busy, setBusy] = useState(false),
     [error, setError] = useState(""),
     [gps, setGps] = useState<{ latitude: number; longitude: number } | null>(
-      null,
+      pin ? mapCoordinates(pin) : null,
     ),
     [gpsStatus, setGpsStatus] = useState(""),
     [preview, setPreview] = useState("");
+  const [pinActive, setPinActive] = useState(!!pin);
+  useEffect(() => {
+    if (pin) setZoneVal(selected);
+  }, [pin, selected]);
   const [zoneVal, setZoneVal] = useState(prefill?.zone || selected);
   const [categoryVal, setCategoryVal] = useState(prefill?.category || "Waste");
   const [titleVal, setTitleVal] = useState(prefill?.title || "");
@@ -2986,6 +3105,9 @@ function ReportModal({
     setError("");
     setBusy(true);
     const form = new FormData(e.currentTarget);
+    if (pinActive && gps) {
+      form.set("map_pin", "true");
+    }
     if (gps) {
       form.set("latitude", String(gps.latitude));
       form.set("longitude", String(gps.longitude));
@@ -2997,6 +3119,8 @@ function ReportModal({
 
     if (sampleState().active) {
       addSampleReport({
+        coordinates: gps,
+        location_public: form.get("location_public") === "on",
         id: Date.now(),
         title: titleVal,
         description: descVal,
@@ -3043,6 +3167,8 @@ function ReportModal({
           latitude: gps ? gps.latitude : null,
           longitude: gps ? gps.longitude : null,
           image_data_url: String(reader.result || ""),
+          map_pin: pinActive && !!gps,
+          location_public: form.get("location_public") === "on",
           image_name: file.name,
           created_at: new Date().toISOString(),
         });
@@ -3083,6 +3209,7 @@ function ReportModal({
     }
   }
   function locate() {
+    setPinActive(false);
     if (!navigator.geolocation) {
       setGpsStatus("Location is unavailable. Choose a campus zone manually.");
       return;
@@ -3115,7 +3242,7 @@ function ReportModal({
   }
   return (
     <Modal
-      title="A small observation. A positive start."
+      title="Report an issue"
       description="Photograph the issue and tell us where it needs attention."
       onClose={onClose}
     >
@@ -3206,6 +3333,20 @@ function ReportModal({
             placeholder="Describe the issue and how to find it…"
           />
         </label>
+        {pinActive && gps && (
+          <div className="notice">
+            <div>
+              <strong>Map pin selected</strong>
+              <p>
+                The exact location is visible to you and moderators by default.
+              </p>
+              <label className="preference-check">
+                <input name="location_public" type="checkbox" />
+                Show this pin to other viewers after verification
+              </label>
+            </div>
+          </div>
+        )}
         <label className="upload-label">
           <span>
             <Plus size={20} />
@@ -3249,6 +3390,7 @@ function ReportModal({
               type="button"
               onClick={() => {
                 setGps(null);
+                setPinActive(false);
                 setGpsStatus(
                   "Coordinates removed. Your selected campus zone will be used.",
                 );
@@ -3374,7 +3516,7 @@ function ReportModalDetail({
         </div>
         <div>
           <RepairEvidence report={r} onDone={onDone} />
-          <h3>The journey so far</h3>
+          <h3>Status history</h3>
           <div className="timeline">
             {r.history.map((h, i) => (
               <div key={i}>
@@ -3455,21 +3597,16 @@ function ChallengesPage({
   return (
     <>
       <PageHead
-        eyebrow="Good habits grow together"
-        title="Small actions. Real participation."
-        description="Pick a challenge, show your effort, and build a habit that lasts."
+        title="Challenges"
+        description="Join an activity and submit a photo for review."
       />
       <div className="challenge-banner">
         <div>
           <span className="badge light">
-            <Sprout size={13} /> Your next positive step
+            <Sprout size={13} /> How points work
           </span>
-          <h2>
-            A greener campus
-            <br />
-            starts with all of us.
-          </h2>
-          <p>No grand gestures needed. Just a little intention, every day.</p>
+          <h2>Complete an activity. Submit your evidence.</h2>
+          <p>A moderator checks your submission before points are awarded.</p>
         </div>
         <div className="banner-illustration" aria-hidden="true">
           <TreePine />
@@ -3479,8 +3616,7 @@ function ChallengesPage({
       </div>
       <div className="section-heading">
         <div>
-          <h2>Find your next challenge</h2>
-          <p>Evidence is reviewed. Points recognise verified participation.</p>
+          <h2>Available challenges</h2>
         </div>
         <span className="muted small-text">
           {challenges.length} pilot challenges
@@ -3694,9 +3830,8 @@ function Moderation({
   return (
     <>
       <PageHead
-        eyebrow="Care, backed by a little verification"
-        title="Help good contributions move forward."
-        description="Review evidence, coordinate action, and recognise verified effort."
+        title="Moderation"
+        description="Review reports and activity submissions."
       />
       <section className="panel activity-panel">
         <h2>Report queue</h2>
@@ -3844,16 +3979,14 @@ function SimulationPage({
   return (
     <>
       <PageHead
-        eyebrow="The what-if studio"
-        title="Imagine a change. Explore its possibilities."
-        description="Try a hypothetical intervention and compare it with a baseline."
+        title="What-if studio"
+        description="Compare a waste, water, or electricity reduction with your baseline."
       />
       <div className="notice">
         <FlaskConical size={19} />
         <p>
-          <strong>A space for possibilities, not predictions.</strong> Inputs
-          are illustrative. Results are simple reduction scenarios, not measured
-          environmental improvements.
+          Results use your inputs and a simple reduction formula. They are
+          estimates, not measured campus savings.
         </p>
       </div>
       <div className="simulation-grid">
@@ -4276,7 +4409,7 @@ function SimulationPage({
                   <ArrowDown size={23} />
                 </i>
               </div>
-              <h3>A small change can open up possibilities.</h3>
+              <h3>Ready to compare?</h3>
               <p>
                 Set a baseline and a reduction, then run your scenario to
                 compare the difference.
@@ -4294,11 +4427,15 @@ function SimulationPage({
           <span className="badge neutral">Hypothetical overlay</span>
         </div>
         <p className="muted">
-          The highlighted footprint is where your scenario applies. Color shows
-          your selected reduction, not measured environmental conditions. Choose
-          a mapped building for an overlay; historical-only references have no
-          verified footprint here.
+          The selected building shows your proposed reduction.
         </p>
+        <details className="model-details">
+          <summary>About the overlay</summary>
+          <p>
+            Color represents your scenario, not measured conditions. Locations
+            without a mapped footprint cannot show an overlay.
+          </p>
+        </details>
         <div className="simulation-preview-scene">
           <SceneBoundary
             fallback={
@@ -4327,7 +4464,7 @@ function SimulationPage({
       <Compare saved={saved} />
       <section className="panel saved-scenarios">
         <div className="panel-heading">
-          <h2>Your saved possibilities</h2>
+          <h2>Saved scenarios</h2>
           <span className="muted small-text">{saved.length} scenarios</span>
         </div>
         {saved.length ? (
@@ -4377,7 +4514,7 @@ function SimulationPage({
             ))}
           </div>
         ) : (
-          <Empty icon={FlaskConical} title="Your possibilities belong here.">
+          <Empty icon={FlaskConical} title="No saved scenarios">
             Save a scenario to revisit or export your inputs and results.
           </Empty>
         )}
@@ -4455,15 +4592,14 @@ function CommunityPage({
   return (
     <>
       <PageHead
-        eyebrow="A campus full of good ideas"
-        title="Better together, one conversation at a time."
-        description="Share an observation, suggest an improvement, or support a thoughtful idea."
+        title="Community"
+        description="Suggest a campus improvement or support an idea."
       />
       <div className="community-layout">
         <section>
           <form className="panel compose-post" onSubmit={submit}>
             <label htmlFor="post-body">
-              <MessageSquare size={20} /> What could we do better, together?
+              <MessageSquare size={20} /> Your suggestion
             </label>
             <textarea
               id="post-body"
@@ -4473,7 +4609,7 @@ function CommunityPage({
               minLength={10}
               maxLength={1500}
               rows={3}
-              placeholder="Share a practical idea for a more sustainable campus…"
+              placeholder="What would you change, and where?"
             />
             <div>
               <label className="sr-only" htmlFor="post-zone">
@@ -4536,28 +4672,19 @@ function CommunityPage({
             ))
           ) : (
             <section className="panel">
-              <Empty
-                icon={MessageSquare}
-                title="Every good idea starts somewhere."
-              >
-                Be the first to suggest a thoughtful improvement. Report urgent
-                environmental issues through Issue reports.
+              <Empty icon={MessageSquare} title="No suggestions yet">
+                Share an idea here. Use Issue reports for problems that need
+                fixing.
               </Empty>
             </section>
           )}
         </section>
         <aside className="panel community-guide">
           <Sprout size={35} />
-          <h2>
-            A little thoughtfulness
-            <br />
-            goes a long way.
-          </h2>
-          <p>
-            Keep ideas practical, respectful, and specific to a place or habit.
-          </p>
+          <h2>Suggest a change</h2>
+          <p>Name the place and explain what you would change.</p>
           <hr />
-          <h3>A few good starting points</h3>
+          <h3>Ideas to start with</h3>
           <p>Where could we improve waste segregation?</p>
           <p>What would make walking around campus easier?</p>
           <p>How can we encourage reusable bottles?</p>
@@ -4587,20 +4714,19 @@ function Profile({
   if (!user)
     return (
       <div className="panel signed-out">
-        <Empty icon={Users} title="Your positive footprint starts here.">
-          Join the campus to track your reports, challenges and saved scenarios.
+        <Empty icon={Users} title="Sign in to view your profile">
+          Track your reports, challenges, and saved scenarios.
         </Empty>
         <button className="button" onClick={onAuth}>
-          Join the campus <ArrowRight size={17} />
+          Sign in <ArrowRight size={17} />
         </button>
       </div>
     );
   return (
     <>
       <PageHead
-        eyebrow="Your campus contribution"
-        title={`Small steps, ${user.name.split(" ")[0]}. They add up.`}
-        description="A record of the effort you’ve put into your shared space."
+        title="Your profile"
+        description="Your reports, points, and saved scenarios."
         action={
           <button className="button secondary" onClick={onSignOut}>
             <LogOut size={16} /> Sign out
@@ -4658,17 +4784,14 @@ function Profile({
               ))}
             </div>
           ) : (
-            <Empty
-              icon={Award}
-              title="Every contribution begins with a first step."
-            >
+            <Empty icon={Award} title="No verified contributions yet">
               Eco-points appear after a moderator verifies your report or
               challenge evidence.
             </Empty>
           )}
         </section>
         <section className="panel activity-panel">
-          <h2>Recognition that’s earned</h2>
+          <h2>Badges</h2>
           {user.badges.length ? (
             user.badges.map((b) => (
               <div className="earned-badge" key={b}>
@@ -4678,7 +4801,7 @@ function Profile({
               </div>
             ))
           ) : (
-            <Empty icon={Trophy} title="Your first badge is ahead.">
+            <Empty icon={Trophy} title="No badges yet">
               Earn 10 verified eco-points for your first recognition.
             </Empty>
           )}

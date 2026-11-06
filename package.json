@@ -9,7 +9,8 @@
     "check": "tsc -b",
     "test": "node scripts/test.mjs",
     "format": "prettier --write frontend/src vite.config.ts",
-    "test:routes": "node scripts/test_routes.cjs"
+    "test:routes": "node scripts/test_routes.cjs",
+    "test:studio": "node scripts/test_studio.cjs"
   },
   "dependencies": {
     "@fontsource/dm-sans": "^5.2.8",
@@ -23,6 +24,7 @@
     "react-chartjs-2": "^5.3.1",
     "react-dom": "^19.2.0",
     "react-router-dom": "^7.9.5",
+    "suncalc": "^2.1.2",
     "three": "^0.181.0"
   },
   "devDependencies": {

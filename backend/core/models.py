@@ -20,6 +20,7 @@ class Report(models.Model):
     status=models.CharField(max_length=20,default='Pending')
     latitude=models.FloatField(null=True)
     longitude=models.FloatField(null=True)
+    location_public=models.BooleanField(default=False)
     repair_image=models.ImageField(upload_to='repairs/%Y/%m/',blank=True)
     confirmation=models.CharField(max_length=20,blank=True)
     confirmation_note=models.CharField(max_length=500,blank=True)

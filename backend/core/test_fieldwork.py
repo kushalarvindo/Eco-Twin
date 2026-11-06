@@ -59,3 +59,36 @@ class FieldworkTests(TestCase):
         for bad in ['NaN','Infinity','-1','151']:
             self.assertEqual(self.api.post('/api/surveys/',{**payload,'value':bad,'image':photo()},format='multipart').status_code,400)
         self.assertEqual(SurveySubmission.objects.count(),1)
+
+class PrecisePinTests(TestCase):
+    def setUp(self):
+        self.zone=Zone.objects.create(id='cse',name='CSE')
+        self.author=get_user_model().objects.create_user('pin_author')
+        self.other=get_user_model().objects.create_user('pin_other')
+        self.staff=get_user_model().objects.create_user('pin_reviewer',is_staff=True)
+        self.api=APIClient()
+
+    def test_map_pin_visibility_is_explicit_and_campus_bounded(self):
+        import json
+        from django.conf import settings
+        campus=json.loads((settings.BASE_DIR.parent/'frontend/src/campus-geographic.json').read_text(encoding='utf-8'))
+        lon,lat=campus['origin_lon_lat']
+        self.api.force_authenticate(self.author)
+        payload={'zone':'cse','title':'Pin permission check','category':'Water','description':'Photograph of a location selected on the campus map.','latitude':lat,'longitude':lon,'map_pin':'true'}
+        private=self.api.post('/api/reports/',{**payload,'image':photo()},format='multipart')
+        public=self.api.post('/api/reports/',{**payload,'image':photo(),'location_public':'on'},format='multipart')
+        self.assertEqual(private.status_code,201)
+        self.assertEqual(public.status_code,201)
+        for item in [private,public]:
+            self.assertIsNotNone(item.data['coordinates'])
+            Report.objects.filter(pk=item.data['id']).update(status='Verified')
+        self.api.force_authenticate(self.other)
+        reports={r['id']:r for r in self.api.get('/api/reports/').data}
+        self.assertIsNone(reports[private.data['id']]['coordinates'])
+        self.assertIsNotNone(reports[public.data['id']]['coordinates'])
+        self.api.force_authenticate(self.staff)
+        reports={r['id']:r for r in self.api.get('/api/reports/').data}
+        self.assertIsNotNone(reports[private.data['id']]['coordinates'])
+        self.api.force_authenticate(self.author)
+        invalid=self.api.post('/api/reports/',{**payload,'longitude':0,'image':photo()},format='multipart')
+        self.assertEqual(invalid.status_code,400)

@@ -65,7 +65,7 @@ Reports can appear as selectable markers linked to campus zones. Location select
 
 The scene uses on-demand rendering, merged road geometry and instanced windows. Balanced rendering limits pixel ratio to 1–1.5; low-power mode uses 1. Scene-owned geometry is disposed on teardown.
 
-Labels and details are rendered in the React interface outside the canvas. Renderer metrics are exposed through `data-render-frames`, `data-draw-calls` and `data-triangles` canvas attributes.
+Building labels use canvas-backed sprites. Location details remain in the React interface. Renderer metrics are exposed through `data-render-frames`, `data-draw-calls` and `data-triangles` canvas attributes.
 
 ## Regeneration
 
@@ -88,3 +88,19 @@ Higher geometric accuracy requires surveyed dimensions, elevation data and curre
 © OpenStreetMap contributors. The OSM-derived geographic database is available under the [Open Database License](https://www.openstreetmap.org/copyright).
 
 The historical event map remains the property of its original publisher.
+
+## 3D interaction geometry
+
+The explorer has separate camera modes for orbit, ground-level walking and panoramas. Walking uses a 1.7 m eye height, a small collision margin around building outlines and the mapped campus boundary. It does not model stairs, terrain elevation or interior passageways. A small SVG map shows the walking position and selected route.
+
+Proposal objects retain model coordinates and rotation in browser storage or exported JSON. The comparison divider renders the same scene and camera twice, with and without proposal objects. Imported proposals validate object counts, types, coordinates, IDs and campus bounds.
+
+Distance uses the 3D polyline length multiplied by 6. Area uses the horizontal polygon shoelace area multiplied by 36. Neither is a surveyed measurement.
+
+Sun position uses SunCalc 2, which returns degrees with azimuth clockwise from north. The selected time is interpreted as Asia/Kolkata (UTC+05:30). Shadows follow estimated geometry and exclude weather and tree canopy. Floor cutaways use horizontal clipping and an assumed 3.2 m floor spacing; no verified room layout is included.
+
+Exact report pins convert between the model projection and latitude/longitude. The API validates map pins and shared coordinates against the campus boundary. It returns private coordinates only to the author and staff; opt-in shared coordinates follow the report's visibility rules.
+
+Admin and Sir M Visvesvaraya Hostel have approximate facade details referenced to dated photographs. The gallery links each image to its original Commons record and CC BY-SA 3.0 license. The campus-near-Mechanical image has no verified corresponding footprint and does not select a building. Current CSE/library facade references remain incomplete.
+
+The panorama viewer accepts local 2:1 JPEG/PNG images, up to 20 MB and 64 megapixels, downscaling to a maximum width of 4096 pixels. It supports up to eight viewpoints with clickable links. These images are temporary browser objects, not uploaded records. No RVCE panorama is bundled. Google Street View opens externally and depends on coverage.

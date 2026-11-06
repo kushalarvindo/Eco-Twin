@@ -88,7 +88,7 @@ def text(data,key,minimum=1,maximum=2000):
     return val
 def report_dict(r,request):
     owner=request.user.is_authenticated and (request.user==r.user or request.user.is_staff)
-    return {'id':r.pk,'title':r.title,'category':r.category,'description':r.description,'zone':r.zone_id,'zone_name':r.zone.name,'status':r.status,'assignee':r.assignee,'mine':request.user==r.user,'author':r.user.first_name or r.user.username,'created_at':r.created_at.isoformat(),'image':f'/api/reports/{r.pk}/image/','coordinates':{'latitude':r.latitude,'longitude':r.longitude} if owner and r.latitude is not None else None,'history':[{'status':h.status,'note':h.note,'created_at':h.created_at.isoformat()} for h in r.history.all().order_by('created_at')]}
+    return {'repair_image':f'/api/reports/{r.pk}/repair-image/' if r.repair_image else None,'confirmation':r.confirmation,'confirmation_note':r.confirmation_note,'id':r.pk,'title':r.title,'category':r.category,'description':r.description,'zone':r.zone_id,'zone_name':r.zone.name,'status':r.status,'assignee':r.assignee,'mine':request.user==r.user,'author':r.user.first_name or r.user.username,'created_at':r.created_at.isoformat(),'image':f'/api/reports/{r.pk}/image/','coordinates':{'latitude':r.latitude,'longitude':r.longitude} if owner and r.latitude is not None else None,'history':[{'status':h.status,'note':h.note,'created_at':h.created_at.isoformat()} for h in r.history.all().order_by('created_at')]}
 def visible_reports(request):
     qs=Report.objects.select_related('zone','user').prefetch_related('history').order_by('-created_at')
     if request.user.is_authenticated and request.user.is_staff:return qs
@@ -131,6 +131,10 @@ def report_status(request,pk):
         target=request.data.get('status')
         if target not in transitions.get(r.status,[]):raise ValidationError('This status transition is not allowed.')
         note=text(request.data,'note',3,1000)
+        if target=='Resolved':
+            r.repair_image=image_file(request.FILES.get('repair_image'))
+            r.confirmation=''
+            r.confirmation_note=''
         if target=='Assigned':r.assignee=text(request.data,'assignee',2,120)
         r.status=target;r.save()
         ReportUpdate.objects.create(report=r,actor=request.user,status=target,note=note)

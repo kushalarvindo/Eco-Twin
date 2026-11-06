@@ -61,7 +61,7 @@ class WorkflowTests(TestCase):
         self.assertEqual(Reward.objects.filter(user=self.member).count(),1)
         self.assertEqual(self.client.patch(url,{'status':'Assigned','note':'Assign facilities','assignee':'Facilities'},format='json').status_code,200)
         for status in ['In Progress','Resolved']:
-            self.assertEqual(self.client.patch(url,{'status':status,'note':'Updated with test evidence'},format='json').status_code,200)
+            self.assertEqual(self.client.patch(url,{'status':status,'note':'Updated with test evidence',**({'repair_image':photo('after.png')} if status=='Resolved' else {})},format='multipart').status_code,200)
         self.client.force_authenticate(None)
         self.assertEqual(len(self.client.get('/api/reports/').data),1)
         image_response=self.client.get(f'/api/reports/{pk}/image/');self.assertEqual(image_response.status_code,200);image_response.close()

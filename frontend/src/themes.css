@@ -326,3 +326,133 @@
     font-size: 9px;
   }
 }
+
+.profile-stats > div {
+  background: var(--surface);
+  color: var(--text);
+  min-width: 0;
+  flex-wrap: wrap;
+}
+.profile-stats span {
+  color: var(--muted);
+}
+.sample-switch {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  padding: 1rem;
+  margin: 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.7rem;
+}
+.sample-switch select {
+  width: auto;
+}
+.sample-label {
+  padding: 0.6rem;
+  background: var(--background);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+.field-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+  gap: 1rem;
+  margin-block: 1rem;
+}
+.field-grid label {
+  display: grid;
+  gap: 0.4rem;
+}
+:is(.field-grid, .sample-switch) :is(input, select) {
+  min-width: 0;
+  width: 100%;
+  background: var(--surface);
+  color: var(--text);
+  padding: 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: 0.4rem;
+}
+.field-photo {
+  display: block;
+  width: 100%;
+  max-width: 32rem;
+  height: auto;
+  border-radius: 0.5rem;
+  margin-block: 1rem;
+}
+.survey-record,
+.repair-evidence {
+  border-top: 1px solid var(--border);
+  padding-block: 1rem;
+}
+.survey-record h3 {
+  font-size: 1rem;
+}
+.walking-route-calculator ol {
+  padding-inline-start: 1.3rem;
+  max-height: 18rem;
+  overflow: auto;
+}
+[data-theme="dark"]
+  :is(.profile-stats > div, .auth-tabs, .challenge-proof, .comment-input) {
+  background: var(--surface);
+  color: var(--text);
+}
+@media (max-width: 600px) {
+  .profile-stats {
+    grid-template-columns: 1fr;
+  }
+  .field-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+:root:not([data-theme="dark"]) {
+  --muted: #5e6b55;
+}
+:root:not([data-theme="dark"])
+  :is(
+    .brand small,
+    .sidebar-foot > span,
+    .loading,
+    .reward-list small,
+    .profile-points > span,
+    .earned-badge span
+  ) {
+  color: #56664a;
+}
+.nav-count {
+  background: var(--background);
+  color: var(--text);
+}
+.reward-list b {
+  color: var(--green);
+}
+[data-theme="dark"] .segmented-scope button.active {
+  background: #365f3d;
+  color: #fff;
+}
+:root:not([data-theme="dark"]) .reward-list b {
+  color: #456c33;
+}
+.insight {
+  scroll-margin-top: 1rem;
+}
+.insight :is(input, select, textarea) {
+  max-width: 100%;
+}
+
+:root:not([data-theme="dark"]) .error-state > p {
+  color: #526147;
+}
+:root:not([data-theme="dark"]) .form-error {
+  color: #8b3024;
+}
+
+.debug-panel {
+  max-height: calc(100dvh - 100px);
+  overflow-y: auto;
+}

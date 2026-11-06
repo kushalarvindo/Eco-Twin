@@ -82,3 +82,13 @@ npm run check
 npm run build
 npm test
 ```
+
+## 6 November 2026 — fieldwork and UI verification
+
+- Added repair photographs, author confirmation and follow-up history, plus reviewed survey submissions and protected photos. Migration 0004 adds the required records. Backend regression tests cover permissions, repeated confirmation, follow-up, survey review and invalid height submissions.
+- Added network routing on mapped path edges, approximate connections to building centroids, mapped-step avoidance, directions and matching 2D/3D lines. Three common destinations from CSE passed routing checks. With step segments excluded, 51 of 55 building destinations were reachable from CSE.
+- Added selected-roof rainwater calculation with editable rainfall, connected roof fraction and efficiency, including zero input.
+- Retained the previous Debug Mode menu and persona buttons. Its reports, map counts, history and saved scenarios use an isolated browser-tab sample session. Numeric report IDs no longer determine whether a record is synthetic.
+- Fixed profile statistic surfaces in dark mode and contrast in badges, reward labels and selected controls.
+- UI checks covered seven main pages in light and dark modes at 375, 767 and 1440 px (42 route/viewport checks), with no horizontal overflow. Automated WCAG A/AA checks on those pages found no violations in the final reviewed run. This is bounded automated coverage, not a complete manual accessibility certification.
+- Browser tests using temporary real accounts completed survey submission/approval, after-repair upload and reporter confirmation. Temporary accounts, reports, survey records and images were removed after verification. Sample-mode tests covered scenario save/reload, zero rainfall, route switching and returning to campus records.

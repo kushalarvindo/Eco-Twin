@@ -1,7 +1,12 @@
+import { sampleState, sampleSimulation } from "./samples";
 export async function api<T>(
   path: string,
   options: RequestInit = {},
 ): Promise<T> {
+  if (sampleState().active && path.startsWith("simulations/"))
+    return sampleSimulation(path, options) as T;
+  if (sampleState().active && options.method && options.method !== "GET")
+    throw new Error("Return to campus records to submit this change.");
   const csrf =
     document.cookie
       .split("; ")

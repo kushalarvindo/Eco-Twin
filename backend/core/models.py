@@ -20,6 +20,9 @@ class Report(models.Model):
     status=models.CharField(max_length=20,default='Pending')
     latitude=models.FloatField(null=True)
     longitude=models.FloatField(null=True)
+    repair_image=models.ImageField(upload_to='repairs/%Y/%m/',blank=True)
+    confirmation=models.CharField(max_length=20,blank=True)
+    confirmation_note=models.CharField(max_length=500,blank=True)
     assignee=models.CharField(max_length=120,blank=True)
     created_at=models.DateTimeField(auto_now_add=True)
 class ReportUpdate(models.Model):
@@ -79,3 +82,15 @@ class MeterReading(models.Model):
 
     class Meta:
         constraints = [models.UniqueConstraint(fields=['zone', 'meter', 'date'], name='one_meter_day')]
+
+class SurveySubmission(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    zone = models.ForeignKey(Zone, on_delete=models.PROTECT)
+    kind = models.CharField(max_length=20)
+    value = models.CharField(max_length=160)
+    description = models.TextField()
+    image = models.ImageField(upload_to='surveys/%Y/%m/')
+    status = models.CharField(max_length=20, default='Pending')
+    review_note = models.CharField(max_length=500, blank=True)
+    reviewer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name='survey_reviews')
+    created_at = models.DateTimeField(auto_now_add=True)

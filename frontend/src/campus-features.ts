@@ -74,7 +74,8 @@ export const campusInfrastructure: InfrastructureAsset[] = [
     position: [-22, 10.5, 2],
     centroid_2d: [-22, 2],
     capacity: "500 kWp rated capacity",
-    description: "Rooftop solar photovoltaic array across campus academic buildings.",
+    description:
+      "Rooftop solar photovoltaic array across campus academic buildings.",
     source: "RVCE Infrastructure (RVCE-010)",
   },
   {
@@ -85,7 +86,8 @@ export const campusInfrastructure: InfrastructureAsset[] = [
     position: [32, 1.2, 35],
     centroid_2d: [32, 35],
     capacity: "250 kL/day (RVCE-010) / 50 kL/day (RVCE-002)",
-    description: "On-site wastewater treatment plant providing recycled water for campus landscaping.",
+    description:
+      "On-site wastewater treatment plant providing recycled water for campus landscaping.",
     source: "RVCE Infrastructure (RVCE-010) & Rainwater paper (RVCE-002)",
   },
   {
@@ -96,7 +98,8 @@ export const campusInfrastructure: InfrastructureAsset[] = [
     position: [-6, 1.2, -12],
     centroid_2d: [-6, -12],
     capacity: "360,000 L storage + 2 recharge borewells",
-    description: "Catchment storage tank and dedicated deep recharge borewells for aquifer replenishment.",
+    description:
+      "Catchment storage tank and dedicated deep recharge borewells for aquifer replenishment.",
     source: "Rainwater Harvesting & Ground Water Recharging Study (RVCE-002)",
   },
   {
@@ -107,7 +110,8 @@ export const campusInfrastructure: InfrastructureAsset[] = [
     position: [28, 1.2, 16],
     centroid_2d: [28, 16],
     capacity: "Campus canteens & academic blocks",
-    description: "Dry and food waste collection and segregation partnering with Samarthanam NGO.",
+    description:
+      "Dry and food waste collection and segregation partnering with Samarthanam NGO.",
     source: "RVCE Infrastructure (RVCE-010)",
   },
   {
@@ -118,7 +122,8 @@ export const campusInfrastructure: InfrastructureAsset[] = [
     position: [18, 1.2, -15],
     centroid_2d: [18, -15],
     capacity: "Periodic institutional handover",
-    description: "Safe recycling and formal disposal collection point for electronic waste.",
+    description:
+      "Safe recycling and formal disposal collection point for electronic waste.",
     source: "RVCE Infrastructure (RVCE-010)",
   },
 ];
@@ -133,7 +138,11 @@ export const buildingDirectory: Record<
   }
 > = {
   admin: {
-    departments: ["Administration", "Accounts & Admissions", "Placement & Training"],
+    departments: [
+      "Administration",
+      "Accounts & Admissions",
+      "Placement & Training",
+    ],
     floors: [
       "Ground: Admissions, Enquiry & Accounts Office",
       "Floor 1: Principal Office, Registrar & Deans' Chambers",
@@ -149,7 +158,11 @@ export const buildingDirectory: Record<
       "Floor 2: Systems Programming Lab & Cloud Computing Center",
       "Floor 3: Advanced Computing Lab, Project Labs & Seminar Hall",
     ],
-    facilities: ["CSE Department Library", "Server Room", "Student Project Hub"],
+    facilities: [
+      "CSE Department Library",
+      "Server Room",
+      "Student Project Hub",
+    ],
     note: "Department directory referenced in RVCE-027.",
   },
   civil: {
@@ -160,7 +173,11 @@ export const buildingDirectory: Record<
       "Floor 3: Computer-Aided Design (CAD) & GIS Lab",
       "Floor 4: Seminar Hall & Research Scholar Cubicles",
     ],
-    facilities: ["Hydraulics Laboratory", "Concrete Tech Testing", "Material Survey"],
+    facilities: [
+      "Hydraulics Laboratory",
+      "Concrete Tech Testing",
+      "Material Survey",
+    ],
     note: "Department directory referenced in RVCE-027.",
   },
   library: {
@@ -195,7 +212,10 @@ export const buildingDirectory: Record<
     note: "Joint block hosting Aerospace and Information Science departments.",
   },
   "ai-mca": {
-    departments: ["Artificial Intelligence & ML", "Master of Computer Applications"],
+    departments: [
+      "Artificial Intelligence & ML",
+      "Master of Computer Applications",
+    ],
     floors: [
       "Floor 1: AI/ML Department Office & Foundation Labs",
       "Floor 2: Deep Learning & Data Engineering Labs",
@@ -211,7 +231,10 @@ export const buildingDirectory: Record<
       "Floor 2: Control Systems Lab & Power Electronics",
       "Floor 3: Department Office & Classrooms",
     ],
-    facilities: ["High Voltage Simulation Bench", "Renewable Energy Research Rig"],
+    facilities: [
+      "High Voltage Simulation Bench",
+      "Renewable Energy Research Rig",
+    ],
     note: "Department directory referenced in RVCE-027.",
   },
   iem: {
@@ -240,7 +263,10 @@ export const buildingDirectory: Record<
     floors: [
       "Ground: Indoor Food Hall, Beverage Counters & Seating (capacity ~1,000)",
     ],
-    facilities: ["Samarthanam Waste Segregation Hub", "Drinking Water Stations"],
+    facilities: [
+      "Samarthanam Waste Segregation Hub",
+      "Drinking Water Stations",
+    ],
     note: "Primary student and faculty dining center (Big Mingos).",
   },
   "innovation-hub": {
@@ -254,36 +280,7 @@ export const buildingDirectory: Record<
   },
 };
 
-export function calculateWalkRoute(fromId: string, toId: string) {
-  const fromBuilding = data.buildings.find((b) => b.id === fromId);
-  const toBuilding = data.buildings.find((b) => b.id === toId);
-  if (!fromBuilding || !toBuilding) return null;
-
-  const [x1, z1] = fromBuilding.centroid;
-  const [x2, z2] = toBuilding.centroid;
-  const dx = x2 - x1;
-  const dz = z2 - z1;
-  const euclideanUnits = Math.hypot(dx, dz);
-  // Scale: 6 metres per scene unit, with a 1.25 circuity factor for campus walkways
-  const straightMeters = Math.round(euclideanUnits * 6);
-  const walkMeters = Math.round(straightMeters * 1.25);
-  // 1.2 m/s standard campus walking speed
-  const walkMinutes = Math.round((walkMeters / (1.2 * 60)) * 10) / 10;
-  // ~0.05 kcal burned per metre of walking
-  const calories = Math.round(walkMeters * 0.05);
-  // ~140g CO2e per passenger-km for a two-wheeler/car trip
-  const avoidedCarbonGrams = Math.round((walkMeters / 1000) * 140);
-
-  return {
-    from: fromBuilding,
-    to: toBuilding,
-    straightMeters,
-    walkMeters,
-    walkMinutes,
-    calories,
-    avoidedCarbonGrams,
-  };
-}
+export { networkRoute as calculateWalkRoute } from "./routing";
 
 export type OfflineReport = {
   id: string;

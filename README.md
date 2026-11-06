@@ -179,3 +179,21 @@ python backend/manage.py import_electricity path/to/readings.csv
 ```
 
 Use the header `zone,meter,timestamp,unit,kind,value,source`. The zone is the building ID. Supply a public-safe meter label and source description as both appear on the dashboard. Use `kWh` and a campus-midnight ISO timestamp with UTC offset (for example `2026-10-02T00:00:00+05:30`). A `daily` value is consumption during the preceding day. A `cumulative` value is the meter register at midnight. The chart derives consumption from consecutive register readings, leaves missing intervals and resets blank, and preserves measured zeroes. It shows the latest 30 days for each meter and the number of days included in each weekly sum. Reimporting identical readings is safe. A conflicting reading rolls back the whole file. Keep original logs outside the repository.
+
+## Field observations and repair checks
+
+The campus explorer includes a rainwater estimate for each mapped roof and a field-survey form. Signed-in users can submit names, measured heights, entrances, ramps and barriers with photographs. A different moderator reviews submissions. Approved observations appear in the reviewed records; updating the mapped geometry remains a separate review step.
+
+To resolve a new report, a moderator attaches an after-repair photograph. The reporter can confirm the repair or request follow-up. Follow-up returns the report to Verified and preserves the history. Existing resolved records remain readable even when they predate repair photographs.
+
+Walking directions follow a graph built from the bundled road and path segments. The “Avoid mapped steps” option removes recorded step segments. Building connections are approximate and gate hours, obstructions and full accessibility require on-site checks. The map shows the selected path in both 2D and 3D. A disconnected destination shows an unavailable-route message.
+
+Rainwater collection uses projected footprint area, connected roof percentage, event rainfall in millimetres and collection efficiency. One mm over one m² is one litre. The result describes potential collection before tank-capacity limits.
+
+The existing Debug Mode menu selects browser-only sample reports and personas. Map counts and weekly history use that same sample dataset and date range. Sample scenarios and edits persist for the browser tab session. Real API permissions still apply to campus records. Leave sample mode to submit surveys, evidence or community changes.
+
+Run the routing and sample-filter regression checks with:
+
+```sh
+npm run test:routes
+```

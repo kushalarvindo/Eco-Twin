@@ -7,7 +7,11 @@ import campus from "./campus-geographic.json";
 const num = (value: number) =>
   value.toLocaleString("en-IN", { maximumFractionDigits: 3 });
 
-export function useDataset<T>(path: string, revision?: unknown) {
+export function useDataset<T>(
+  path: string,
+  revision?: unknown,
+  enabled = true,
+) {
   const [result, setResult] = useState<{
     path: string;
     revision: unknown;
@@ -15,6 +19,7 @@ export function useDataset<T>(path: string, revision?: unknown) {
     error?: string;
   }>();
   useEffect(() => {
+    if (!enabled) return;
     const controller = new AbortController();
     api<T>(path, { signal: controller.signal })
       .then((data) => setResult({ path, revision, data }))
@@ -23,8 +28,8 @@ export function useDataset<T>(path: string, revision?: unknown) {
           setResult({ path, revision, error: e.message });
       });
     return () => controller.abort();
-  }, [path, revision]);
-  return result?.path === path && result.revision === revision
+  }, [path, revision, enabled]);
+  return enabled && result?.path === path && result.revision === revision
     ? result
     : undefined;
 }

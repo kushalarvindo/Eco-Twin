@@ -9,7 +9,10 @@ import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 import * as THREE from "three";
 import data from "./campus-geographic.json";
 import type { Report } from "./types";
-import { campusInfrastructure, type InfrastructureAsset } from "./campus-features";
+import {
+  campusInfrastructure,
+  type InfrastructureAsset,
+} from "./campus-features";
 type Feature = (typeof data.buildings)[number];
 function Diagnostics() {
   const frames = useRef(0);
@@ -287,7 +290,9 @@ function Footprint({
           rotation={[-Math.PI / 2, 0, 0]}
           position={[p.centroid[0], 0.04, p.centroid[1]]}
         >
-          <circleGeometry args={[4 + Math.min(reportsForZone.length * 1.5, 14), 32]} />
+          <circleGeometry
+            args={[4 + Math.min(reportsForZone.length * 1.5, 14), 32]}
+          />
           <meshBasicMaterial
             color={
               reportsForZone.length >= 6
@@ -350,7 +355,9 @@ function Footprint({
                     : "#ca8a04"
                 : "#000000"
             }
-            emissiveIntensity={isHeatmap && reportsForZone.length > 0 ? 0.35 : 0}
+            emissiveIntensity={
+              isHeatmap && reportsForZone.length > 0 ? 0.35 : 0
+            }
             roughness={0.65}
             metalness={0.08}
           />
@@ -402,7 +409,9 @@ function Footprint({
                     : "#eab308"
                 : "#000000"
             }
-            emissiveIntensity={isHeatmap && reportsForZone.length > 0 ? 0.25 : 0}
+            emissiveIntensity={
+              isHeatmap && reportsForZone.length > 0 ? 0.25 : 0
+            }
             roughness={0.52}
             metalness={0.12}
             side={THREE.DoubleSide}
@@ -467,7 +476,9 @@ function Roads({ layer }: { layer?: string }) {
       }
     }
     const walkwaysGeom = walkChunks.length ? mergeGeometries(walkChunks) : null;
-    const serviceGeom = serviceChunks.length ? mergeGeometries(serviceChunks) : null;
+    const serviceGeom = serviceChunks.length
+      ? mergeGeometries(serviceChunks)
+      : null;
     walkChunks.forEach((g) => g.dispose());
     serviceChunks.forEach((g) => g.dispose());
     return { walkwaysGeom, serviceGeom };
@@ -505,24 +516,12 @@ function Roads({ layer }: { layer?: string }) {
   );
 }
 
-function WalkRouteLine({
-  route,
-}: {
-  route?: { from: { centroid: number[] }; to: { centroid: number[] } } | null;
-}) {
+function WalkRouteLine({ route }: { route?: { points: number[][] } | null }) {
   const lineObj = useMemo(() => {
     if (!route) return null;
-    const p1 = new THREE.Vector3(
-      route.from.centroid[0],
-      0.35,
-      route.from.centroid[1],
+    const geom = new THREE.BufferGeometry().setFromPoints(
+      route.points.map(([x, z]) => new THREE.Vector3(x, 0.35, z)),
     );
-    const p2 = new THREE.Vector3(
-      route.to.centroid[0],
-      0.35,
-      route.to.centroid[1],
-    );
-    const geom = new THREE.BufferGeometry().setFromPoints([p1, p2]);
     const mat = new THREE.LineBasicMaterial({
       color: 0x2d7742,
     });
@@ -645,11 +644,7 @@ function Windows() {
   return (
     <instancedMesh ref={ref} args={[undefined, undefined, windows.length]}>
       <boxGeometry args={[0.22, 0.24, 0.04]} />
-      <meshStandardMaterial
-        color="#466575"
-        roughness={0.16}
-        metalness={0.82}
-      />
+      <meshStandardMaterial color="#466575" roughness={0.16} metalness={0.82} />
     </instancedMesh>
   );
 }
@@ -765,11 +760,7 @@ function Ground() {
             <dodecahedronGeometry args={[0.55, 1]} />
             <meshStandardMaterial
               color={
-                i % 3 === 0
-                  ? "#3f6a36"
-                  : i % 3 === 1
-                    ? "#4a783e"
-                    : "#558847"
+                i % 3 === 0 ? "#3f6a36" : i % 3 === 1 ? "#4a783e" : "#558847"
               }
               roughness={0.82}
               metalness={0.02}
@@ -780,11 +771,7 @@ function Ground() {
             <dodecahedronGeometry args={[0.42, 1]} />
             <meshStandardMaterial
               color={
-                i % 3 === 0
-                  ? "#4e7d43"
-                  : i % 3 === 1
-                    ? "#58884c"
-                    : "#639854"
+                i % 3 === 0 ? "#4e7d43" : i % 3 === 1 ? "#58884c" : "#639854"
               }
               roughness={0.8}
               metalness={0.02}
@@ -882,7 +869,7 @@ export default function GeographicScene({
   reports: Report[];
   onReport: (r: Report) => void;
   scenarioReduction?: number | null;
-  walkRoute?: { from: { centroid: number[] }; to: { centroid: number[] } } | null;
+  walkRoute?: { points: number[][] } | null;
   onSelectAsset?: (asset: InfrastructureAsset) => void;
 }) {
   const [lost, setLost] = useState(false);
@@ -890,7 +877,7 @@ export default function GeographicScene({
   const reportsByZone = useMemo(() => {
     const map = new Map<string, Report[]>();
     for (const r of reports) {
-      if (r.status !== 'Rejected' && r.status !== 'Resolved') {
+      if (r.status !== "Rejected" && r.status !== "Resolved") {
         const list = map.get(r.zone) || [];
         list.push(r);
         map.set(r.zone, list);

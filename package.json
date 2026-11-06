@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "check": "tsc -b",
     "test": "node scripts/test.mjs",
-    "format": "prettier --write frontend/src vite.config.ts"
+    "format": "prettier --write frontend/src vite.config.ts",
+    "test:routes": "node scripts/test_routes.cjs"
   },
   "dependencies": {
     "@fontsource/dm-sans": "^5.2.8",

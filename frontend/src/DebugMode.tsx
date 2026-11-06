@@ -1,3 +1,4 @@
+import { useSample, setSample } from "./samples";
 import { useState, useEffect } from "react";
 import {
   Bug,
@@ -11,7 +12,7 @@ import {
   Layers,
 } from "lucide-react";
 import type { User, Report } from "./types";
-import { api, json } from "./api";
+
 import {
   DEMO_CLIENT_STUDENT,
   DEMO_CLIENT_MODERATOR,
@@ -40,16 +41,27 @@ interface DebugModeProps {
 
 export function DebugMode({
   user,
-  setUser,
+  setUser: _setUser,
   reports,
-  setReports,
+  setReports: _setReports,
   notify,
   openReportModal,
   setPrefillReportData,
 }: DebugModeProps) {
-  const [debugActive, setDebugActive] = useState<boolean>(() => {
-    return localStorage.getItem("ecotwin_debug_mode") === "true";
-  });
+  const sample = useSample();
+  const debugActive = sample.active;
+  const setDebugActive = (active: boolean) => setSample({ active });
+  const setUser = (u: User | null) =>
+    setSample({ role: u?.moderator ? "moderator" : u ? "student" : "visitor" });
+  const setReports: React.Dispatch<React.SetStateAction<Report[]>> = (
+    action,
+  ) => {
+    const reports =
+      typeof action === "function" ? action(sample.reports) : action;
+    setSample({
+      reports: reports.map((r) => ({ ...r, sample: true as const })),
+    });
+  };
   const [panelOpen, setPanelOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -70,7 +82,9 @@ export function DebugMode({
 
     setReports((prev) => {
       const existingIds = new Set(prev.map((r) => r.id));
-      const newBatch = DEMO_REPORTS_50.slice(0, 10).filter((r) => !existingIds.has(r.id));
+      const newBatch = DEMO_REPORTS_50.slice(0, 10).filter(
+        (r) => !existingIds.has(r.id),
+      );
       return [...newBatch, ...prev];
     });
 
@@ -86,53 +100,28 @@ export function DebugMode({
 
     setDebugActive(true);
     notify(
-      "Demo data loaded: Student client active, 10 campus reports populated. All forms are pre-filled and editable.",
+      "Sample data loaded: Student client active, 10 campus reports populated. All forms are pre-filled and editable.",
     );
   };
 
   const switchClient = async (role: "student" | "moderator" | "visitor") => {
-    if (role === "student") {
-      setUser(DEMO_CLIENT_STUDENT);
-      notify("Active Client: Kushal (Student Member)");
-      try {
-        await api("auth/login/", {
-          method: "POST",
-          body: json({ username: "kushal", password: "example-kushal123" }),
-        });
-      } catch {
-        // Fallback to client state
-      }
-    } else if (role === "moderator") {
-      setUser(DEMO_CLIENT_MODERATOR);
-      notify("Active Client: Dr. Shashikiran (Faculty Reviewer)");
-      try {
-        await api("auth/login/", {
-          method: "POST",
-          body: json({ username: "shashikiran", password: "example-faculty123" }),
-        });
-      } catch {
-        // Fallback to client state
-      }
-    } else {
-      setUser(null);
-      notify("Active Client: Visitor (Logged Out)");
-      try {
-        await api("auth/logout/", { method: "POST" });
-      } catch {
-        // ignore
-      }
-    }
+    setSample({ active: true, role });
+    notify("Sample client selected. Changes stay in this browser.");
   };
 
   // Injects 10 more reports per click from the 50-report pool
   const injectReportsBatch = () => {
     const toAdd = getDemoReportsBatch(reports, 10);
     if (!toAdd.length) {
-      notify("All 50 campus demonstration reports are already loaded into view.");
+      notify(
+        "All 50 campus demonstration reports are already loaded into view.",
+      );
       return;
     }
     setReports((prev) => [...toAdd, ...prev]);
-    notify(`Injected ${toAdd.length} more reports (Total: ${reports.length + toAdd.length} active reports across campus).`);
+    notify(
+      `Injected ${toAdd.length} more reports (Total: ${reports.length + toAdd.length} active reports across campus).`,
+    );
   };
 
   // Loads all 50 campus reports at once
@@ -143,7 +132,9 @@ export function DebugMode({
       const missing = all.filter((r) => !existingIds.has(r.id));
       return [...missing, ...prev];
     });
-    notify("Loaded all 50 campus demonstration reports across all 55 RVCE buildings!");
+    notify(
+      "Loaded all 50 campus demonstration reports across all 55 RVCE buildings!",
+    );
   };
 
   const handleToggle = () => {
@@ -212,7 +203,8 @@ export function DebugMode({
           </div>
 
           <p className="debug-panel-desc">
-            Dummy data is populated with {reports.length} reports. You can test workflows, inject more data, or edit any custom values.
+            Dummy data is populated with {reports.length} reports. You can test
+            workflows, inject more data, or edit any custom values.
           </p>
 
           <div className="debug-actions-grid">
@@ -289,9 +281,7 @@ export function DebugMode({
               <button
                 type="button"
                 className={
-                  user && !user.moderator
-                    ? "client-btn active"
-                    : "client-btn"
+                  user && !user.moderator ? "client-btn active" : "client-btn"
                 }
                 onClick={() => switchClient("student")}
               >
@@ -319,7 +309,8 @@ export function DebugMode({
           {/* Turn off */}
           <div className="debug-panel-footer">
             <span className="muted small-text">
-              User: <strong>{user ? user.name : "Anonymous"}</strong> · Reports: <strong>{reports.length}</strong>
+              User: <strong>{user ? user.name : "Anonymous"}</strong> · Reports:{" "}
+              <strong>{reports.length}</strong>
             </span>
             <button
               type="button"

@@ -33,6 +33,9 @@ export type Fact = {
   note: string;
 };
 export type Report = {
+  sample?: boolean;
+  repair_image?: string | null;
+  confirmation?: string;
   id: number;
   title: string;
   category: string;

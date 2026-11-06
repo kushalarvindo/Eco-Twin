@@ -1,3 +1,13 @@
+import { Rainwater, Surveys, RepairEvidence } from "./FieldTools";
+import {
+  useSample,
+  sampleUser,
+  sampleHistory,
+  addSampleReport,
+  updateSampleReport,
+  sampleState,
+  setSample,
+} from "./samples";
 import {
   HistoryPanel,
   Coverage,
@@ -137,7 +147,13 @@ const categoryIcon = (cat: string) => {
   if (c.includes("energy")) return Zap;
   if (c.includes("water")) return WaterWaves;
   if (c.includes("green") || c.includes("tree")) return TreePine;
-  if (c.includes("transport") || c.includes("transit") || c.includes("parking") || c.includes("bike")) return Bike;
+  if (
+    c.includes("transport") ||
+    c.includes("transit") ||
+    c.includes("parking") ||
+    c.includes("bike")
+  )
+    return Bike;
   if (c.includes("carbon")) return Leaf;
   if (c.includes("waste") || c.includes("recycle")) return Recycle;
   return Sparkles;
@@ -214,7 +230,10 @@ function Modal({
               <Dialog.Title>{title}</Dialog.Title>
               <Dialog.Description>{description}</Dialog.Description>
             </div>
-            <Dialog.Close className="modal-close-button" aria-label="Close dialog">
+            <Dialog.Close
+              className="modal-close-button"
+              aria-label="Close dialog"
+            >
               <X size={18} strokeWidth={2.2} />
             </Dialog.Close>
           </div>
@@ -248,14 +267,18 @@ function PageHead({
 }
 
 export default function App() {
-  const [user, setUser] = useState<User | null>(null),
+  const sample = useSample();
+  const [serverUser, setUser] = useState<User | null>(null),
     [zones, setZones] = useState<Zone[]>([]),
     [facts, setFacts] = useState<Fact[]>([]),
-    [reports, setReports] = useState<Report[]>([]),
+    [serverReports, setReports] = useState<Report[]>([]),
     [challenges, setChallenges] = useState<Challenge[]>([]),
     [posts, setPosts] = useState<Post[]>([]),
-    [saved, setSaved] = useState<Saved[]>([]),
+    [serverSaved, setSaved] = useState<Saved[]>([]),
     [reviews, setReviews] = useState<Review[]>([]);
+  const user = sample.active ? sampleUser() : serverUser;
+  const reports = sample.active ? sample.reports : serverReports;
+  const saved = sample.active ? sample.saved : serverSaved;
   const [ready, setReady] = useState(false),
     [bootError, setBootError] = useState(""),
     [toast, setToast] = useState(""),
@@ -283,34 +306,25 @@ export default function App() {
   const refresh = useCallback(async () => {
     try {
       const s = await api<{ user: User | null }>("session/");
-      if (s.user) {
-        setUser(s.user);
-      } else if (localStorage.getItem("ecotwin_debug_mode") !== "true") {
-        setUser(null);
-      }
+      setUser(s.user);
       const [rr, cc, pp] = await Promise.all([
         api<Report[]>("reports/"),
         api<Challenge[]>("challenges/"),
         api<Post[]>("posts/"),
       ]);
-      setReports((prev) => {
-        const demoReports = prev.filter((r) => r.id >= 900);
-        const backendIds = new Set(rr.map((r) => r.id));
-        const preserved = demoReports.filter((r) => !backendIds.has(r.id));
-        return [...preserved, ...rr];
-      });
+      setReports(rr);
       setChallenges(cc);
       setPosts(pp);
       if (s.user) {
-        setSaved(await api<Saved[]>("simulations/"));
+        if (!sampleState().active) setSaved(await api<Saved[]>("simulations/"));
         if (s.user.moderator) setReviews(await api<Review[]>("reviews/"));
         else setReviews([]);
       } else {
         setSaved([]);
         setReviews([]);
       }
-    } catch {
-      // Fallback
+    } catch (e) {
+      throw e;
     }
   }, []);
   const load = useCallback(async () => {
@@ -347,6 +361,10 @@ export default function App() {
     setActiveReview(null);
   };
   async function signOut() {
+    if (sample.active) {
+      setSample({ active: false });
+      return;
+    }
     try {
       await api("auth/logout/", { method: "POST", body: json({}) });
       await refresh();
@@ -486,6 +504,19 @@ export default function App() {
           </div>
         </header>
         <main id="main">
+          {sample.active && (
+            <div className="sample-label" role="status">
+              <strong>Sample data</strong> · reports, points and reviewer roles
+              are examples in this browser.{" "}
+              <button
+                className="text-button"
+                onClick={() => setSample({ active: false })}
+              >
+                Return to campus records
+              </button>
+            </div>
+          )}
+
           {bootError ? (
             <div className="error-state">
               <Info />
@@ -935,7 +966,8 @@ function Explorer({
   const scope = [selected, days, category].join("/");
   const [reportPage, setReportPage] = useState({ scope: "", page: 1 });
   const page = scope === reportPage.scope ? reportPage.page : 1;
-  const history = useDataset<HistoryData>(
+  const sample = useSample();
+  const serverHistory = useDataset<HistoryData>(
     "analytics/buildings/?" +
       new URLSearchParams({
         zone: selected,
@@ -944,33 +976,29 @@ function Explorer({
         page: String(page),
       }),
     reports,
+    !sample.active,
   );
-  const activeReportCounts = useMemo(() => {
-    const counts: Record<string, number> = { ...(history?.data?.counts ?? {}) };
-    const tally: Record<string, number> = {};
-    for (const r of reports) {
-      if (r.status !== "Rejected" && r.status !== "Resolved") {
-        if (!category || r.category.toLowerCase() === category.toLowerCase()) {
-          tally[r.zone] = (tally[r.zone] || 0) + 1;
-        }
+  const history = sample.active
+    ? {
+        data: sampleHistory(reports, selected, days, category, page),
+        error: undefined,
       }
-    }
-    for (const [zone, cnt] of Object.entries(tally)) {
-      counts[zone] = Math.max(counts[zone] || 0, cnt);
-    }
-    return counts;
-  }, [history, reports, category]);
-
+    : serverHistory;
+  const activeReportCounts = history?.data?.counts ?? {};
   const heat = useMemo(
     () =>
-      reportLayer && !history?.data && Object.keys(activeReportCounts).length === 0
+      reportLayer &&
+      !history?.data &&
+      Object.keys(activeReportCounts).length === 0
         ? null
         : hotspotLayer(layer, activeReportCounts),
     [layer, history, reportLayer, activeReportCounts],
   );
+  const [avoidSteps, setAvoidSteps] = useState(false);
   const walkRoute = useMemo(
-    () => (walkTarget ? calculateWalkRoute(selected, walkTarget) : null),
-    [selected, walkTarget],
+    () =>
+      walkTarget ? calculateWalkRoute(selected, walkTarget, avoidSteps) : null,
+    [selected, walkTarget, avoidSteps],
   );
   const fallback =
     source === "geographic" ? (
@@ -1196,7 +1224,9 @@ function Explorer({
                     type="button"
                     className={`scene-controls-heatmap ${layer === "heatmap" ? "active" : ""}`}
                     onClick={() =>
-                      setLayer((l) => (l === "heatmap" ? "buildings" : "heatmap"))
+                      setLayer((l) =>
+                        l === "heatmap" ? "buildings" : "heatmap",
+                      )
                     }
                     title={
                       layer === "heatmap"
@@ -1491,10 +1521,24 @@ function Explorer({
                       ))}
                   </select>
                 </label>
+                <label className="preference-check">
+                  <input
+                    type="checkbox"
+                    checked={avoidSteps}
+                    onChange={(e) => setAvoidSteps(e.target.checked)}
+                  />
+                  Avoid mapped steps
+                </label>
+                {walkTarget && !walkRoute && (
+                  <p role="status">
+                    No connected route found in the available map. Try another
+                    destination or include mapped steps.
+                  </p>
+                )}
                 {walkRoute && (
                   <div className="walk-metrics">
                     <div className="walk-metric-row">
-                      <span>Walking distance (paved paths)</span>
+                      <span>Distance along mapped paths</span>
                       <strong>{walkRoute.walkMeters} m</strong>
                     </div>
                     <div className="walk-metric-row">
@@ -1510,9 +1554,36 @@ function Explorer({
                       <strong>~{walkRoute.avoidedCarbonGrams} g CO₂e</strong>
                     </div>
                     <small className="muted">
-                      Direct distance {walkRoute.straightMeters} m × 1.25
-                      walkway circuity factor @ 1.2 m/s.
-                    </small>
+                      Approximate building connections{" "}
+                      {walkRoute.startConnector} m and {walkRoute.endConnector}{" "}
+                      m. Entrances, gate opening times and accessibility need
+                      on-site confirmation.
+                    </small>{" "}
+                    {walkRoute.steps && (
+                      <p>This route includes mapped steps.</p>
+                    )}
+                    {walkRoute.unknown && (
+                      <p>
+                        Step-free access has not been confirmed along the full
+                        route.
+                      </p>
+                    )}
+                    <ol>
+                      <li>
+                        From {walkRoute.from.name}, connect to the mapped path
+                        (about {walkRoute.startConnector} m).
+                      </li>
+                      {walkRoute.directions.map((leg, i) => (
+                        <li key={i}>
+                          Follow {leg.name} for about {Math.round(leg.metres)}{" "}
+                          m.
+                        </li>
+                      ))}
+                      <li>
+                        Continue to {walkRoute.to.name} (about{" "}
+                        {walkRoute.endConnector} m).
+                      </li>
+                    </ol>
                   </div>
                 )}
               </div>
@@ -1534,6 +1605,8 @@ function Explorer({
           </div>
         </section>
       </div>
+      <Rainwater selected={selected} />
+      <Surveys zone={selected} zones={zones} />
       <HistoryPanel
         page={page}
         onPage={(next) => setReportPage({ scope, page: next })}
@@ -1668,10 +1741,21 @@ function BuildingArt({
   const kind = (zone?.kind || "").toLowerCase();
 
   // 1. CSE & Computing Department
-  if (id === "cse" || name.includes("computer science") || name.includes("cse")) {
+  if (
+    id === "cse" ||
+    name.includes("computer science") ||
+    name.includes("cse")
+  ) {
     return (
       <svg className="building-art" viewBox="0 0 320 150" aria-hidden="true">
-        <ellipse cx="160" cy="130" rx="125" ry="14" fill="#bed1b7" opacity="0.7" />
+        <ellipse
+          cx="160"
+          cy="130"
+          rx="125"
+          ry="14"
+          fill="#bed1b7"
+          opacity="0.7"
+        />
         {/* Tech Block Main Wing */}
         <path d="m65 55 105-28 85 35-105 34Z" fill="#eff3e8" />
         <path d="m65 55 85 41v44l-85-44Z" fill="#a8bfa2" />
@@ -1680,16 +1764,47 @@ function BuildingArt({
         <path d="m95 86 35 17v22l-35-17Z" fill="#2d4a3e" />
         <path d="m102 91 22 10v14l-22-10Z" fill="#38bdf8" opacity="0.8" />
         {/* 4 Rooftop Photovoltaic Solar Panels */}
-        <path d="m80 58 20-5 24 10-20 5Z" fill="#38bdf8" stroke="#0284c7" strokeWidth="0.8" />
-        <path d="m106 51 20-5 24 10-20 5Z" fill="#38bdf8" stroke="#0284c7" strokeWidth="0.8" />
-        <path d="m132 44 20-5 24 10-20 5Z" fill="#38bdf8" stroke="#0284c7" strokeWidth="0.8" />
-        <path d="m158 37 20-5 24 10-20 5Z" fill="#38bdf8" stroke="#0284c7" strokeWidth="0.8" />
+        <path
+          d="m80 58 20-5 24 10-20 5Z"
+          fill="#38bdf8"
+          stroke="#0284c7"
+          strokeWidth="0.8"
+        />
+        <path
+          d="m106 51 20-5 24 10-20 5Z"
+          fill="#38bdf8"
+          stroke="#0284c7"
+          strokeWidth="0.8"
+        />
+        <path
+          d="m132 44 20-5 24 10-20 5Z"
+          fill="#38bdf8"
+          stroke="#0284c7"
+          strokeWidth="0.8"
+        />
+        <path
+          d="m158 37 20-5 24 10-20 5Z"
+          fill="#38bdf8"
+          stroke="#0284c7"
+          strokeWidth="0.8"
+        />
         {/* Server Louvers on East Facade */}
         {[0, 1, 2, 3, 4, 5].map((i) => (
-          <path key={i} d={`m${160 + i * 14} 94 8-2.5v12l-8 2.5Z`} fill="#5a7b6b" />
+          <path
+            key={i}
+            d={`m${160 + i * 14} 94 8-2.5v12l-8 2.5Z`}
+            fill="#5a7b6b"
+          />
         ))}
         {/* Digital Twin Telemetry Mast */}
-        <line x1="225" y1="62" x2="225" y2="30" stroke="#718096" strokeWidth="2" />
+        <line
+          x1="225"
+          y1="62"
+          x2="225"
+          y2="30"
+          stroke="#718096"
+          strokeWidth="2"
+        />
         <circle cx="225" cy="28" r="3" fill="#22c55e" />
         {/* Campus Trees */}
         <path d="M40 120V95m245 28V98" stroke="#8d775f" strokeWidth="3.5" />
@@ -1703,7 +1818,14 @@ function BuildingArt({
   if (id === "library" || name.includes("library")) {
     return (
       <svg className="building-art" viewBox="0 0 320 150" aria-hidden="true">
-        <ellipse cx="160" cy="130" rx="125" ry="14" fill="#bed1b7" opacity="0.7" />
+        <ellipse
+          cx="160"
+          cy="130"
+          rx="125"
+          ry="14"
+          fill="#bed1b7"
+          opacity="0.7"
+        />
         {/* Academic Library Two-Tier Structure */}
         <path d="m70 60 95-24 90 32-95 30Z" fill="#f5f7f0" />
         <path d="m70 60 70 36v45l-70-38Z" fill="#b4c7af" />
@@ -1712,10 +1834,19 @@ function BuildingArt({
         <path d="m155 90 30-10v35l-30 10Z" fill="#0284c7" opacity="0.75" />
         <path d="m192 78 30-10v35l-30 10Z" fill="#0284c7" opacity="0.75" />
         {/* Skylight Lantern on Roof */}
-        <path d="m120 48 35-9 30 11-35 9Z" fill="#7dd3fc" stroke="#0284c7" strokeWidth="1" />
+        <path
+          d="m120 48 35-9 30 11-35 9Z"
+          fill="#7dd3fc"
+          stroke="#0284c7"
+          strokeWidth="1"
+        />
         {/* Book Stacks Horizontal Windows */}
         {[0, 1, 2].map((i) => (
-          <path key={i} d={`m80 ${75 + i * 12} 45 22v4l-45-22Z`} fill="#4d6b53" />
+          <path
+            key={i}
+            d={`m80 ${75 + i * 12} 45 22v4l-45-22Z`}
+            fill="#4d6b53"
+          />
         ))}
         {/* Quiet Shaded Garden Courtyard */}
         <path d="M36 122V96m250 26V98" stroke="#8d775f" strokeWidth="3.5" />
@@ -1729,22 +1860,48 @@ function BuildingArt({
   if (id === "admin" || name.includes("admin")) {
     return (
       <svg className="building-art" viewBox="0 0 320 150" aria-hidden="true">
-        <ellipse cx="160" cy="130" rx="125" ry="14" fill="#bed1b7" opacity="0.7" />
+        <ellipse
+          cx="160"
+          cy="130"
+          rx="125"
+          ry="14"
+          fill="#bed1b7"
+          opacity="0.7"
+        />
         {/* Administrative Main Wing */}
         <path d="m60 62 100-24 100 24-100 28Z" fill="#faf6ed" />
         <path d="m60 62 75 35v45l-75-38Z" fill="#c2b69d" />
         <path d="m135 97 125-35v45l-125 35Z" fill="#ded5c0" />
         {/* Neoclassical Pediment Portico */}
-        <polygon points="120,48 160,25 200,48" fill="#efe6cf" stroke="#a39073" strokeWidth="1" />
+        <polygon
+          points="120,48 160,25 200,48"
+          fill="#efe6cf"
+          stroke="#a39073"
+          strokeWidth="1"
+        />
         {/* 4 Classical Columns */}
         <rect x="135" y="48" width="6" height="42" fill="#ffffff" />
         <rect x="150" y="48" width="6" height="42" fill="#ffffff" />
         <rect x="165" y="48" width="6" height="42" fill="#ffffff" />
         <rect x="180" y="48" width="6" height="42" fill="#ffffff" />
         {/* Central Clock Medallion */}
-        <circle cx="160" cy="38" r="6" fill="#facc15" stroke="#78350f" strokeWidth="1" />
+        <circle
+          cx="160"
+          cy="38"
+          r="6"
+          fill="#facc15"
+          stroke="#78350f"
+          strokeWidth="1"
+        />
         {/* Ceremonial Flagpole */}
-        <line x1="160" y1="25" x2="160" y2="8" stroke="#94a3b8" strokeWidth="2" />
+        <line
+          x1="160"
+          y1="25"
+          x2="160"
+          y2="8"
+          stroke="#94a3b8"
+          strokeWidth="2"
+        />
         <path d="M160 8 L175 13 L160 18 Z" fill="#22c55e" />
         {/* Landscaped Perimeter Trees */}
         <path d="M35 125V98m255 27V98" stroke="#8d775f" strokeWidth="3.5" />
@@ -1755,21 +1912,48 @@ function BuildingArt({
   }
 
   // 4. Food Court / MINGOS Canteen
-  if (id === "food-court" || name.includes("food") || name.includes("canteen") || name.includes("mingos")) {
+  if (
+    id === "food-court" ||
+    name.includes("food") ||
+    name.includes("canteen") ||
+    name.includes("mingos")
+  ) {
     return (
       <svg className="building-art" viewBox="0 0 320 150" aria-hidden="true">
-        <ellipse cx="160" cy="130" rx="125" ry="14" fill="#bed1b7" opacity="0.7" />
+        <ellipse
+          cx="160"
+          cy="130"
+          rx="125"
+          ry="14"
+          fill="#bed1b7"
+          opacity="0.7"
+        />
         {/* Octagonal Dining Pavilion Structure */}
         <path d="m80 65 80-22 80 22-80 24Z" fill="#fed7aa" />
         <path d="m80 65 60 30v40l-60-32Z" fill="#c27845" />
         <path d="m140 95 100-30v40l-100 30Z" fill="#e09f67" />
         {/* Open Air Timber Pergola Rafters */}
         {[0, 1, 2, 3].map((i) => (
-          <line key={i} x1={95 + i * 36} y1={60 - i * 3} x2={115 + i * 36} y2={85 - i * 3} stroke="#7c2d12" strokeWidth="3" />
+          <line
+            key={i}
+            x1={95 + i * 36}
+            y1={60 - i * 3}
+            x2={115 + i * 36}
+            y2={85 - i * 3}
+            stroke="#7c2d12"
+            strokeWidth="3"
+          />
         ))}
         {/* Outdoor Cafe Parasol */}
         <polygon points="50,92 25,104 75,104" fill="#ef4444" />
-        <line x1="50" y1="104" x2="50" y2="128" stroke="#525252" strokeWidth="2.5" />
+        <line
+          x1="50"
+          y1="104"
+          x2="50"
+          y2="128"
+          stroke="#525252"
+          strokeWidth="2.5"
+        />
         <circle cx="50" cy="128" r="8" fill="#a8a29e" />
         {/* 3-Stream Waste Segregation Station (Green, Blue, Red Bins) */}
         <rect x="235" y="108" width="10" height="18" rx="2" fill="#16a34a" />
@@ -1780,35 +1964,120 @@ function BuildingArt({
   }
 
   // 5. Parking, Transit & Gate
-  if (id === "parking" || name.includes("parking") || name.includes("transport") || name.includes("gate") || kind.includes("transport")) {
+  if (
+    id === "parking" ||
+    name.includes("parking") ||
+    name.includes("transport") ||
+    name.includes("gate") ||
+    kind.includes("transport")
+  ) {
     return (
       <svg className="building-art" viewBox="0 0 320 150" aria-hidden="true">
-        <ellipse cx="160" cy="130" rx="125" ry="14" fill="#bed1b7" opacity="0.7" />
+        <ellipse
+          cx="160"
+          cy="130"
+          rx="125"
+          ry="14"
+          fill="#bed1b7"
+          opacity="0.7"
+        />
         {/* Solar-Canopy Transit Shelter */}
-        <path d="m75 55 105-24 95 24-105 24Z" fill="#38bdf8" stroke="#0284c7" strokeWidth="1.5" />
+        <path
+          d="m75 55 105-24 95 24-105 24Z"
+          fill="#38bdf8"
+          stroke="#0284c7"
+          strokeWidth="1.5"
+        />
         {/* Support Steel Stanchions */}
-        <line x1="95" y1="75" x2="95" y2="125" stroke="#475569" strokeWidth="4" />
-        <line x1="170" y1="75" x2="170" y2="128" stroke="#475569" strokeWidth="4" />
-        <line x1="250" y1="75" x2="250" y2="125" stroke="#475569" strokeWidth="4" />
+        <line
+          x1="95"
+          y1="75"
+          x2="95"
+          y2="125"
+          stroke="#475569"
+          strokeWidth="4"
+        />
+        <line
+          x1="170"
+          y1="75"
+          x2="170"
+          y2="128"
+          stroke="#475569"
+          strokeWidth="4"
+        />
+        <line
+          x1="250"
+          y1="75"
+          x2="250"
+          y2="125"
+          stroke="#475569"
+          strokeWidth="4"
+        />
         {/* EV Smart Charging Pedestal */}
         <rect x="120" y="98" width="14" height="28" rx="3" fill="#22c55e" />
         <circle cx="127" cy="106" r="3" fill="#ffffff" />
         {/* Parked Commuter Bicycles */}
-        <circle cx="205" cy="118" r="9" fill="none" stroke="#64748b" strokeWidth="2" />
-        <circle cx="225" cy="118" r="9" fill="none" stroke="#64748b" strokeWidth="2" />
-        <line x1="205" y1="118" x2="215" y2="105" stroke="#64748b" strokeWidth="2" />
-        <line x1="225" y1="118" x2="215" y2="105" stroke="#64748b" strokeWidth="2" />
+        <circle
+          cx="205"
+          cy="118"
+          r="9"
+          fill="none"
+          stroke="#64748b"
+          strokeWidth="2"
+        />
+        <circle
+          cx="225"
+          cy="118"
+          r="9"
+          fill="none"
+          stroke="#64748b"
+          strokeWidth="2"
+        />
+        <line
+          x1="205"
+          y1="118"
+          x2="215"
+          y2="105"
+          stroke="#64748b"
+          strokeWidth="2"
+        />
+        <line
+          x1="225"
+          y1="118"
+          x2="215"
+          y2="105"
+          stroke="#64748b"
+          strokeWidth="2"
+        />
       </svg>
     );
   }
 
   // 6. Botanical Garden / Pilot Green Space
-  if (id === "garden" || kind.includes("green") || name.includes("garden") || name.includes("green space")) {
+  if (
+    id === "garden" ||
+    kind.includes("green") ||
+    name.includes("garden") ||
+    name.includes("green space")
+  ) {
     return (
       <svg className="building-art" viewBox="0 0 320 150" aria-hidden="true">
-        <ellipse cx="160" cy="130" rx="130" ry="16" fill="#86efac" opacity="0.6" />
+        <ellipse
+          cx="160"
+          cy="130"
+          rx="130"
+          ry="16"
+          fill="#86efac"
+          opacity="0.6"
+        />
         {/* Winding Stone Garden Walkway */}
-        <path d="M40 135 Q140 100 280 135" stroke="#d6d3d1" strokeWidth="12" fill="none" strokeLinecap="round" />
+        <path
+          d="M40 135 Q140 100 280 135"
+          stroke="#d6d3d1"
+          strokeWidth="12"
+          fill="none"
+          strokeLinecap="round"
+        />
         {/* Mature Neem / Gulmohar Canopy Layer */}
         <path d="M70 120 V80" stroke="#78350f" strokeWidth="6" />
         <ellipse cx="70" cy="65" rx="32" ry="32" fill="#15803d" />
@@ -1830,20 +2099,51 @@ function BuildingArt({
   // 7. Mechanical / Civil / Biotech / Labs / Other Specialized Departments
   const isMech = name.includes("mech") || name.includes("workshop");
   const isBiotech = name.includes("biotech") || name.includes("chem");
-  const isSports = name.includes("sport") || name.includes("gym") || name.includes("ground");
+  const isSports =
+    name.includes("sport") || name.includes("gym") || name.includes("ground");
 
   if (isSports) {
     return (
       <svg className="building-art" viewBox="0 0 320 150" aria-hidden="true">
-        <ellipse cx="160" cy="130" rx="125" ry="14" fill="#bed1b7" opacity="0.7" />
+        <ellipse
+          cx="160"
+          cy="130"
+          rx="125"
+          ry="14"
+          fill="#bed1b7"
+          opacity="0.7"
+        />
         {/* Curved Barrel Roof Arena */}
         <path d="M70 70 Q160 30 250 70 L250 115 L70 115 Z" fill="#e2e8f0" />
-        <path d="M70 70 Q160 30 250 70" fill="none" stroke="#0284c7" strokeWidth="4" />
+        <path
+          d="M70 70 Q160 30 250 70"
+          fill="none"
+          stroke="#0284c7"
+          strokeWidth="4"
+        />
         {/* Running Track Markings */}
-        <path d="M40 135 Q160 115 280 135" stroke="#ea580c" strokeWidth="8" fill="none" />
-        <path d="M40 142 Q160 122 280 142" stroke="#ffffff" strokeWidth="1.5" fill="none" strokeDasharray="6 4" />
+        <path
+          d="M40 135 Q160 115 280 135"
+          stroke="#ea580c"
+          strokeWidth="8"
+          fill="none"
+        />
+        <path
+          d="M40 142 Q160 122 280 142"
+          stroke="#ffffff"
+          strokeWidth="1.5"
+          fill="none"
+          strokeDasharray="6 4"
+        />
         {/* Stadium Floodlight */}
-        <line x1="285" y1="125" x2="285" y2="40" stroke="#64748b" strokeWidth="3" />
+        <line
+          x1="285"
+          y1="125"
+          x2="285"
+          y2="40"
+          stroke="#64748b"
+          strokeWidth="3"
+        />
         <polygon points="275,40 295,40 285,30" fill="#facc15" />
       </svg>
     );
@@ -1852,7 +2152,14 @@ function BuildingArt({
   // Default Campus Building with rich architectural details
   return (
     <svg className="building-art" viewBox="0 0 300 145" aria-hidden="true">
-      <ellipse cx="156" cy="124" rx="108" ry="12" fill="#bed1b7" opacity="0.7" />
+      <ellipse
+        cx="156"
+        cy="124"
+        rx="108"
+        ry="12"
+        fill="#bed1b7"
+        opacity="0.7"
+      />
       {/* Isometric Building Body */}
       <path d="m70 53 98-27 76 33-97 32Z" fill="#eff0db" />
       <path d="m70 53 77 38v48L70 99Z" fill="#b3c6ae" />
@@ -1865,9 +2172,24 @@ function BuildingArt({
       <path d="m100 81 12 6v16l-12-6Z" fill="#64887b" />
       <path d="m77 103 62 33v4l-62-33Z" fill="#7b9578" />
       {/* 3 Rooftop Solar PV Panels */}
-      <path d="m177 43 22-6 27 12-23 7Z" fill="#38bdf8" stroke="#0284c7" strokeWidth="0.8" />
-      <path d="m151 50 22-6 27 12-23 7Z" fill="#38bdf8" stroke="#0284c7" strokeWidth="0.8" />
-      <path d="m125 57 22-6 27 12-23 7Z" fill="#38bdf8" stroke="#0284c7" strokeWidth="0.8" />
+      <path
+        d="m177 43 22-6 27 12-23 7Z"
+        fill="#38bdf8"
+        stroke="#0284c7"
+        strokeWidth="0.8"
+      />
+      <path
+        d="m151 50 22-6 27 12-23 7Z"
+        fill="#38bdf8"
+        stroke="#0284c7"
+        strokeWidth="0.8"
+      />
+      <path
+        d="m125 57 22-6 27 12-23 7Z"
+        fill="#38bdf8"
+        stroke="#0284c7"
+        strokeWidth="0.8"
+      />
       {/* Campus Trees */}
       <path d="M47 113V82m218 36V87" stroke="#9b8268" strokeWidth="4" />
       <ellipse cx="47" cy="76" rx="16" ry="22" fill="#8ba477" />
@@ -1877,173 +2199,14 @@ function BuildingArt({
 }
 
 function ReportEvidenceArt({ report: r }: { report: Report }) {
-  const cat = (r.category || "").toLowerCase();
-  const themeColor = cat.includes("water")
-    ? "#38bdf8"
-    : cat.includes("waste")
-      ? "#f59e0b"
-      : cat.includes("energy")
-        ? "#eab308"
-        : cat.includes("green")
-          ? "#4ade80"
-          : cat.includes("transport")
-            ? "#60a5fa"
-            : cat.includes("carbon")
-              ? "#34d399"
-              : "#a3e635";
-
   return (
-    <div className="report-evidence-container">
-      <svg
-        className="report-evidence-svg"
-        viewBox="0 0 500 240"
-        aria-label={`Evidence graphic for ${r.title}`}
-      >
-        <defs>
-          <linearGradient id={`grad-${r.id}`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#1e2d23" />
-            <stop offset="100%" stopColor="#121b15" />
-          </linearGradient>
-          <pattern
-            id={`grid-${r.id}`}
-            width="20"
-            height="20"
-            patternUnits="userSpaceOnUse"
-          >
-            <path
-              d="M 20 0 L 0 0 0 20"
-              fill="none"
-              stroke="#2a3d30"
-              strokeWidth="0.8"
-            />
-          </pattern>
-        </defs>
-        <rect width="500" height="240" fill={`url(#grad-${r.id})`} />
-        <rect
-          width="500"
-          height="240"
-          fill={`url(#grid-${r.id})`}
-          opacity="0.6"
-        />
-        {/* Radar Reticle Target */}
-        <circle
-          cx="250"
-          cy="115"
-          r="70"
-          fill="none"
-          stroke={themeColor}
-          strokeWidth="1.5"
-          strokeDasharray="4 4"
-          opacity="0.4"
-        />
-        <circle
-          cx="250"
-          cy="115"
-          r="50"
-          fill={themeColor}
-          fillOpacity="0.08"
-          stroke={themeColor}
-          strokeWidth="1.5"
-        />
-        <line
-          x1="250"
-          y1="35"
-          x2="250"
-          y2="195"
-          stroke={themeColor}
-          strokeWidth="1"
-          strokeDasharray="2 3"
-          opacity="0.3"
-        />
-        <line
-          x1="170"
-          y1="115"
-          x2="330"
-          y2="115"
-          stroke={themeColor}
-          strokeWidth="1"
-          strokeDasharray="2 3"
-          opacity="0.3"
-        />
-        {/* Center Target Box */}
-        <rect
-          x="220"
-          y="85"
-          width="60"
-          height="60"
-          rx="8"
-          fill="#1b2820"
-          stroke={themeColor}
-          strokeWidth="2"
-        />
-        <circle cx="250" cy="115" r="14" fill="none" stroke={themeColor} strokeWidth="2.5" />
-        <circle cx="250" cy="115" r="4" fill={themeColor} />
-        {/* HUD Top Bar */}
-        <rect
-          x="18"
-          y="14"
-          width="240"
-          height="28"
-          rx="4"
-          fill="#000000"
-          fillOpacity="0.55"
-          stroke={themeColor}
-          strokeWidth="1"
-        />
-        <circle cx="28" cy="28" r="4" fill={themeColor} />
-        <text
-          x="38"
-          y="32"
-          fill="#e2ece1"
-          fontFamily="system-ui, sans-serif"
-          fontSize="10"
-          fontWeight="bold"
-          letterSpacing="0.8"
-        >
-          OFFICIAL OBSERVATION EVIDENCE
-        </text>
-        {/* HUD Bottom Info */}
-        <rect
-          x="18"
-          y="196"
-          width="464"
-          height="32"
-          rx="5"
-          fill="#000000"
-          fillOpacity="0.65"
-          stroke="#344638"
-          strokeWidth="1"
-        />
-        <text
-          x="30"
-          y="216"
-          fill="#86efac"
-          fontFamily="system-ui, sans-serif"
-          fontSize="11"
-          fontWeight="bold"
-        >
-          {r.zone_name.toUpperCase()}
-        </text>
-        <text
-          x="180"
-          y="216"
-          fill="#a4b89e"
-          fontFamily="system-ui, sans-serif"
-          fontSize="10"
-        >
-          REPORT #{r.id} · {r.category}
-        </text>
-        <text
-          x="470"
-          y="216"
-          fill="#cbd5e1"
-          fontFamily="system-ui, sans-serif"
-          fontSize="10"
-          textAnchor="end"
-        >
-          {date(r.created_at)}
-        </text>
-      </svg>
+    <div className="notice">
+      <Info size={20} />
+      <p>
+        {r.sample
+          ? "Sample report. No photograph is attached."
+          : "No photograph is available for this record."}
+      </p>
     </div>
   );
 }
@@ -2122,16 +2285,15 @@ function GeographicMap({
         </polygon>
       ))}
       {walkRoute && (
-        <line
-          x1={walkRoute.from.centroid[0]}
-          y1={walkRoute.from.centroid[1]}
-          x2={walkRoute.to.centroid[0]}
-          y2={walkRoute.to.centroid[1]}
-          stroke="#1b5e20"
-          strokeWidth="1.5"
-          strokeDasharray="2,2"
+        <polyline
+          points={walkRoute.points.map((p) => p.join(",")).join(" ")}
+          fill="none"
+          stroke="#d96624"
+          strokeWidth={0.7}
+          strokeDasharray="1 .4"
         />
       )}
+
       {(layer === "infrastructure" || layer === "green") &&
         campusInfrastructure.map((asset) => (
           <circle
@@ -2833,26 +2995,37 @@ function ReportModal({
     ) as HTMLInputElement;
     let file = fileInput?.files?.[0];
 
-    if (!file && titleVal) {
-      try {
-        const canvas = document.createElement("canvas");
-        canvas.width = 40;
-        canvas.height = 40;
-        const ctx = canvas.getContext("2d");
-        if (ctx) {
-          ctx.fillStyle = "#487959";
-          ctx.fillRect(0, 0, 40, 40);
-          const dataUrl = canvas.toDataURL("image/png");
-          const res = await fetch(dataUrl);
-          const blob = await res.blob();
-          file = new File([blob], "demo-evidence.png", { type: "image/png" });
-          form.set("image", file);
-        }
-      } catch {
-        // fallback
-      }
+    if (sampleState().active) {
+      addSampleReport({
+        id: Date.now(),
+        title: titleVal,
+        description: descVal,
+        category: categoryVal,
+        zone: zoneVal,
+        zone_name: zones.find((z) => z.id === zoneVal)?.name ?? zoneVal,
+        status: "Pending",
+        assignee: "",
+        mine: true,
+        author: "Sample student",
+        created_at: new Date().toISOString(),
+        image: "",
+        history: [
+          {
+            status: "Pending",
+            note: "Sample submission",
+            created_at: new Date().toISOString(),
+          },
+        ],
+      });
+      await onDone();
+      setBusy(false);
+      return;
     }
-
+    if (!file) {
+      setError("Add a photograph of the issue.");
+      setBusy(false);
+      return;
+    }
     const saveOffline = () => {
       if (!file) {
         setError("A photograph is required to save an offline report.");
@@ -2947,12 +3120,25 @@ function ReportModal({
       onClose={onClose}
     >
       <form className="form-stack" onSubmit={submit}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <span className="muted small-text">Enter custom details or use sample data</span>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <span className="muted small-text">
+            Enter custom details or use sample data
+          </span>
           <button
             type="button"
             className="text-button"
-            style={{ fontSize: "11px", display: "flex", alignItems: "center", gap: "4px" }}
+            style={{
+              fontSize: "11px",
+              display: "flex",
+              alignItems: "center",
+              gap: "4px",
+            }}
             onClick={() => {
               setTitleVal("Water tap leakage in restroom corridor");
               setCategoryVal("Water");
@@ -3031,7 +3217,7 @@ function ReportModal({
             name="image"
             type="file"
             accept="image/jpeg,image/png"
-            required
+            required={!sampleState().active}
             onChange={(e) => {
               if (urlRef.current) URL.revokeObjectURL(urlRef.current);
               const f = e.target.files?.[0];
@@ -3118,15 +3304,16 @@ function ReportModalDetail({
   };
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const data = Object.fromEntries(new FormData(e.currentTarget));
+    const form = new FormData(e.currentTarget);
+    const data = Object.fromEntries(form);
     setBusy(true);
     setError("");
-    const isDemo = r.id >= 900 || localStorage.getItem("ecotwin_debug_mode") === "true";
+    const isDemo = r.sample === true;
     try {
       if (!isDemo) {
         await api(`reports/${r.id}/status/`, {
           method: "PATCH",
-          body: json(data),
+          body: form,
         });
       }
       r.status = String(data.status);
@@ -3136,6 +3323,7 @@ function ReportModalDetail({
         note: String(data.note || "Status updated by moderator."),
         created_at: new Date().toISOString(),
       });
+      if (isDemo) updateSampleReport(r);
       await onDone();
     } catch (e) {
       if (isDemo) {
@@ -3178,10 +3366,14 @@ function ReportModalDetail({
             <span className={`badge ${statusClass(r.status)}`}>{r.status}</span>
             <span className="muted small-text">{r.category}</span>
           </div>
+          {r.sample && (
+            <p className="sample-label">Sample report · illustrated evidence</p>
+          )}
           <p>{r.description}</p>
           {r.assignee && <p className="muted">Assigned to {r.assignee}</p>}
         </div>
         <div>
+          <RepairEvidence report={r} onDone={onDone} />
           <h3>The journey so far</h3>
           <div className="timeline">
             {r.history.map((h, i) => (
@@ -3195,6 +3387,17 @@ function ReportModalDetail({
           </div>
           {user?.moderator && next[r.status] && (
             <form className="form-stack moderator-form" onSubmit={submit}>
+              {r.status === "In Progress" && !r.sample && (
+                <label>
+                  After-repair photo
+                  <input
+                    type="file"
+                    name="repair_image"
+                    accept="image/jpeg,image/png"
+                    required
+                  />
+                </label>
+              )}
               <h3>Next step</h3>
               <label>
                 Update status
@@ -3860,12 +4063,18 @@ function SimulationPage({
                 </optgroup>
                 <optgroup label="Water">
                   <option value="leaks">Leak reduction (20%)</option>
-                  <option value="fixtures">Water-efficient fixtures (30%)</option>
+                  <option value="fixtures">
+                    Water-efficient fixtures (30%)
+                  </option>
                 </optgroup>
                 <optgroup label="Carbon footprint">
-                  <option value="solar_offset">Rooftop solar grid offset (30%)</option>
+                  <option value="solar_offset">
+                    Rooftop solar grid offset (30%)
+                  </option>
                   <option value="ev_shuttle">EV transit & carpool (20%)</option>
-                  <option value="canopy_offset">Canopy expansion & green sinks (15%)</option>
+                  <option value="canopy_offset">
+                    Canopy expansion & green sinks (15%)
+                  </option>
                 </optgroup>
               </select>
               <small>
@@ -3958,7 +4167,11 @@ function SimulationPage({
                 </p>
                 {result.unit.includes("CO2e") && (
                   <p className="small-text" style={{ marginTop: "6px" }}>
-                    <strong>Illustrative equivalents:</strong> ~{num(Math.round((result.saved * 365) / 22))} mature tree-years of carbon sequestration (~22 kg CO₂/tree/yr) or ~{num(Math.round(result.saved / 0.82))} kWh/day grid electricity offset (CEA grid baseline ~0.82 kg CO₂e/kWh).
+                    <strong>Illustrative equivalents:</strong> ~
+                    {num(Math.round((result.saved * 365) / 22))} mature
+                    tree-years of carbon sequestration (~22 kg CO₂/tree/yr) or ~
+                    {num(Math.round(result.saved / 0.82))} kWh/day grid
+                    electricity offset (CEA grid baseline ~0.82 kg CO₂e/kWh).
                   </p>
                 )}
                 <meter
